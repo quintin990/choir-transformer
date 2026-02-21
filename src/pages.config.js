@@ -59,6 +59,7 @@ import BatchProcessing from './pages/BatchProcessing';
 import ReferenceDetail from './pages/ReferenceDetail';
 import BatchUpload from './pages/BatchUpload';
 import BatchDetail from './pages/BatchDetail';
+import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
@@ -79,4 +80,5 @@ export const PAGES = {
 export const pagesConfig = {
     mainPage: "Landing",
     Pages: PAGES,
+    Layout: __Layout,
 };
