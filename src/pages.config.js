@@ -47,8 +47,28 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import Landing from './pages/Landing';
+import ResetPassword from './pages/ResetPassword';
+import ForgotPassword from './pages/ForgotPassword';
+import NewJob from './pages/NewJob';
+import Jobs from './pages/Jobs';
+import JobDetail from './pages/JobDetail';
+import About from './pages/About';
+import ReferenceMixAssistant from './pages/ReferenceMixAssistant';
 
-export const pagesConfig = {
-	Pages: {}
+
+export const PAGES = {
+    "Landing": Landing,
+    "ResetPassword": ResetPassword,
+    "ForgotPassword": ForgotPassword,
+    "NewJob": NewJob,
+    "Jobs": Jobs,
+    "JobDetail": JobDetail,
+    "About": About,
+    "ReferenceMixAssistant": ReferenceMixAssistant,
 }
 
+export const pagesConfig = {
+    mainPage: "Landing",
+    Pages: PAGES,
+};
