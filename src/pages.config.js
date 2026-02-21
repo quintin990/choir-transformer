@@ -56,6 +56,9 @@ import JobDetail from './pages/JobDetail';
 import About from './pages/About';
 import ReferenceMixAssistant from './pages/ReferenceMixAssistant';
 import BatchProcessing from './pages/BatchProcessing';
+import ReferenceDetail from './pages/ReferenceDetail';
+import BatchUpload from './pages/BatchUpload';
+import BatchDetail from './pages/BatchDetail';
 
 
 export const PAGES = {
@@ -68,6 +71,9 @@ export const PAGES = {
     "About": About,
     "ReferenceMixAssistant": ReferenceMixAssistant,
     "BatchProcessing": BatchProcessing,
+    "ReferenceDetail": ReferenceDetail,
+    "BatchUpload": BatchUpload,
+    "BatchDetail": BatchDetail,
 }
 
 export const pagesConfig = {
