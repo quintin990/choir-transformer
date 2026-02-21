@@ -1,8 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Music, Home, Briefcase, Upload, Sparkles, Info } from 'lucide-react';
+import { Music, Home, Briefcase, Upload, Sparkles, Info, Globe } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+const languages = [
+  { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: 'es', name: 'Español', flag: '🇪🇸' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷' },
+  { code: 'zh', name: '中文', flag: '🇨🇳' }
+];
 
 export default function Layout({ children, currentPageName }) {
+  const [selectedLang, setSelectedLang] = useState('en');
+
+  useEffect(() => {
+    const savedLang = localStorage.getItem('app_language') || 'en';
+    setSelectedLang(savedLang);
+  }, []);
+
+  const handleLanguageChange = (langCode) => {
+    setSelectedLang(langCode);
+    localStorage.setItem('app_language', langCode);
+  };
+
+  const currentLanguage = languages.find(lang => lang.code === selectedLang);
+
   const isAuthPage = ['ForgotPassword', 'ResetPassword'].includes(currentPageName);
   
   if (isAuthPage) {
@@ -71,6 +99,27 @@ export default function Layout({ children, currentPageName }) {
                 <Info className="w-4 h-4" />
                 About
               </Link>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="gap-2">
+                    <span className="text-xl">{currentLanguage?.flag}</span>
+                    <span className="text-sm hidden sm:inline">{currentLanguage?.name}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {languages.map((lang) => (
+                    <DropdownMenuItem
+                      key={lang.code}
+                      onClick={() => handleLanguageChange(lang.code)}
+                      className="cursor-pointer"
+                    >
+                      <span className="mr-2 text-xl">{lang.flag}</span>
+                      <span>{lang.name}</span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
