@@ -47,35 +47,35 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import Landing from './pages/Landing';
-import ResetPassword from './pages/ResetPassword';
-import ForgotPassword from './pages/ForgotPassword';
-import NewJob from './pages/NewJob';
-import Jobs from './pages/Jobs';
-import JobDetail from './pages/JobDetail';
 import About from './pages/About';
-import ReferenceMixAssistant from './pages/ReferenceMixAssistant';
-import BatchProcessing from './pages/BatchProcessing';
-import ReferenceDetail from './pages/ReferenceDetail';
-import BatchUpload from './pages/BatchUpload';
 import BatchDetail from './pages/BatchDetail';
+import BatchProcessing from './pages/BatchProcessing';
+import BatchUpload from './pages/BatchUpload';
+import ForgotPassword from './pages/ForgotPassword';
+import JobDetail from './pages/JobDetail';
+import Jobs from './pages/Jobs';
+import Landing from './pages/Landing';
+import NewJob from './pages/NewJob';
+import ReferenceDetail from './pages/ReferenceDetail';
+import ReferenceMixAssistant from './pages/ReferenceMixAssistant';
+import ResetPassword from './pages/ResetPassword';
 import Settings from './pages/Settings';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Landing": Landing,
-    "ResetPassword": ResetPassword,
-    "ForgotPassword": ForgotPassword,
-    "NewJob": NewJob,
-    "Jobs": Jobs,
-    "JobDetail": JobDetail,
     "About": About,
-    "ReferenceMixAssistant": ReferenceMixAssistant,
-    "BatchProcessing": BatchProcessing,
-    "ReferenceDetail": ReferenceDetail,
-    "BatchUpload": BatchUpload,
     "BatchDetail": BatchDetail,
+    "BatchProcessing": BatchProcessing,
+    "BatchUpload": BatchUpload,
+    "ForgotPassword": ForgotPassword,
+    "JobDetail": JobDetail,
+    "Jobs": Jobs,
+    "Landing": Landing,
+    "NewJob": NewJob,
+    "ReferenceDetail": ReferenceDetail,
+    "ReferenceMixAssistant": ReferenceMixAssistant,
+    "ResetPassword": ResetPassword,
     "Settings": Settings,
 }
 

@@ -343,36 +343,57 @@ export default function Settings() {
                 <Cloud className="w-5 h-5" />
                 Cloud Storage Integration
               </CardTitle>
-              <CardDescription>Connect your cloud storage accounts</CardDescription>
+              <CardDescription>Connect your cloud storage accounts to upload files and save processed stems</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-3">
-                <Button variant="outline" className="w-full justify-start gap-3">
-                  <svg className="w-5 h-5" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M18.944 11.112C18.507 7.67 15.56 5 12 5 9.244 5 6.85 6.611 5.757 9.15 3.609 9.792 2 11.82 2 14c0 2.657 2.089 4.815 4.708 4.99V19h10.584v-.01C19.911 18.815 22 16.657 22 14c0-2.657-2.089-4.815-4.708-4.99l-.348.102z"/>
-                  </svg>
-                  Connect Google Drive
-                </Button>
+                <div className="flex items-center justify-between p-4 border border-border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <svg className="w-5 h-5 text-primary" viewBox="0 0 24 24">
+                      <path fill="currentColor" d="M18.944 11.112C18.507 7.67 15.56 5 12 5 9.244 5 6.85 6.611 5.757 9.15 3.609 9.792 2 11.82 2 14c0 2.657 2.089 4.815 4.708 4.99V19h10.584v-.01C19.911 18.815 22 16.657 22 14c0-2.657-2.089-4.815-4.708-4.99l-.348.102z"/>
+                    </svg>
+                    <div>
+                      <p className="font-medium">Google Drive</p>
+                      <p className="text-sm text-green-400">Connected</p>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm">
+                    Disconnect
+                  </Button>
+                </div>
 
-                <Button variant="outline" className="w-full justify-start gap-3">
-                  <svg className="w-5 h-5" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M16.527 16.413l-4.53 7.235-7.5-4.97L12 11.444l4.527 4.969m-4.53-4.969L4.5 18.678l7.497-13.043 4.03 6.809-4.03-.065M12 11.444l7.497-4.234-3.467 5.76-4.03-1.526z"/>
-                  </svg>
-                  Connect Dropbox
-                </Button>
+                <div className="flex items-center justify-between p-4 border border-border rounded-lg opacity-50">
+                  <div className="flex items-center gap-3">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24">
+                      <path fill="currentColor" d="M16.527 16.413l-4.53 7.235-7.5-4.97L12 11.444l4.527 4.969m-4.53-4.969L4.5 18.678l7.497-13.043 4.03 6.809-4.03-.065M12 11.444l7.497-4.234-3.467 5.76-4.03-1.526z"/>
+                    </svg>
+                    <div>
+                      <p className="font-medium">Dropbox</p>
+                      <p className="text-sm text-muted-foreground">Coming soon</p>
+                    </div>
+                  </div>
+                </div>
 
-                <Button variant="outline" className="w-full justify-start gap-3">
-                  <svg className="w-5 h-5" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M13.8 12L9 8.4V6.2l7.8 5.4-3 2.4m-3.6 0L3.4 7.6v2.2l4.8 3.6-4.8 3.6v2.2l6.8-4.6 3-2z"/>
-                  </svg>
-                  Connect OneDrive
-                </Button>
+                <div className="flex items-center justify-between p-4 border border-border rounded-lg opacity-50">
+                  <div className="flex items-center gap-3">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24">
+                      <path fill="currentColor" d="M13.8 12L9 8.4V6.2l7.8 5.4-3 2.4m-3.6 0L3.4 7.6v2.2l4.8 3.6-4.8 3.6v2.2l6.8-4.6 3-2z"/>
+                    </svg>
+                    <div>
+                      <p className="font-medium">OneDrive</p>
+                      <p className="text-sm text-muted-foreground">Coming soon</p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="mt-6 p-4 bg-secondary rounded-lg">
-                <p className="text-sm text-muted-foreground">
-                  Connect your cloud storage to upload files directly and save processed stems automatically.
-                </p>
+              <div className="mt-6 p-4 bg-secondary rounded-lg space-y-2">
+                <p className="text-sm font-medium">Features:</p>
+                <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                  <li>Upload audio files directly from cloud storage</li>
+                  <li>Automatically save processed stems back to your Drive</li>
+                  <li>Organize outputs in dedicated folders</li>
+                </ul>
               </div>
             </CardContent>
           </Card>
