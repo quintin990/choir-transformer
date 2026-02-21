@@ -59,6 +59,7 @@ import BatchProcessing from './pages/BatchProcessing';
 import ReferenceDetail from './pages/ReferenceDetail';
 import BatchUpload from './pages/BatchUpload';
 import BatchDetail from './pages/BatchDetail';
+import Settings from './pages/Settings';
 import __Layout from './Layout.jsx';
 
 
@@ -75,6 +76,7 @@ export const PAGES = {
     "ReferenceDetail": ReferenceDetail,
     "BatchUpload": BatchUpload,
     "BatchDetail": BatchDetail,
+    "Settings": Settings,
 }
 
 export const pagesConfig = {
