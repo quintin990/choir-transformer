@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { createPageUrl } from './utils';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -29,7 +28,7 @@ export default function JobDetail() {
         loadJob();
         loadEvents();
       } catch {
-        base44.auth.redirectToLogin(createPageUrl('JobDetail') + '?id=' + jobId);
+        base44.auth.redirectToLogin('/JobDetail?id=' + jobId);
       }
     };
     loadUser();
@@ -96,7 +95,7 @@ export default function JobDetail() {
       });
 
       if (response.data.job_id) {
-        window.location.href = createPageUrl('JobDetail') + '?id=' + response.data.job_id;
+        window.location.href = '/JobDetail?id=' + response.data.job_id;
       }
     } catch (error) {
       console.error('Failed to retry job', error);
@@ -140,7 +139,7 @@ export default function JobDetail() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 py-8 px-4">
       <div className="container mx-auto max-w-4xl">
         <div className="mb-6">
-          <Link to={createPageUrl('Jobs')}>
+          <Link to="/Jobs">
             <Button variant="ghost" className="mb-4">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Jobs

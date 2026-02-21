@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { createPageUrl } from './utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sparkles, TrendingUp, Radio, Activity } from 'lucide-react';
@@ -77,10 +76,10 @@ export default function ReferenceMixAssistant() {
               Sign up for our newsletter to be notified when it launches.
             </p>
             <div className="flex gap-4 justify-center">
-              <Link to={createPageUrl('Landing')}>
+              <Link to="/Landing">
                 <Button variant="outline">Back to Home</Button>
               </Link>
-              <Link to={createPageUrl('About')}>
+              <Link to="/About">
                 <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
                   Contact Us
                 </Button>

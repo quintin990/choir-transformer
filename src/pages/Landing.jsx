@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { createPageUrl } from './utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Music, Mic, Drum, Radio } from 'lucide-react';
@@ -16,7 +15,7 @@ export default function Landing() {
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Advanced AI-powered audio stem separation. Split your tracks into vocals, drums, bass, and more with professional quality.
           </p>
-          <Link to={createPageUrl('NewJob')}>
+          <Link to="/NewJob">
             <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-6 text-lg">
               Start Separation
             </Button>
@@ -66,10 +65,10 @@ export default function Landing() {
         </div>
 
         <div className="text-center">
-          <Link to={createPageUrl('Jobs')} className="text-purple-600 hover:text-purple-700 underline mr-6">
+          <Link to="/Jobs" className="text-purple-600 hover:text-purple-700 underline mr-6">
             View My Jobs
           </Link>
-          <Link to={createPageUrl('About')} className="text-gray-600 hover:text-gray-700 underline">
+          <Link to="/About" className="text-gray-600 hover:text-gray-700 underline">
             Learn More
           </Link>
         </div>

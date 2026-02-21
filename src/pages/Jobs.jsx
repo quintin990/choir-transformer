@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { createPageUrl } from './utils';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -22,7 +21,7 @@ export default function Jobs() {
         setUser(currentUser);
         loadJobs();
       } catch {
-        base44.auth.redirectToLogin(createPageUrl('Jobs'));
+        base44.auth.redirectToLogin('/Jobs');
       }
     };
     loadUser();
@@ -86,7 +85,7 @@ export default function Jobs() {
             <h1 className="text-4xl font-bold mb-2">My Jobs</h1>
             <p className="text-gray-600">View and manage your separation jobs</p>
           </div>
-          <Link to={createPageUrl('NewJob')}>
+          <Link to="/NewJob">
             <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
               <Plus className="w-4 h-4 mr-2" />
               New Job
@@ -114,7 +113,7 @@ export default function Jobs() {
             <CardContent className="py-12 text-center">
               <Music className="w-12 h-12 mx-auto mb-4 text-gray-400" />
               <p className="text-gray-600 mb-4">No jobs found</p>
-              <Link to={createPageUrl('NewJob')}>
+              <Link to="/NewJob">
                 <Button>Create Your First Job</Button>
               </Link>
             </CardContent>
@@ -122,7 +121,7 @@ export default function Jobs() {
         ) : (
           <div className="space-y-4">
             {filteredJobs.map((job) => (
-              <Link key={job.id} to={createPageUrl('JobDetail') + '?id=' + job.id}>
+              <Link key={job.id} to={'/JobDetail?id=' + job.id}>
                 <Card className="hover:shadow-lg transition-all cursor-pointer">
                   <CardContent className="pt-6">
                     <div className="flex items-start justify-between">

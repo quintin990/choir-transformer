@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { createPageUrl } from './utils';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -160,7 +159,7 @@ export default function About() {
         </Card>
 
         <div className="text-center mt-8">
-          <Link to={createPageUrl('Landing')}>
+          <Link to="/Landing">
             <Button variant="ghost">Back to Home</Button>
           </Link>
         </div>

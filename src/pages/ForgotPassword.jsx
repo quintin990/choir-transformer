@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { createPageUrl } from './utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -42,7 +41,7 @@ export default function ForgotPassword() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Link to={createPageUrl('Login')}>
+            <Link to="/Login">
               <Button className="w-full">Back to Sign In</Button>
             </Link>
           </CardContent>
@@ -85,7 +84,7 @@ export default function ForgotPassword() {
             </Button>
 
             <div className="text-center text-sm">
-              <Link to={createPageUrl('Login')} className="text-purple-600 hover:text-purple-700">
+              <Link to="/Login" className="text-purple-600 hover:text-purple-700">
                 Back to Sign In
               </Link>
             </div>

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { createPageUrl } from './utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -45,7 +44,7 @@ export default function ResetPassword() {
             <CardDescription>Your password has been successfully reset</CardDescription>
           </CardHeader>
           <CardContent>
-            <Link to={createPageUrl('Login')}>
+            <Link to="/Login">
               <Button className="w-full">Sign In</Button>
             </Link>
           </CardContent>

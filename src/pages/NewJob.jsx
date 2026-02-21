@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createPageUrl } from './utils';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,7 +28,7 @@ export default function NewJob() {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
       } catch {
-        base44.auth.redirectToLogin(createPageUrl('NewJob'));
+        base44.auth.redirectToLogin('/NewJob');
       }
     };
     loadUser();
@@ -98,7 +97,7 @@ export default function NewJob() {
       setUploadProgress(100);
 
       if (response.data.job_id) {
-        navigate(createPageUrl('JobDetail') + '?id=' + response.data.job_id);
+        navigate('/JobDetail?id=' + response.data.job_id);
       }
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to create job. Please try again.');
