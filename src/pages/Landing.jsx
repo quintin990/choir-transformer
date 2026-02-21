@@ -68,8 +68,8 @@ export default function Landing() {
           <Link to="/Jobs" className="text-purple-600 hover:text-purple-700 underline">
             View My Jobs
           </Link>
-          <Link to="/BatchProcessing" className="text-purple-600 hover:text-purple-700 underline">
-            Batch Processing
+          <Link to="/BatchUpload" className="text-purple-600 hover:text-purple-700 underline">
+            Batch Upload
           </Link>
           <Link to="/ReferenceMixAssistant" className="text-purple-600 hover:text-purple-700 underline">
             Mix Assistant
