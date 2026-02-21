@@ -64,12 +64,18 @@ export default function Landing() {
           </Card>
         </div>
 
-        <div className="text-center">
-          <Link to="/Jobs" className="text-purple-600 hover:text-purple-700 underline mr-6">
+        <div className="text-center space-x-6">
+          <Link to="/Jobs" className="text-purple-600 hover:text-purple-700 underline">
             View My Jobs
           </Link>
+          <Link to="/BatchProcessing" className="text-purple-600 hover:text-purple-700 underline">
+            Batch Processing
+          </Link>
+          <Link to="/ReferenceMixAssistant" className="text-purple-600 hover:text-purple-700 underline">
+            Mix Assistant
+          </Link>
           <Link to="/About" className="text-gray-600 hover:text-gray-700 underline">
-            Learn More
+            About
           </Link>
         </div>
       </div>

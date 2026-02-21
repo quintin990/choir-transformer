@@ -55,6 +55,7 @@ import Jobs from './pages/Jobs';
 import JobDetail from './pages/JobDetail';
 import About from './pages/About';
 import ReferenceMixAssistant from './pages/ReferenceMixAssistant';
+import BatchProcessing from './pages/BatchProcessing';
 
 
 export const PAGES = {
@@ -66,6 +67,7 @@ export const PAGES = {
     "JobDetail": JobDetail,
     "About": About,
     "ReferenceMixAssistant": ReferenceMixAssistant,
+    "BatchProcessing": BatchProcessing,
 }
 
 export const pagesConfig = {

@@ -16,7 +16,13 @@ export default function NewJob() {
   const [file, setFile] = useState(null);
   const [title, setTitle] = useState('');
   const [separationMode, setSeparationMode] = useState('two_stems');
+  const [aiModel, setAiModel] = useState('balanced');
+  const [audioRepair, setAudioRepair] = useState(false);
   const [outputFormat, setOutputFormat] = useState('wav');
+  const [mp3Bitrate, setMp3Bitrate] = useState(320);
+  const [mp3Encoding, setMp3Encoding] = useState('cbr');
+  const [wavSampleRate, setWavSampleRate] = useState(44100);
+  const [wavBitDepth, setWavBitDepth] = useState(16);
   const [hasRights, setHasRights] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -91,7 +97,13 @@ export default function NewJob() {
           size: file.size
         },
         separation_mode: separationMode,
-        output_format: outputFormat
+        ai_model: aiModel,
+        audio_repair: audioRepair,
+        output_format: outputFormat,
+        mp3_bitrate: outputFormat === 'mp3' ? mp3Bitrate : undefined,
+        mp3_encoding: outputFormat === 'mp3' ? mp3Encoding : undefined,
+        wav_sample_rate: outputFormat === 'wav' ? wavSampleRate : undefined,
+        wav_bit_depth: outputFormat === 'wav' ? wavBitDepth : undefined
       });
 
       setUploadProgress(100);
@@ -204,17 +216,107 @@ export default function NewJob() {
               </div>
 
               <div className="space-y-2">
+                <Label htmlFor="aiModel">AI Model *</Label>
+                <Select value={aiModel} onValueChange={setAiModel}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="fast">Fast (2-3 min, Good quality)</SelectItem>
+                    <SelectItem value="balanced">Balanced (3-5 min, Great quality)</SelectItem>
+                    <SelectItem value="high_quality">High Quality (5-10 min, Excellent)</SelectItem>
+                    <SelectItem value="artifact_reduction">Artifact Reduction (10-15 min, Cleanest)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-start space-x-2">
+                <Checkbox
+                  id="audioRepair"
+                  checked={audioRepair}
+                  onCheckedChange={setAudioRepair}
+                />
+                <label htmlFor="audioRepair" className="text-sm cursor-pointer">
+                  Enable AI audio repair (removes artifacts, adds ~2 min processing)
+                </label>
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="format">Output Format *</Label>
                 <Select value={outputFormat} onValueChange={setOutputFormat}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="wav">WAV (Lossless)</SelectItem>
-                    <SelectItem value="mp3">MP3 (Compressed)</SelectItem>
+                    <SelectItem value="wav">WAV (Lossless, uncompressed)</SelectItem>
+                    <SelectItem value="flac">FLAC (Lossless, compressed)</SelectItem>
+                    <SelectItem value="mp3">MP3 (Lossy, small files)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+
+              {outputFormat === 'mp3' && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="mp3Bitrate">MP3 Bitrate</Label>
+                    <Select value={mp3Bitrate.toString()} onValueChange={(v) => setMp3Bitrate(Number(v))}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="128">128 kbps</SelectItem>
+                        <SelectItem value="192">192 kbps</SelectItem>
+                        <SelectItem value="256">256 kbps</SelectItem>
+                        <SelectItem value="320">320 kbps (Highest)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="mp3Encoding">MP3 Encoding</Label>
+                    <Select value={mp3Encoding} onValueChange={setMp3Encoding}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="cbr">CBR (Constant bitrate)</SelectItem>
+                        <SelectItem value="vbr">VBR (Variable bitrate, better quality)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </>
+              )}
+
+              {outputFormat === 'wav' && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="wavSampleRate">Sample Rate</Label>
+                    <Select value={wavSampleRate.toString()} onValueChange={(v) => setWavSampleRate(Number(v))}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="44100">44.1 kHz (CD quality)</SelectItem>
+                        <SelectItem value="48000">48 kHz (Professional)</SelectItem>
+                        <SelectItem value="88200">88.2 kHz (High-res)</SelectItem>
+                        <SelectItem value="96000">96 kHz (Ultra high-res)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="wavBitDepth">Bit Depth</Label>
+                    <Select value={wavBitDepth.toString()} onValueChange={(v) => setWavBitDepth(Number(v))}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="16">16-bit (CD quality)</SelectItem>
+                        <SelectItem value="24">24-bit (Professional)</SelectItem>
+                        <SelectItem value="32">32-bit (Studio master)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </>
+              )}
 
               <div className="flex items-start space-x-2">
                 <Checkbox
