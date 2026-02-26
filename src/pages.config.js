@@ -62,6 +62,7 @@ import ResetPassword from './pages/ResetPassword';
 import Settings from './pages/Settings';
 import Dashboard from './pages/Dashboard';
 import Pricing from './pages/Pricing';
+import AdminAnalytics from './pages/AdminAnalytics';
 import __Layout from './Layout.jsx';
 
 
@@ -81,6 +82,7 @@ export const PAGES = {
     "Settings": Settings,
     "Dashboard": Dashboard,
     "Pricing": Pricing,
+    "AdminAnalytics": AdminAnalytics,
 }
 
 export const pagesConfig = {
