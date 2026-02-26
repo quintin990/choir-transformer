@@ -103,6 +103,12 @@ export default function Pricing() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-12">
+      {successMsg && (
+        <Alert className="bg-green-950 border-green-800">
+          <CheckCircle className="w-4 h-4 text-green-400" />
+          <AlertDescription className="text-green-400">{successMsg}</AlertDescription>
+        </Alert>
+      )}
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-3">Simple, transparent pricing</h1>
         <p className="text-muted-foreground text-lg">Choose a plan or buy credits as you go.</p>
