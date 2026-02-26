@@ -188,9 +188,9 @@ export default function Pricing() {
                   variant={pack.highlight ? 'default' : 'outline'}
                   className="w-full gap-2"
                   onClick={() => handleBuyCredits(pack)}
-                  disabled={loading}
+                  disabled={loading !== null}
                 >
-                  <Zap className="w-4 h-4" />
+                  {loading === pack.priceId ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
                   Buy {pack.credits} Credits
                 </Button>
               </CardContent>
