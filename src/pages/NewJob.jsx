@@ -69,7 +69,7 @@ export default function NewJob() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!file) {
+    if (!file && !cloudFile) {
       setError('Please select an audio file');
       return;
     }
