@@ -13,6 +13,9 @@ export default function Layout({ children, currentPageName }) {
     return <div className="min-h-screen bg-background">{children}</div>;
   }
 
+  const [user, setUser] = React.useState(null);
+  React.useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
+
   const navItems = [
     { name: 'Dashboard', icon: Home, path: '/Dashboard', pages: ['Dashboard'] },
     { name: 'My Jobs', icon: Briefcase, path: '/Jobs', pages: ['Jobs', 'JobDetail'] },
@@ -20,6 +23,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Mix Assistant', icon: Sparkles, path: '/ReferenceMixAssistant', pages: ['ReferenceMixAssistant', 'ReferenceDetail'] },
     { name: 'Pricing', icon: Info, path: '/Pricing', pages: ['Pricing'] },
     { name: 'Settings', icon: Settings, path: '/Settings', pages: ['Settings'] },
+    ...(user?.role === 'admin' ? [{ name: 'Analytics', icon: User, path: '/AdminAnalytics', pages: ['AdminAnalytics'] }] : []),
   ];
 
   const handleLogout = async () => {

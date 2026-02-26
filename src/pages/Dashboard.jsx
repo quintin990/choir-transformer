@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import OnboardingWizard from '@/components/onboarding/OnboardingWizard';
+import DashboardTour from '@/components/onboarding/DashboardTour';
 
 const PLAN_LIMITS = { free: 10, starter: 100, pro: 500, enterprise: Infinity };
 const PLAN_COLORS = {
