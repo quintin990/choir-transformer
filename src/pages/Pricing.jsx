@@ -65,28 +65,41 @@ const CREDIT_PACKS = [
 
 export default function Pricing() {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(null);
+  const [successMsg, setSuccessMsg] = useState('');
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('success')) setSuccessMsg('Payment successful! Your credits and plan will be updated shortly.');
   }, []);
 
-  const handleUpgrade = async (planId) => {
-    if (planId === 'enterprise') {
+  const startCheckout = async (priceId, mode) => {
+    if (window.self !== window.top) {
+      alert('Checkout is only available from the published app. Please open the app in a new tab.');
+      return;
+    }
+    setLoading(priceId);
+    try {
+      const res = await base44.functions.invoke('stripeCheckout', { price_id: priceId, mode });
+      if (res.data?.url) window.location.href = res.data.url;
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(null);
+    }
+  };
+
+  const handleUpgrade = (plan) => {
+    if (plan.id === 'enterprise') {
       window.open('mailto:hello@soundforge.ai?subject=Enterprise Plan', '_blank');
       return;
     }
-    setLoading(true);
-    // Stripe checkout would go here
-    alert(`Stripe checkout for ${planId} plan coming soon!`);
-    setLoading(false);
+    if (!plan.priceId) return;
+    startCheckout(plan.priceId, plan.mode);
   };
 
-  const handleBuyCredits = async (pack) => {
-    setLoading(true);
-    alert(`Stripe checkout for ${pack.credits} credits coming soon!`);
-    setLoading(false);
-  };
+  const handleBuyCredits = (pack) => startCheckout(pack.priceId, 'payment');
 
   return (
     <div className="max-w-6xl mx-auto space-y-12">
