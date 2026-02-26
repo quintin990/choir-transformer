@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Music, Download, RefreshCw, ArrowLeft, Clock, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { Music, Download, RefreshCw, ArrowLeft, Clock, CheckCircle, XCircle, Loader2, Cloud } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function JobDetail() {
