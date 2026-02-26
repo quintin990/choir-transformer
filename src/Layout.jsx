@@ -35,7 +35,7 @@ export default function Layout({ children, currentPageName }) {
           <div className="p-6 border-b border-border">
             <Link to="/Landing" className="flex items-center gap-3">
               <Music className="w-8 h-8 text-primary" />
-              <span className="font-bold text-xl text-foreground">Choir Transformer</span>
+              <span className="font-bold text-xl text-foreground">SoundForge</span>
             </Link>
           </div>
 
