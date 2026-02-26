@@ -84,11 +84,19 @@ export default function NewJob() {
     setUploadProgress(0);
 
     try {
-      // Upload file first
-      setUploadProgress(30);
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      
-      setUploadProgress(60);
+      let file_url;
+
+      if (cloudFile) {
+        // Already uploaded from cloud
+        file_url = cloudFile.file_url;
+        setUploadProgress(60);
+      } else {
+        // Upload file first
+        setUploadProgress(30);
+        const result = await base44.integrations.Core.UploadFile({ file });
+        file_url = result.file_url;
+        setUploadProgress(60);
+      }
 
       // Build output settings
       const outputSettings = {};
