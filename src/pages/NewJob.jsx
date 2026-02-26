@@ -8,7 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Upload, Music, AlertCircle, Info } from 'lucide-react';
+import { Upload, Music, AlertCircle, Info, Cloud } from 'lucide-react';
+import CloudFilePicker from '../components/cloud/CloudFilePicker';
 
 export default function NewJob() {
   const navigate = useNavigate();
