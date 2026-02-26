@@ -151,10 +151,10 @@ export default function Pricing() {
                 <Button
                   className="w-full"
                   variant={plan.highlight ? 'default' : 'outline'}
-                  disabled={isCurrent || loading}
-                  onClick={() => handleUpgrade(plan.id)}
+                  disabled={isCurrent || loading !== null}
+                  onClick={() => handleUpgrade(plan)}
                 >
-                  {isCurrent ? 'Current Plan' : plan.cta}
+                  {loading === plan.priceId ? <Loader2 className="w-4 h-4 animate-spin" /> : (isCurrent ? 'Current Plan' : plan.cta)}
                 </Button>
               </CardContent>
             </Card>
