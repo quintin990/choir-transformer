@@ -285,9 +285,9 @@ export default function JobDetail() {
                   <div className="space-y-3">
                     <p className="font-medium">Individual Stems</p>
                     {Object.entries(job.stems).map(([name, url]) => (
-                      <div key={name} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <div key={name} className="flex items-center justify-between p-4 bg-secondary rounded-lg">
                         <div className="flex items-center gap-3">
-                          <Music className="w-5 h-5 text-blue-600" />
+                          <Music className="w-5 h-5 text-primary" />
                           <div>
                             <p className="font-medium capitalize">{name}</p>
                             <audio controls className="mt-2 w-64 h-8">
