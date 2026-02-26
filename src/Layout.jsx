@@ -14,11 +14,11 @@ export default function Layout({ children, currentPageName }) {
   }
 
   const navItems = [
-    { name: 'Home', icon: Home, path: '/Landing', pages: ['Landing'] },
+    { name: 'Dashboard', icon: Home, path: '/Dashboard', pages: ['Dashboard'] },
     { name: 'My Jobs', icon: Briefcase, path: '/Jobs', pages: ['Jobs', 'JobDetail'] },
     { name: 'Batch Upload', icon: Upload, path: '/BatchUpload', pages: ['BatchUpload', 'BatchDetail'] },
     { name: 'Mix Assistant', icon: Sparkles, path: '/ReferenceMixAssistant', pages: ['ReferenceMixAssistant', 'ReferenceDetail'] },
-    { name: 'About', icon: Info, path: '/About', pages: ['About'] },
+    { name: 'Pricing', icon: Info, path: '/Pricing', pages: ['Pricing'] },
     { name: 'Settings', icon: Settings, path: '/Settings', pages: ['Settings'] },
   ];
 
