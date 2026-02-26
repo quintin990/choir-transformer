@@ -115,8 +115,8 @@ export default function NewJob() {
         input_file_url: file_url,
         input_file_meta: {
           filename: inputFilename,
-          mime: file.type,
-          size: file.size
+          mime: cloudFile ? 'audio/mpeg' : file.type,
+          size: cloudFile ? 0 : file.size
         },
         separation_mode: separationMode,
         separation_model: separationModel,
