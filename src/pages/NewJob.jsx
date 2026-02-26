@@ -184,7 +184,7 @@ export default function NewJob() {
 
               <div className="space-y-2">
                 <Label htmlFor="file">Audio File *</Label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-purple-400 transition-colors cursor-pointer">
+                <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer">
                   <input
                     id="file"
                     type="file"
@@ -193,22 +193,49 @@ export default function NewJob() {
                     className="hidden"
                   />
                   <label htmlFor="file" className="cursor-pointer">
-                    <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                    {file ? (
+                    <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                    {file || cloudFile ? (
                       <div>
-                        <p className="font-medium text-purple-600">{file.name}</p>
-                        <p className="text-sm text-gray-500 mt-1">
-                          {(file.size / 1024 / 1024).toFixed(2)} MB
+                        <p className="font-medium text-primary">{cloudFile ? cloudFile.file_name : file.name}</p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {cloudFile ? 'From Google Drive' : `${(file.size / 1024 / 1024).toFixed(2)} MB`}
                         </p>
                       </div>
                     ) : (
                       <div>
                         <p className="font-medium">Click to upload audio file</p>
-                        <p className="text-sm text-gray-500 mt-1">MP3 or WAV, max 50MB</p>
+                        <p className="text-sm text-muted-foreground mt-1">MP3 or WAV, max 50MB</p>
                       </div>
                     )}
                   </label>
                 </div>
+
+                <div className="flex items-center gap-2">
+                  <div className="h-px flex-1 bg-border" />
+                  <span className="text-xs text-muted-foreground">or import from</span>
+                  <div className="h-px flex-1 bg-border" />
+                </div>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full gap-2"
+                  onClick={() => setCloudPickerOpen(true)}
+                >
+                  <Cloud className="w-4 h-4" />
+                  Pick from Google Drive
+                </Button>
+
+                <CloudFilePicker
+                  open={cloudPickerOpen}
+                  onClose={() => setCloudPickerOpen(false)}
+                  provider="google_drive"
+                  onSelect={(f) => {
+                    setCloudFile(f);
+                    setFile(null);
+                    if (!title) setTitle(f.file_name.replace(/\.[^.]+$/, ''));
+                  }}
+                />
               </div>
 
               <div className="space-y-2">
