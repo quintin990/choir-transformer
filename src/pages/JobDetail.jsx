@@ -82,6 +82,35 @@ export default function JobDetail() {
     }
   };
 
+  const handleSaveToDrive = async () => {
+    setSavingToDrive(true);
+    setDriveSaveStatus('');
+    try {
+      const stems = job.stems || {};
+      const folderName = `Choir Transformer - ${job.title || 'Stems'}`;
+      const uploads = Object.entries(stems).map(([name, url]) =>
+        base44.functions.invoke('googleDriveUpload', {
+          file_url: url,
+          file_name: `${name}.${job.output_format || 'wav'}`,
+          folder_name: folderName
+        })
+      );
+      if (job.output_zip_file) {
+        uploads.push(base44.functions.invoke('googleDriveUpload', {
+          file_url: job.output_zip_file,
+          file_name: `${job.title || 'stems'}_all.zip`,
+          folder_name: folderName
+        }));
+      }
+      await Promise.all(uploads);
+      setDriveSaveStatus('Saved to Google Drive!');
+    } catch (err) {
+      setDriveSaveStatus('Failed to save: ' + (err.message || 'Unknown error'));
+    } finally {
+      setSavingToDrive(false);
+    }
+  };
+
   const handleRetry = async () => {
     try {
       const response = await base44.functions.invoke('createJobAndStart', {
