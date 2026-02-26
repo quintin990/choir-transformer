@@ -248,8 +248,26 @@ export default function JobDetail() {
                 <CardTitle>Downloads</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-muted-foreground">Download individual stems or save directly to cloud</p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    onClick={handleSaveToDrive}
+                    disabled={savingToDrive}
+                  >
+                    {savingToDrive ? <Loader2 className="w-4 h-4 animate-spin" /> : <Cloud className="w-4 h-4" />}
+                    Save to Google Drive
+                  </Button>
+                </div>
+                {driveSaveStatus && (
+                  <p className={`text-sm ${driveSaveStatus.startsWith('Failed') ? 'text-destructive' : 'text-green-400'}`}>
+                    {driveSaveStatus}
+                  </p>
+                )}
                 {job.output_zip_file && (
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between p-4 bg-secondary rounded-lg">
                     <div className="flex items-center gap-3">
                       <Download className="w-5 h-5 text-purple-600" />
                       <div>
