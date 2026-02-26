@@ -84,6 +84,7 @@ export default function Dashboard() {
       {showOnboarding && (
         <OnboardingWizard user={user} onComplete={onOnboardingComplete} />
       )}
+      {showTour && <DashboardTour onClose={() => setShowTour(false)} />}
 
       <div className="space-y-8 max-w-6xl mx-auto">
         {/* Header */}
