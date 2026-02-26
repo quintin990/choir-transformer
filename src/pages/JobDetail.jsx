@@ -19,6 +19,8 @@ export default function JobDetail() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [polling, setPolling] = useState(false);
+  const [savingToDrive, setSavingToDrive] = useState(false);
+  const [driveSaveStatus, setDriveSaveStatus] = useState('');
 
   useEffect(() => {
     const loadUser = async () => {
