@@ -60,6 +60,8 @@ import ReferenceDetail from './pages/ReferenceDetail';
 import ReferenceMixAssistant from './pages/ReferenceMixAssistant';
 import ResetPassword from './pages/ResetPassword';
 import Settings from './pages/Settings';
+import Dashboard from './pages/Dashboard';
+import Pricing from './pages/Pricing';
 import __Layout from './Layout.jsx';
 
 
@@ -77,6 +79,8 @@ export const PAGES = {
     "ReferenceMixAssistant": ReferenceMixAssistant,
     "ResetPassword": ResetPassword,
     "Settings": Settings,
+    "Dashboard": Dashboard,
+    "Pricing": Pricing,
 }
 
 export const pagesConfig = {
