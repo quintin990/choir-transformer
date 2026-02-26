@@ -16,26 +16,32 @@ const PLANS = [
     features: ['10 credits/month', 'Stem separation (2-stem)', 'WAV & MP3 output', 'Community support'],
     cta: 'Current Plan',
     highlight: false,
+    priceId: null,
+    mode: null,
   },
   {
     id: 'starter',
     name: 'Starter',
-    price: 9,
+    price: 19,
     credits: 100,
     description: 'For indie creators',
     features: ['100 credits/month', 'All separation modes', 'All output formats', 'Mix Assistant', 'Email support'],
     cta: 'Upgrade to Starter',
     highlight: false,
+    priceId: 'price_1T5EKdDPbH08DQTSKlDbkN4g',
+    mode: 'subscription',
   },
   {
     id: 'pro',
     name: 'Pro',
-    price: 29,
+    price: 49,
     credits: 500,
     description: 'For professionals',
     features: ['500 credits/month', 'Batch processing', 'AI audio repair', 'Google Drive sync', 'Priority processing', 'Priority support'],
     cta: 'Upgrade to Pro',
     highlight: true,
+    priceId: 'price_1T5EKdDPbH08DQTSl2DwUVTR',
+    mode: 'subscription',
   },
   {
     id: 'enterprise',
@@ -46,13 +52,15 @@ const PLANS = [
     features: ['Unlimited credits', 'Team seats', 'API access', 'Custom models', 'SLA guarantee', 'Dedicated support'],
     cta: 'Contact Us',
     highlight: false,
+    priceId: null,
+    mode: null,
   },
 ];
 
 const CREDIT_PACKS = [
-  { credits: 20, price: 4, label: 'Starter Pack' },
-  { credits: 100, price: 15, label: 'Popular', highlight: true },
-  { credits: 500, price: 60, label: 'Pro Pack' },
+  { credits: 50, price: 4.99, label: 'Starter Pack', priceId: 'price_1T5EKdDPbH08DQTSth4zYs4s' },
+  { credits: 200, price: 14.99, label: 'Best Value', highlight: true, priceId: 'price_1T5EKdDPbH08DQTSVM0aBeDy' },
+  { credits: 500, price: 29.99, label: 'Pro Pack', priceId: 'price_1T5EKdDPbH08DQTSdbCONpkJ' },
 ];
 
 export default function Pricing() {
