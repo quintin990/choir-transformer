@@ -49,6 +49,7 @@ export default function Dashboard() {
     const me = await base44.auth.me();
     setUser(me);
     setShowOnboarding(false);
+    setShowTour(true);
   };
 
   if (loading) {
