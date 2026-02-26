@@ -28,6 +28,8 @@ export default function NewJob() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [cloudPickerOpen, setCloudPickerOpen] = useState(false);
+  const [cloudFile, setCloudFile] = useState(null); // { file_url, file_name }
 
   useEffect(() => {
     const loadUser = async () => {
