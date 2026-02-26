@@ -109,11 +109,12 @@ export default function NewJob() {
       }
 
       // Create job
+      const inputFilename = cloudFile ? cloudFile.file_name : file.name;
       const response = await base44.functions.invoke('createJobAndStart', {
-        title: title || file.name,
+        title: title || inputFilename,
         input_file_url: file_url,
         input_file_meta: {
-          filename: file.name,
+          filename: inputFilename,
           mime: file.type,
           size: file.size
         },
