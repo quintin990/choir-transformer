@@ -269,10 +269,10 @@ export default function JobDetail() {
                 {job.output_zip_file && (
                   <div className="flex items-center justify-between p-4 bg-secondary rounded-lg">
                     <div className="flex items-center gap-3">
-                      <Download className="w-5 h-5 text-purple-600" />
+                      <Download className="w-5 h-5 text-primary" />
                       <div>
                         <p className="font-medium">All Stems (ZIP)</p>
-                        <p className="text-sm text-gray-600">Download all stems in one file</p>
+                        <p className="text-sm text-muted-foreground">Download all stems in one file</p>
                       </div>
                     </div>
                     <a href={job.output_zip_file} download>
