@@ -22,6 +22,9 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Batch Upload', icon: Upload, path: '/BatchUpload', pages: ['BatchUpload', 'BatchDetail'] },
     { name: 'Mix Assistant', icon: Sparkles, path: '/ReferenceMixAssistant', pages: ['ReferenceMixAssistant', 'ReferenceDetail'] },
     { name: 'Pricing', icon: Info, path: '/Pricing', pages: ['Pricing'] },
+    { name: 'AI Enhance', icon: Wand2, path: '/AudioEnhancement', pages: ['AudioEnhancement'] },
+    { name: 'Workspaces', icon: Users, path: '/Workspaces', pages: ['Workspaces'] },
+    { name: 'API Docs', icon: Code2, path: '/ApiDocs', pages: ['ApiDocs'] },
     { name: 'Settings', icon: Settings, path: '/Settings', pages: ['Settings'] },
     ...(user?.role === 'admin' ? [{ name: 'Analytics', icon: User, path: '/AdminAnalytics', pages: ['AdminAnalytics'] }] : []),
   ];
