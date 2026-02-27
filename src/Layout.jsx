@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Music, Home, Briefcase, Upload, Sparkles, Info, Settings, User, Menu, X } from 'lucide-react';
+import { Music, Home, Briefcase, Upload, Sparkles, Info, Settings, User, Menu, X, Wand2, Users, Code2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
 
