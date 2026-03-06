@@ -9,18 +9,19 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { title, input_file_url, input_file_meta, separation_mode, output_format } = await req.json();
+    const { title, input_file_url, input_file_meta, separation_mode, separation_model, output_format, output_settings, apply_repair } = await req.json();
 
     // Validate file type
-    const validMimes = ['audio/mpeg', 'audio/mp3', 'audio/wav'];
-    if (!validMimes.includes(input_file_meta.mime) && !input_file_meta.filename.match(/\.(mp3|wav)$/i)) {
-      return Response.json({ error: 'Only MP3 and WAV files are supported' }, { status: 400 });
+    const validMimes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/flac', 'audio/aiff', 'audio/x-aiff', 'audio/m4a', 'audio/mp4', ''];
+    const validExts = /\.(mp3|wav|flac|aiff|m4a)$/i;
+    if (!validMimes.includes(input_file_meta.mime) && !validExts.test(input_file_meta.filename)) {
+      return Response.json({ error: 'Unsupported file type. Use MP3, WAV, FLAC, AIFF, or M4A.' }, { status: 400 });
     }
 
-    // Validate file size (50MB)
-    const maxSize = 50 * 1024 * 1024;
+    // Validate file size (200MB)
+    const maxSize = 200 * 1024 * 1024;
     if (input_file_meta.size > maxSize) {
-      return Response.json({ error: 'File size must be under 50MB' }, { status: 400 });
+      return Response.json({ error: 'File size must be under 200MB' }, { status: 400 });
     }
 
     // Generate callback token
