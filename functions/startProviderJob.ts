@@ -34,7 +34,9 @@ Deno.serve(async (req) => {
 
     // Build the callback URL for RunPod to call when done
     // RunPod will POST results back to providerCallback
-    const appBaseUrl = Deno.env.get('APP_BASE_URL') || new URL(req.url).origin;
+    // Derive base URL for callback — works in both local and hosted environments
+    const reqUrl = new URL(req.url);
+    const appBaseUrl = reqUrl.origin;
     const callbackUrl = `${appBaseUrl}/api/functions/providerCallback`;
 
     // Map internal model names to Demucs model names
