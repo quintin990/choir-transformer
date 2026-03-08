@@ -39,10 +39,10 @@ export default function Landing() {
       <section className="max-w-4xl mx-auto px-6 pb-24">
         <div className="grid sm:grid-cols-3 gap-6">
           {[
-            { icon: Scissors, title: '2 & 4 Stem Modes', desc: 'Separate into vocals + band, or get full isolation: vocals, drums, bass, and other instruments.' },
-            { icon: Zap, title: 'Multiple AI Models', desc: 'Choose from Fast, Balanced, High Quality, or Artifact-Free models depending on your needs.' },
-            { icon: Download, title: 'WAV / FLAC / MP3', desc: 'Download your stems in any format. Save directly to Google Drive with one click.' },
-          ].map(({ icon: Icon, title, desc }) => (
+            { Icon: Scissors, title: '2 & 4 Stem Modes', desc: 'Separate into vocals + band, or get full isolation: vocals, drums, bass, and other instruments.' },
+            { Icon: Zap, title: 'Multiple AI Models', desc: 'Choose from Fast, Balanced, High Quality, or Artifact-Free models depending on your needs.' },
+            { Icon: Download, title: 'WAV / FLAC / MP3', desc: 'Download your stems in any format. Save directly to Google Drive with one click.' },
+          ].map(({ Icon, title, desc }) => (
             <div key={title} className="bg-white/[0.03] border border-white/5 rounded-xl p-6">
               <div className="w-9 h-9 rounded-lg bg-violet-600/15 flex items-center justify-center mb-4">
                 <Icon className="w-4 h-4 text-violet-400" />
