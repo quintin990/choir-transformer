@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Music, Shield, Clock, Mail } from 'lucide-react';
+import { Music, Shield, Clock, Mail, CheckCircle } from 'lucide-react';
+import { createPageUrl } from '@/utils';
 
 export default function About() {
   const [name, setName] = useState('');
@@ -18,17 +18,14 @@ export default function About() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSending(true);
-
     try {
       await base44.integrations.Core.SendEmail({
-        to: 'support@choirtransformer.com',
+        to: 'support@stemforge.ai',
         subject: `Contact Form: ${name}`,
         body: `From: ${name} (${email})\n\n${message}`
       });
       setSent(true);
-      setName('');
-      setEmail('');
-      setMessage('');
+      setName(''); setEmail(''); setMessage('');
     } catch (error) {
       console.error('Failed to send message', error);
     } finally {
@@ -37,132 +34,83 @@ export default function About() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 py-8 px-4">
-      <div className="container mx-auto max-w-4xl">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">About Choir Transformer</h1>
-          <p className="text-xl text-gray-600">
-            Professional AI-powered audio stem separation
-          </p>
-        </div>
+    <div className="max-w-3xl mx-auto space-y-10 py-4">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold text-white mb-2">About StemForge</h1>
+        <p className="text-white/40">Professional AI-powered audio stem separation</p>
+      </div>
 
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
-          <Card>
-            <CardContent className="pt-6 text-center">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Music className="w-6 h-6 text-purple-600" />
+      <div className="grid md:grid-cols-3 gap-3">
+        {[
+          { icon: Music, title: 'High Quality', desc: 'State-of-the-art AI models for professional-grade stem separation.', color: 'text-violet-400 bg-violet-600/15' },
+          { icon: Shield, title: 'Secure & Private', desc: 'Your files are processed securely and auto-deleted after 7 days.', color: 'text-blue-400 bg-blue-600/15' },
+          { icon: Clock, title: 'Fast Processing', desc: 'GPU-accelerated processing completes most jobs in 2–5 minutes.', color: 'text-emerald-400 bg-emerald-600/15' },
+        ].map(({ icon: Icon, title, desc, color }) => (
+          <div key={title} className="bg-white/[0.03] border border-white/5 rounded-xl p-5 text-center">
+            <div className={`w-9 h-9 rounded-lg flex items-center justify-center mx-auto mb-3 ${color}`}>
+              <Icon className="w-4.5 h-4.5" />
+            </div>
+            <h3 className="font-semibold text-white text-sm mb-1.5">{title}</h3>
+            <p className="text-white/40 text-xs leading-relaxed">{desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-white/[0.03] border border-white/5 rounded-xl p-6">
+        <h2 className="font-semibold text-white mb-4">Privacy & Data Retention</h2>
+        <ul className="space-y-2.5">
+          {[
+            'All uploaded files are encrypted during transfer and storage',
+            'Your audio files are only accessible to you',
+            'Input files and output stems are automatically deleted after 7 days',
+            'We never use your audio files for training or any other purpose',
+            'You can download your stems anytime before the 7-day retention period',
+          ].map(item => (
+            <li key={item} className="flex items-start gap-2.5 text-sm text-white/50">
+              <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="bg-white/[0.03] border border-white/5 rounded-xl p-6">
+        <h2 className="font-semibold text-white mb-4 flex items-center gap-2">
+          <Mail className="w-4 h-4 text-violet-400" />
+          Contact Us
+        </h2>
+        {sent ? (
+          <div className="flex items-center gap-2 text-emerald-400 text-sm py-2">
+            <CheckCircle className="w-4 h-4" />
+            Message sent! We'll get back to you soon.
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label className="text-white/50 text-xs">Name</Label>
+                <Input value={name} onChange={e => setName(e.target.value)} required className="bg-white/[0.03] border-white/10 text-white placeholder:text-white/20" />
               </div>
-              <h3 className="font-semibold mb-2">High Quality</h3>
-              <p className="text-sm text-gray-600">
-                State-of-the-art AI models for professional-grade stem separation
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6 text-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-6 h-6 text-blue-600" />
+              <div className="space-y-1.5">
+                <Label className="text-white/50 text-xs">Email</Label>
+                <Input type="email" value={email} onChange={e => setEmail(e.target.value)} required className="bg-white/[0.03] border-white/10 text-white placeholder:text-white/20" />
               </div>
-              <h3 className="font-semibold mb-2">Secure & Private</h3>
-              <p className="text-sm text-gray-600">
-                Your files are processed securely and auto-deleted after 7 days
-              </p>
-            </CardContent>
-          </Card>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-white/50 text-xs">Message</Label>
+              <Textarea value={message} onChange={e => setMessage(e.target.value)} rows={4} required className="bg-white/[0.03] border-white/10 text-white placeholder:text-white/20 resize-none" />
+            </div>
+            <Button type="submit" disabled={sending} className="bg-violet-600 hover:bg-violet-500 text-white border-0">
+              {sending ? 'Sending…' : 'Send Message'}
+            </Button>
+          </form>
+        )}
+      </div>
 
-          <Card>
-            <CardContent className="pt-6 text-center">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Clock className="w-6 h-6 text-green-600" />
-              </div>
-              <h3 className="font-semibold mb-2">Fast Processing</h3>
-              <p className="text-sm text-gray-600">
-                GPU-accelerated processing completes most jobs in 2-5 minutes
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card className="mb-12">
-          <CardHeader>
-            <CardTitle>Privacy & Data Retention</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 text-gray-700">
-            <p>
-              At Choir Transformer, we take your privacy seriously. Here's what you need to know about how we handle your audio files:
-            </p>
-            <ul className="list-disc list-inside space-y-2 ml-4">
-              <li>All uploaded files are encrypted during transfer and storage</li>
-              <li>Your audio files are only accessible to you</li>
-              <li>Input files and output stems are automatically deleted after 7 days</li>
-              <li>We never use your audio files for training or any other purpose</li>
-              <li>You can download your stems anytime before the 7-day retention period</li>
-            </ul>
-            <p className="text-sm text-gray-600 mt-4">
-              For questions about our privacy practices, please contact us using the form below.
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Mail className="w-5 h-5" />
-              Contact Us
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {sent && (
-              <div className="bg-green-50 text-green-700 px-4 py-3 rounded-lg mb-6">
-                Thank you! We've received your message and will respond soon.
-              </div>
-            )}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="message">Message</Label>
-                <Textarea
-                  id="message"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  rows={5}
-                  required
-                />
-              </div>
-
-              <Button type="submit" disabled={sending} className="w-full">
-                {sending ? 'Sending...' : 'Send Message'}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-
-        <div className="text-center mt-8">
-          <Link to="/Landing">
-            <Button variant="ghost">Back to Home</Button>
-          </Link>
-        </div>
+      <div className="text-center pb-4">
+        <Link to={createPageUrl('Landing')}>
+          <Button variant="ghost" className="text-white/40 hover:text-white">Back to Home</Button>
+        </Link>
       </div>
     </div>
   );
