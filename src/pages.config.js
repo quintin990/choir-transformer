@@ -60,6 +60,7 @@ import ResetPassword from './pages/ResetPassword';
 import Workspaces from './pages/Workspaces';
 import JobDetail from './pages/JobDetail';
 import Dashboard from './pages/Dashboard';
+import Jobs from './pages/Jobs';
 import __Layout from './Layout.jsx';
 
 
@@ -77,6 +78,7 @@ export const PAGES = {
     "Workspaces": Workspaces,
     "JobDetail": JobDetail,
     "Dashboard": Dashboard,
+    "Jobs": Jobs,
 }
 
 export const pagesConfig = {
