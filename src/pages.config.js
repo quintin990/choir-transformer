@@ -49,6 +49,8 @@
  */
 import About from './pages/About';
 import AdminAnalytics from './pages/AdminAnalytics';
+import ApiDocs from './pages/ApiDocs';
+import AudioEnhancement from './pages/AudioEnhancement';
 import BatchDetail from './pages/BatchDetail';
 import BatchProcessing from './pages/BatchProcessing';
 import BatchUpload from './pages/BatchUpload';
@@ -63,15 +65,15 @@ import ReferenceDetail from './pages/ReferenceDetail';
 import ReferenceMixAssistant from './pages/ReferenceMixAssistant';
 import ResetPassword from './pages/ResetPassword';
 import Settings from './pages/Settings';
-import AudioEnhancement from './pages/AudioEnhancement';
 import Workspaces from './pages/Workspaces';
-import ApiDocs from './pages/ApiDocs';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "About": About,
     "AdminAnalytics": AdminAnalytics,
+    "ApiDocs": ApiDocs,
+    "AudioEnhancement": AudioEnhancement,
     "BatchDetail": BatchDetail,
     "BatchProcessing": BatchProcessing,
     "BatchUpload": BatchUpload,
@@ -86,9 +88,7 @@ export const PAGES = {
     "ReferenceMixAssistant": ReferenceMixAssistant,
     "ResetPassword": ResetPassword,
     "Settings": Settings,
-    "AudioEnhancement": AudioEnhancement,
     "Workspaces": Workspaces,
-    "ApiDocs": ApiDocs,
 }
 
 export const pagesConfig = {
