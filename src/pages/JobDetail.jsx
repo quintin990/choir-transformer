@@ -4,10 +4,11 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Download, RefreshCw, ArrowLeft, Clock, CheckCircle, XCircle, Loader2, Cloud, Music2 } from 'lucide-react';
+import { Download, RefreshCw, ArrowLeft, Clock, CheckCircle, XCircle, Loader2, Cloud, Music2, SlidersHorizontal } from 'lucide-react';
 import { format } from 'date-fns';
 import { createPageUrl } from '@/utils';
 import StemMixer from '../components/stems/StemMixer';
+import ExportPresetModal from '../components/exports/ExportPresetModal';
 
 const STATUS_CONFIG = {
   queued:    { icon: Clock, color: 'text-amber-400 bg-amber-400/10', label: 'Queued' },
