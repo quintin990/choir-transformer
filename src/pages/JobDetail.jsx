@@ -2,347 +2,239 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Music, Download, RefreshCw, ArrowLeft, Clock, CheckCircle, XCircle, Loader2, Cloud } from 'lucide-react';
+import { Download, RefreshCw, ArrowLeft, Clock, CheckCircle, XCircle, Loader2, Cloud, Music2, Play } from 'lucide-react';
 import { format } from 'date-fns';
+import { createPageUrl } from '@/utils';
+
+const STATUS_CONFIG = {
+  queued:    { icon: Clock, color: 'text-amber-400 bg-amber-400/10', label: 'Queued' },
+  running:   { icon: Loader2, color: 'text-blue-400 bg-blue-400/10', label: 'Processing', spin: true },
+  done:      { icon: CheckCircle, color: 'text-emerald-400 bg-emerald-400/10', label: 'Done' },
+  failed:    { icon: XCircle, color: 'text-red-400 bg-red-400/10', label: 'Failed' },
+  cancelled: { icon: XCircle, color: 'text-white/30 bg-white/5', label: 'Cancelled' },
+};
 
 export default function JobDetail() {
   const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const jobId = params.get('id');
+  const jobId = new URLSearchParams(location.search).get('id');
 
-  const [user, setUser] = useState(null);
   const [job, setJob] = useState(null);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [polling, setPolling] = useState(false);
   const [savingToDrive, setSavingToDrive] = useState(false);
-  const [driveSaveStatus, setDriveSaveStatus] = useState('');
+  const [driveStatus, setDriveStatus] = useState('');
 
   useEffect(() => {
-    const loadUser = async () => {
+    const init = async () => {
       try {
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-        loadJob();
-        loadEvents();
+        await base44.auth.me();
+        const jobs = await base44.entities.Job.filter({ id: jobId });
+        if (jobs.length > 0) setJob(jobs[0]);
+        const evts = await base44.entities.JobEvent.filter({ job_id: jobId }, '-created_date', 10);
+        setEvents(evts);
       } catch {
         base44.auth.redirectToLogin('/JobDetail?id=' + jobId);
+      } finally {
+        setLoading(false);
       }
     };
-    loadUser();
+    init();
   }, [jobId]);
 
   useEffect(() => {
-    if (job && (job.status === 'queued' || job.status === 'running')) {
-      setPolling(true);
-      const interval = setInterval(() => {
-        pollJobStatus();
-      }, 2000);
-      return () => clearInterval(interval);
-    } else {
-      setPolling(false);
-    }
+    if (!job || !['queued', 'running'].includes(job.status)) return;
+    const interval = setInterval(async () => {
+      const res = await base44.functions.invoke('providerPollStatus', { job_id: jobId });
+      if (res.data.job) setJob(res.data.job);
+    }, 3000);
+    return () => clearInterval(interval);
   }, [job]);
-
-  const loadJob = async () => {
-    setLoading(true);
-    try {
-      const jobs = await base44.entities.Job.filter({ id: jobId });
-      if (jobs.length > 0) {
-        setJob(jobs[0]);
-      }
-    } catch (error) {
-      console.error('Failed to load job', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadEvents = async () => {
-    try {
-      const jobEvents = await base44.entities.JobEvent.filter({ job_id: jobId }, '-created_date', 10);
-      setEvents(jobEvents);
-    } catch (error) {
-      console.error('Failed to load events', error);
-    }
-  };
-
-  const pollJobStatus = async () => {
-    try {
-      const response = await base44.functions.invoke('providerPollStatus', { job_id: jobId });
-      if (response.data.job) {
-        setJob(response.data.job);
-      }
-    } catch (error) {
-      console.error('Failed to poll status', error);
-    }
-  };
 
   const handleSaveToDrive = async () => {
     setSavingToDrive(true);
-    setDriveSaveStatus('');
+    setDriveStatus('');
     try {
       const stems = job.stems || {};
-      const folderName = `Choir Transformer - ${job.title || 'Stems'}`;
+      const folder = `StemForge - ${job.title || 'Stems'}`;
       const uploads = Object.entries(stems).map(([name, url]) =>
-        base44.functions.invoke('googleDriveUpload', {
-          file_url: url,
-          file_name: `${name}.${job.output_format || 'wav'}`,
-          folder_name: folderName
-        })
+        base44.functions.invoke('googleDriveUpload', { file_url: url, file_name: `${name}.${job.output_format || 'wav'}`, folder_name: folder })
       );
       if (job.output_zip_file) {
-        uploads.push(base44.functions.invoke('googleDriveUpload', {
-          file_url: job.output_zip_file,
-          file_name: `${job.title || 'stems'}_all.zip`,
-          folder_name: folderName
-        }));
+        uploads.push(base44.functions.invoke('googleDriveUpload', { file_url: job.output_zip_file, file_name: `${job.title || 'stems'}_all.zip`, folder_name: folder }));
       }
       await Promise.all(uploads);
-      setDriveSaveStatus('Saved to Google Drive!');
-    } catch (err) {
-      setDriveSaveStatus('Failed to save: ' + (err.message || 'Unknown error'));
+      setDriveStatus('success');
+    } catch {
+      setDriveStatus('error');
     } finally {
       setSavingToDrive(false);
     }
   };
 
   const handleRetry = async () => {
-    try {
-      const response = await base44.functions.invoke('createJobAndStart', {
-        title: job.title,
-        input_file_url: job.input_file,
-        input_file_meta: {
-          filename: job.input_filename,
-          mime: job.input_mime,
-          size: job.input_size_bytes
-        },
-        separation_mode: job.separation_mode,
-        output_format: job.output_format
-      });
-
-      if (response.data.job_id) {
-        window.location.href = '/JobDetail?id=' + response.data.job_id;
-      }
-    } catch (error) {
-      console.error('Failed to retry job', error);
-    }
+    const res = await base44.functions.invoke('createJobAndStart', {
+      title: job.title, input_file_url: job.input_file,
+      input_file_meta: { filename: job.input_filename, mime: job.input_mime, size: job.input_size_bytes },
+      separation_mode: job.separation_mode, output_format: job.output_format,
+    });
+    if (res.data.job_id) window.location.href = '/JobDetail?id=' + res.data.job_id;
   };
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'queued': return <Clock className="w-5 h-5" />;
-      case 'running': return <Loader2 className="w-5 h-5 animate-spin" />;
-      case 'done': return <CheckCircle className="w-5 h-5" />;
-      case 'failed': return <XCircle className="w-5 h-5" />;
-      case 'cancelled': return <XCircle className="w-5 h-5" />;
-      default: return <Clock className="w-5 h-5" />;
-    }
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'queued': return 'bg-gray-100 text-gray-700';
-      case 'running': return 'bg-blue-100 text-blue-700';
-      case 'done': return 'bg-green-100 text-green-700';
-      case 'failed': return 'bg-red-100 text-red-700';
-      case 'cancelled': return 'bg-gray-100 text-gray-700';
-      default: return 'bg-gray-100 text-gray-700';
-    }
-  };
-
-  if (loading || !user || !job) {
+  if (loading || !job) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center">
-        <div className="text-center">
-          <Music className="w-12 h-12 mx-auto mb-4 text-purple-600 animate-pulse" />
-          <p className="text-gray-600">Loading job...</p>
-        </div>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-6 h-6 animate-spin text-violet-400" />
       </div>
     );
   }
 
+  const sc = STATUS_CONFIG[job.status] || STATUS_CONFIG.queued;
+  const StatusIcon = sc.icon;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 py-8 px-4">
-      <div className="container mx-auto max-w-4xl">
-        <div className="mb-6">
-          <Link to="/Jobs">
-            <Button variant="ghost" className="mb-4">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Jobs
-            </Button>
-          </Link>
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold mb-2">{job.title || 'Untitled Job'}</h1>
-              <p className="text-gray-600">
-                Created {format(new Date(job.created_date), 'MMM d, yyyy h:mm a')}
-              </p>
-            </div>
-            <Badge className={`${getStatusColor(job.status)} text-lg px-4 py-2`}>
-              <span className="flex items-center gap-2">
-                {getStatusIcon(job.status)}
-                {job.status}
-              </span>
-            </Badge>
+    <div className="max-w-2xl mx-auto space-y-6">
+      {/* Back + header */}
+      <div>
+        <Link to={createPageUrl('Jobs')} className="inline-flex items-center gap-1.5 text-xs text-white/40 hover:text-white/70 transition-colors mb-4">
+          <ArrowLeft className="w-3.5 h-3.5" />
+          All jobs
+        </Link>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-xl font-semibold text-white">{job.title || 'Untitled job'}</h1>
+            <p className="text-white/30 text-sm mt-0.5">
+              {format(new Date(job.created_date), 'MMM d, yyyy · h:mm a')}
+            </p>
           </div>
-        </div>
-
-        <div className="grid gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Job Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-600">Separation Mode</p>
-                  <p className="font-medium">
-                    {job.separation_mode === 'two_stems' ? 'Two Stems' : 'Four Stems'}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Output Format</p>
-                  <p className="font-medium">{job.output_format?.toUpperCase()}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">File Size</p>
-                  <p className="font-medium">
-                    {job.input_size_bytes ? (job.input_size_bytes / 1024 / 1024).toFixed(2) + ' MB' : 'N/A'}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Duration</p>
-                  <p className="font-medium">
-                    {job.duration_seconds ? job.duration_seconds + 's' : 'N/A'}
-                  </p>
-                </div>
-              </div>
-
-              {(job.status === 'queued' || job.status === 'running') && (
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="font-medium">{job.stage || 'Processing'}</span>
-                    <span>{job.progress || 0}%</span>
-                  </div>
-                  <Progress value={job.progress || 0} className="h-3" />
-                </div>
-              )}
-
-              {job.status === 'failed' && job.error_message && (
-                <Alert variant="destructive">
-                  <XCircle className="h-4 w-4" />
-                  <AlertDescription>{job.error_message}</AlertDescription>
-                </Alert>
-              )}
-            </CardContent>
-          </Card>
-
-          {job.status === 'done' && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Downloads</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">Download individual stems or save directly to cloud</p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-2"
-                    onClick={handleSaveToDrive}
-                    disabled={savingToDrive}
-                  >
-                    {savingToDrive ? <Loader2 className="w-4 h-4 animate-spin" /> : <Cloud className="w-4 h-4" />}
-                    Save to Google Drive
-                  </Button>
-                </div>
-                {driveSaveStatus && (
-                  <p className={`text-sm ${driveSaveStatus.startsWith('Failed') ? 'text-destructive' : 'text-green-400'}`}>
-                    {driveSaveStatus}
-                  </p>
-                )}
-                {job.output_zip_file && (
-                  <div className="flex items-center justify-between p-4 bg-secondary rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <Download className="w-5 h-5 text-primary" />
-                      <div>
-                        <p className="font-medium">All Stems (ZIP)</p>
-                        <p className="text-sm text-muted-foreground">Download all stems in one file</p>
-                      </div>
-                    </div>
-                    <a href={job.output_zip_file} download>
-                      <Button>Download</Button>
-                    </a>
-                  </div>
-                )}
-
-                {job.stems && Object.keys(job.stems).length > 0 && (
-                  <div className="space-y-3">
-                    <p className="font-medium">Individual Stems</p>
-                    {Object.entries(job.stems).map(([name, url]) => (
-                      <div key={name} className="flex items-center justify-between p-4 bg-secondary rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <Music className="w-5 h-5 text-primary" />
-                          <div>
-                            <p className="font-medium capitalize">{name}</p>
-                            <audio controls className="mt-2 w-64 h-8">
-                              <source src={url} />
-                            </audio>
-                          </div>
-                        </div>
-                        <a href={url} download>
-                          <Button variant="outline" size="sm">
-                            <Download className="w-4 h-4" />
-                          </Button>
-                        </a>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
-
-          {job.status === 'failed' && (
-            <Card>
-              <CardContent className="pt-6">
-                <Button onClick={handleRetry} className="w-full">
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  Retry Job
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-
-          {events.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Activity Log</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {events.map((event) => (
-                    <div key={event.id} className="flex items-start gap-3 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-gray-400 mt-2" />
-                      <div className="flex-1">
-                        <p className="text-gray-900">{event.message}</p>
-                        <p className="text-gray-500 text-xs mt-1">
-                          {format(new Date(event.created_date), 'MMM d, h:mm:ss a')}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+          <span className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full font-medium shrink-0 ${sc.color}`}>
+            <StatusIcon className={`w-3.5 h-3.5 ${sc.spin ? 'animate-spin' : ''}`} />
+            {sc.label}
+          </span>
         </div>
       </div>
+
+      {/* Job meta */}
+      <div className="bg-white/[0.03] border border-white/5 rounded-xl p-5">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+          {[
+            ['Stems', job.separation_mode === 'two_stems' ? '2-stem' : '4-stem'],
+            ['Format', job.output_format?.toUpperCase()],
+            ['Model', job.separation_model || 'balanced'],
+            ['Duration', job.duration_seconds ? `${Math.round(job.duration_seconds)}s` : '—'],
+          ].map(([k, v]) => (
+            <div key={k}>
+              <p className="text-white/30 text-xs mb-1">{k}</p>
+              <p className="text-white capitalize">{v}</p>
+            </div>
+          ))}
+        </div>
+
+        {['queued', 'running'].includes(job.status) && (
+          <div className="mt-5 space-y-1.5">
+            <div className="flex justify-between text-xs text-white/40">
+              <span>{job.stage || 'Processing…'}</span>
+              <span>{job.progress || 0}%</span>
+            </div>
+            <Progress value={job.progress || 0} className="h-1.5 bg-white/5" />
+          </div>
+        )}
+
+        {job.status === 'failed' && job.error_message && (
+          <Alert variant="destructive" className="mt-4 bg-red-500/10 border-red-500/20">
+            <XCircle className="h-4 w-4 text-red-400" />
+            <AlertDescription className="text-red-400">{job.error_message}</AlertDescription>
+          </Alert>
+        )}
+      </div>
+
+      {/* Downloads */}
+      {job.status === 'done' && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-medium text-white/60">Downloads</h2>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleSaveToDrive}
+              disabled={savingToDrive}
+              className="gap-1.5 border-white/10 text-white/50 hover:text-white hover:bg-white/5 text-xs"
+            >
+              {savingToDrive ? <Loader2 className="w-3 h-3 animate-spin" /> : <Cloud className="w-3 h-3" />}
+              Save to Drive
+            </Button>
+          </div>
+
+          {driveStatus === 'success' && <p className="text-xs text-emerald-400">Saved to Google Drive!</p>}
+          {driveStatus === 'error' && <p className="text-xs text-red-400">Failed to save to Drive</p>}
+
+          {job.output_zip_file && (
+            <div className="flex items-center justify-between bg-white/[0.03] border border-white/5 rounded-xl px-4 py-3">
+              <div>
+                <p className="text-sm text-white font-medium">All stems (ZIP)</p>
+                <p className="text-xs text-white/30 mt-0.5">Download everything in one file</p>
+              </div>
+              <a href={job.output_zip_file} download>
+                <Button size="sm" className="bg-violet-600 hover:bg-violet-500 text-white border-0 gap-1.5">
+                  <Download className="w-3.5 h-3.5" />
+                  Download
+                </Button>
+              </a>
+            </div>
+          )}
+
+          {job.stems && Object.keys(job.stems).length > 0 && (
+            <div className="space-y-2">
+              {Object.entries(job.stems).map(([name, url]) => (
+                <div key={name} className="bg-white/[0.03] border border-white/5 rounded-xl px-4 py-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Music2 className="w-3.5 h-3.5 text-violet-400" />
+                      <span className="text-sm text-white capitalize font-medium">{name}</span>
+                    </div>
+                    <a href={url} download>
+                      <Button size="sm" variant="outline" className="gap-1.5 border-white/10 text-white/50 hover:text-white hover:bg-white/5 h-7 text-xs">
+                        <Download className="w-3 h-3" />
+                        Download
+                      </Button>
+                    </a>
+                  </div>
+                  <audio controls className="w-full h-8 opacity-70 hover:opacity-100 transition-opacity">
+                    <source src={url} />
+                  </audio>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Retry */}
+      {job.status === 'failed' && (
+        <Button onClick={handleRetry} variant="outline" className="w-full border-white/10 text-white/60 hover:text-white hover:bg-white/5 gap-2">
+          <RefreshCw className="w-4 h-4" />
+          Retry job
+        </Button>
+      )}
+
+      {/* Activity log */}
+      {events.length > 0 && (
+        <div>
+          <h2 className="text-sm font-medium text-white/40 mb-3">Activity log</h2>
+          <div className="space-y-2">
+            {events.map((event) => (
+              <div key={event.id} className="flex items-start gap-3 text-sm">
+                <div className="w-1 h-1 rounded-full bg-white/20 mt-2 shrink-0" />
+                <div>
+                  <p className="text-white/60">{event.message}</p>
+                  <p className="text-white/25 text-xs mt-0.5">{format(new Date(event.created_date), 'h:mm:ss a')}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
