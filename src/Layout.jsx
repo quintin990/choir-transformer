@@ -16,7 +16,6 @@ const NAV = [
 const PUBLIC_PAGES = ['Landing', 'Pricing', 'About'];
 
 export default function Layout({ children, currentPageName }) {
-  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [open, setOpen] = useState(false);
 
