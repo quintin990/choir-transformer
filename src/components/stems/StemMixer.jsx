@@ -187,7 +187,7 @@ export default function StemMixer({ stems }) {
         <span className="w-20 text-[10px] uppercase tracking-wider text-white/20">Stem</span>
         <span className="flex-1 text-[10px] uppercase tracking-wider text-white/20">Waveform</span>
         <span className="w-20 text-[10px] uppercase tracking-wider text-white/20 text-center">Volume</span>
-        <span className="w-16 text-[10px] uppercase tracking-wider text-white/20 text-center">Mute · Solo</span>
+        <span className="w-24 text-[10px] uppercase tracking-wider text-white/20 text-center">Play · Mute · Solo</span>
       </div>
 
       {/* Stem rows */}
