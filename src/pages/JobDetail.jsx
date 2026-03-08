@@ -277,13 +277,12 @@ export default function JobDetail() {
           </div>
         </div>
       )}
-    </div>
-
       {showPresetModal && (
         <ExportPresetModal
           onClose={() => setShowPresetModal(false)}
           onApply={handleApplyPreset}
         />
       )}
+    </div>
   );
 }
