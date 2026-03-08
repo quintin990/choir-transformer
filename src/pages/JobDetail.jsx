@@ -33,11 +33,14 @@ export default function JobDetail() {
   useEffect(() => {
     const init = async () => {
       try {
-        await base44.auth.me();
+        const user = await base44.auth.me();
         const jobs = await base44.entities.Job.filter({ id: jobId });
         if (jobs.length > 0) setJob(jobs[0]);
         const evts = await base44.entities.JobEvent.filter({ job_id: jobId }, '-created_date', 10);
         setEvents(evts);
+        // Auto-load default preset
+        const presets = await base44.entities.ExportPreset.filter({ user_id: user.id, is_default: true });
+        if (presets.length > 0) setActivePreset(presets[0]);
       } catch {
         base44.auth.redirectToLogin('/JobDetail?id=' + jobId);
       } finally {
