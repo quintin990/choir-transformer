@@ -56,16 +56,29 @@ export default function JobDetail() {
     return () => clearInterval(interval);
   }, [job]);
 
-  const handleSaveToDrive = async () => {
+  const resolveFolder = (template) =>
+    (template || 'StemForge - {title}')
+      .replace('{title}', job.title || 'Stems')
+      .replace('{date}', new Date().toISOString().slice(0, 10))
+      .replace('{format}', job.output_format || 'wav');
+
+  const handleSaveToDrive = async (preset) => {
+    const p = preset || activePreset;
     setSavingToDrive(true);
     setDriveStatus('');
     try {
       const stems = job.stems || {};
-      const folder = `StemForge - ${job.title || 'Stems'}`;
-      const uploads = Object.entries(stems).map(([name, url]) =>
-        base44.functions.invoke('googleDriveUpload', { file_url: url, file_name: `${name}.${job.output_format || 'wav'}`, folder_name: folder })
-      );
-      if (job.output_zip_file) {
+      const folder = resolveFolder(p?.folder_template);
+      const uploads = [];
+      const includeStems = p ? p.include_individual_stems : true;
+      const includeZip = p ? p.include_zip : true;
+
+      if (includeStems) {
+        Object.entries(stems).forEach(([name, url]) =>
+          uploads.push(base44.functions.invoke('googleDriveUpload', { file_url: url, file_name: `${name}.${job.output_format || 'wav'}`, folder_name: folder }))
+        );
+      }
+      if (includeZip && job.output_zip_file) {
         uploads.push(base44.functions.invoke('googleDriveUpload', { file_url: job.output_zip_file, file_name: `${job.title || 'stems'}_all.zip`, folder_name: folder }));
       }
       await Promise.all(uploads);
@@ -75,6 +88,11 @@ export default function JobDetail() {
     } finally {
       setSavingToDrive(false);
     }
+  };
+
+  const handleApplyPreset = (preset) => {
+    setActivePreset(preset);
+    setShowPresetModal(false);
   };
 
   const handleRetry = async () => {
