@@ -59,6 +59,7 @@ import ReferenceMixAssistant from './pages/ReferenceMixAssistant';
 import ResetPassword from './pages/ResetPassword';
 import Workspaces from './pages/Workspaces';
 import JobDetail from './pages/JobDetail';
+import Dashboard from './pages/Dashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -75,6 +76,7 @@ export const PAGES = {
     "ResetPassword": ResetPassword,
     "Workspaces": Workspaces,
     "JobDetail": JobDetail,
+    "Dashboard": Dashboard,
 }
 
 export const pagesConfig = {
