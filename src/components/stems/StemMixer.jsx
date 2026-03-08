@@ -237,10 +237,31 @@ export default function StemMixer({ stems }) {
                 />
               </div>
 
-              {/* Mute / Solo */}
-              <div className="w-16 shrink-0 flex items-center justify-center gap-1">
+              {/* Mute / Solo / Play */}
+              <div className="w-24 shrink-0 flex items-center justify-center gap-1">
+                {/* Solo play button */}
+                <button
+                  onClick={() => {
+                    // Solo this stem and play
+                    setStemStates(p => {
+                      const next = {};
+                      Object.keys(p).forEach(k => { next[k] = { ...p[k], soloed: k === name, muted: false }; });
+                      return next;
+                    });
+                    if (!isPlaying) startPlayback(offsetRef.current);
+                  }}
+                  title="Preview this stem"
+                  className={`w-7 h-7 rounded-md flex items-center justify-center transition-all ${
+                    st.soloed
+                      ? 'bg-violet-500/30 text-violet-300 ring-1 ring-violet-500/50'
+                      : 'bg-white/5 text-white/30 hover:text-white/60 hover:bg-white/8'
+                  }`}
+                >
+                  <Play className="w-3 h-3 ml-0.5" />
+                </button>
                 <button
                   onClick={() => toggleMute(name)}
+                  title="Mute"
                   className={`w-7 h-7 rounded-md text-[10px] font-bold tracking-wide transition-all ${
                     st.muted
                       ? 'bg-red-500/25 text-red-400 ring-1 ring-red-500/40'
@@ -249,6 +270,7 @@ export default function StemMixer({ stems }) {
                 >M</button>
                 <button
                   onClick={() => toggleSolo(name)}
+                  title="Solo"
                   className={`w-7 h-7 rounded-md text-[10px] font-bold tracking-wide transition-all ${
                     st.soloed
                       ? 'bg-amber-500/25 text-amber-400 ring-1 ring-amber-500/40'
