@@ -1,24 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import {
-  Scissors, Mic, Wand2, Upload, ArrowRight, Zap, CheckCircle,
-  Clock, XCircle, Loader2, TrendingUp, CreditCard, Plus
-} from 'lucide-react';
+import { Scissors, CheckCircle, Clock, XCircle, Loader2, Plus, ArrowRight, Zap, CreditCard } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import OnboardingWizard from '@/components/onboarding/OnboardingWizard';
 import DashboardTour from '@/components/onboarding/DashboardTour';
 
-const PLAN_LIMITS = { free: 10, starter: 100, pro: 500, enterprise: Infinity };
-const PLAN_COLORS = {
-  free: 'bg-secondary text-muted-foreground',
-  starter: 'bg-blue-500/20 text-blue-400',
-  pro: 'bg-primary/20 text-primary',
-  enterprise: 'bg-amber-500/20 text-amber-400',
+const STATUS_ICON = {
+  done: <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />,
+  running: <Loader2 className="w-3.5 h-3.5 text-blue-400 animate-spin" />,
+  queued: <Clock className="w-3.5 h-3.5 text-amber-400" />,
+  failed: <XCircle className="w-3.5 h-3.5 text-red-400" />,
+  cancelled: <XCircle className="w-3.5 h-3.5 text-white/30" />,
+};
+
+const STATUS_COLOR = {
+  done: 'text-emerald-400 bg-emerald-400/10',
+  running: 'text-blue-400 bg-blue-400/10',
+  queued: 'text-amber-400 bg-amber-400/10',
+  failed: 'text-red-400 bg-red-400/10',
+  cancelled: 'text-white/30 bg-white/5',
 };
 
 export default function Dashboard() {
@@ -34,7 +38,7 @@ export default function Dashboard() {
         const me = await base44.auth.me();
         setUser(me);
         if (!me.onboarding_completed) setShowOnboarding(true);
-        const recentJobs = await base44.entities.Job.list('-created_date', 5);
+        const recentJobs = await base44.entities.Job.list('-created_date', 8);
         setJobs(recentJobs);
       } catch {
         base44.auth.redirectToLogin('/Dashboard');
@@ -55,194 +59,137 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader2 className="w-6 h-6 animate-spin text-violet-400" />
       </div>
     );
   }
 
   const plan = user?.plan || 'free';
   const credits = user?.credits ?? 0;
-  const planLimit = PLAN_LIMITS[plan] || 10;
+  const planLimit = { free: 10, starter: 100, pro: 500, enterprise: Infinity }[plan] || 10;
   const creditPct = planLimit === Infinity ? 100 : Math.min(100, (credits / planLimit) * 100);
 
-  const statCounts = {
+  const counts = {
     total: jobs.length,
     done: jobs.filter(j => j.status === 'done').length,
-    running: jobs.filter(j => j.status === 'running' || j.status === 'queued').length,
+    running: jobs.filter(j => ['running', 'queued'].includes(j.status)).length,
     failed: jobs.filter(j => j.status === 'failed').length,
   };
 
-  const quickActions = [
-    { label: 'Stem Separation', desc: 'Split tracks into stems', icon: Scissors, to: '/NewJob', credits: 2 },
-    { label: 'Vocal Isolation', desc: 'Extract clean vocals', icon: Mic, to: '/NewJob', credits: 2 },
-    { label: 'Mix Assistant', desc: 'AI reference analysis', icon: Wand2, to: '/ReferenceMixAssistant', credits: 1 },
-    { label: 'Batch Process', desc: 'Process multiple files', icon: Upload, to: '/BatchUpload', credits: 'varies' },
-  ];
-
   return (
     <>
-      {showOnboarding && (
-        <OnboardingWizard user={user} onComplete={onOnboardingComplete} />
-      )}
+      {showOnboarding && <OnboardingWizard user={user} onComplete={onOnboardingComplete} />}
       {showTour && <DashboardTour onClose={() => setShowTour(false)} />}
 
-      <div className="space-y-8 max-w-6xl mx-auto">
+      <div className="space-y-8">
         {/* Header */}
-        <div className="flex items-start justify-between">
+        <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold">
-              Welcome back{user?.full_name ? `, ${user.full_name.split(' ')[0]}` : ''}!
+            <h1 className="text-xl font-semibold text-white">
+              {user?.full_name ? `Hey, ${user.full_name.split(' ')[0]}` : 'Dashboard'}
             </h1>
-            <p className="text-muted-foreground mt-1">Here's what's happening with your audio projects.</p>
+            <p className="text-white/40 text-sm mt-0.5">Your recent activity</p>
           </div>
-          <Link to="/NewJob">
-            <Button className="gap-2">
-              <Plus className="w-4 h-4" />
-              New Job
+          <Link to={createPageUrl('NewJob')}>
+            <Button size="sm" className="gap-1.5 bg-violet-600 hover:bg-violet-500 text-white border-0">
+              <Plus className="w-3.5 h-3.5" />
+              New job
             </Button>
           </Link>
         </div>
 
-        {/* Credits + Plan Card */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="md:col-span-2">
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-base font-medium text-muted-foreground">Credits Remaining</CardTitle>
-                <Badge className={PLAN_COLORS[plan]}>
-                  {plan.charAt(0).toUpperCase() + plan.slice(1)} Plan
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-end gap-2 mb-3">
-                <span className="text-4xl font-bold">{credits}</span>
-                <span className="text-muted-foreground mb-1">/ {planLimit === Infinity ? '∞' : planLimit} credits</span>
-              </div>
-              {planLimit !== Infinity && (
-                <Progress value={creditPct} className="h-2 mb-3" />
-              )}
-              <div className="flex gap-2">
-                <Link to="/Pricing">
-                  <Button size="sm" variant="outline" className="gap-2">
-                    <CreditCard className="w-3.5 h-3.5" />
-                    Buy Credits
-                  </Button>
-                </Link>
-                {plan === 'free' && (
-                  <Link to="/Pricing">
-                    <Button size="sm" className="gap-2">
-                      <Zap className="w-3.5 h-3.5" />
-                      Upgrade Plan
-                    </Button>
-                  </Link>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Stats */}
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base font-medium text-muted-foreground flex items-center gap-2">
-                <TrendingUp className="w-4 h-4" />
-                Activity
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Total Jobs</span>
-                <span className="font-semibold">{statCounts.total}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="flex items-center gap-1 text-green-400"><CheckCircle className="w-3.5 h-3.5" />Done</span>
-                <span className="font-semibold">{statCounts.done}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="flex items-center gap-1 text-blue-400"><Loader2 className="w-3.5 h-3.5" />In Progress</span>
-                <span className="font-semibold">{statCounts.running}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="flex items-center gap-1 text-destructive"><XCircle className="w-3.5 h-3.5" />Failed</span>
-                <span className="font-semibold">{statCounts.failed}</span>
-              </div>
-            </CardContent>
-          </Card>
+        {/* Stats row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[
+            { label: 'Total jobs', value: counts.total },
+            { label: 'Completed', value: counts.done },
+            { label: 'Processing', value: counts.running },
+            { label: 'Failed', value: counts.failed },
+          ].map(({ label, value }) => (
+            <div key={label} className="bg-white/[0.03] border border-white/5 rounded-xl p-4">
+              <p className="text-2xl font-bold text-white">{value}</p>
+              <p className="text-white/40 text-xs mt-1">{label}</p>
+            </div>
+          ))}
         </div>
 
-        {/* Quick Actions */}
-        <div>
-          <h2 className="text-lg font-semibold mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {quickActions.map((action) => {
-              const Icon = action.icon;
-              return (
-                <Link key={action.label} to={action.to}>
-                  <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
-                    <CardContent className="pt-5 pb-4">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
-                        <Icon className="w-5 h-5 text-primary" />
-                      </div>
-                      <h3 className="font-semibold mb-1">{action.label}</h3>
-                      <p className="text-xs text-muted-foreground mb-3">{action.desc}</p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground">
-                          {typeof action.credits === 'number' ? `${action.credits} credits` : action.credits}
-                        </span>
-                        <ArrowRight className="w-4 h-4 text-muted-foreground" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              );
-            })}
+        {/* Credits */}
+        <div className="bg-white/[0.03] border border-white/5 rounded-xl p-5">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <p className="text-sm text-white/60">Credits remaining</p>
+              <p className="text-2xl font-bold text-white mt-0.5">
+                {credits}
+                <span className="text-white/30 text-base font-normal ml-1">/ {planLimit === Infinity ? '∞' : planLimit}</span>
+              </p>
+            </div>
+            <Badge className="text-xs capitalize bg-violet-600/20 text-violet-300 border-violet-500/20">
+              {plan} plan
+            </Badge>
           </div>
-        </div>
-
-        {/* Recent Jobs */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Recent Jobs</h2>
-            <Link to="/Jobs">
-              <Button variant="ghost" size="sm" className="gap-1">
-                View all <ArrowRight className="w-3.5 h-3.5" />
+          {planLimit !== Infinity && (
+            <Progress value={creditPct} className="h-1.5 mb-4 bg-white/5" />
+          )}
+          <div className="flex gap-2">
+            <Link to={createPageUrl('Pricing')}>
+              <Button size="sm" variant="outline" className="gap-1.5 border-white/10 text-white/60 hover:text-white hover:bg-white/5 text-xs">
+                <CreditCard className="w-3 h-3" />
+                Buy credits
               </Button>
             </Link>
+            {plan === 'free' && (
+              <Link to={createPageUrl('Pricing')}>
+                <Button size="sm" className="gap-1.5 bg-violet-600/20 hover:bg-violet-600/30 text-violet-300 border-violet-500/20 text-xs">
+                  <Zap className="w-3 h-3" />
+                  Upgrade
+                </Button>
+              </Link>
+            )}
           </div>
+        </div>
+
+        {/* Recent jobs */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-medium text-white/60">Recent jobs</h2>
+            <Link to={createPageUrl('Jobs')} className="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-1 transition-colors">
+              View all <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+
           {jobs.length === 0 ? (
-            <Card>
-              <CardContent className="py-10 text-center">
-                <Scissors className="w-10 h-10 mx-auto mb-3 text-muted-foreground" />
-                <p className="text-muted-foreground mb-3">No jobs yet. Start by creating your first one.</p>
-                <Link to="/NewJob"><Button>Create First Job</Button></Link>
-              </CardContent>
-            </Card>
+            <div className="bg-white/[0.03] border border-white/5 rounded-xl p-10 text-center">
+              <Scissors className="w-8 h-8 mx-auto mb-3 text-white/20" />
+              <p className="text-white/40 text-sm mb-4">No jobs yet</p>
+              <Link to={createPageUrl('NewJob')}>
+                <Button size="sm" className="bg-violet-600 hover:bg-violet-500 text-white border-0">
+                  Create first job
+                </Button>
+              </Link>
+            </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               {jobs.map((job) => (
                 <Link key={job.id} to={`/JobDetail?id=${job.id}`}>
-                  <Card className="hover:border-primary/30 transition-colors cursor-pointer">
-                    <CardContent className="py-3 px-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          {job.status === 'done' && <CheckCircle className="w-4 h-4 text-green-400" />}
-                          {(job.status === 'queued' || job.status === 'running') && <Loader2 className="w-4 h-4 text-blue-400 animate-spin" />}
-                          {job.status === 'failed' && <XCircle className="w-4 h-4 text-destructive" />}
-                          {job.status === 'cancelled' && <XCircle className="w-4 h-4 text-muted-foreground" />}
-                          <span className="font-medium">{job.title || 'Untitled'}</span>
-                          <span className="text-xs text-muted-foreground hidden sm:block">
-                            {job.separation_mode === 'two_stems' ? '2-Stem' : '4-Stem'} · {job.output_format?.toUpperCase()}
-                          </span>
-                        </div>
-                        <Badge variant="outline" className="text-xs capitalize">{job.status}</Badge>
-                      </div>
+                  <div className="flex items-center justify-between bg-white/[0.03] hover:bg-white/[0.05] border border-white/5 rounded-xl px-4 py-3 transition-colors cursor-pointer">
+                    <div className="flex items-center gap-3 min-w-0">
+                      {STATUS_ICON[job.status] || STATUS_ICON.queued}
+                      <span className="text-sm text-white truncate">{job.title || 'Untitled'}</span>
+                      <span className="text-xs text-white/30 hidden sm:block shrink-0">
+                        {job.separation_mode === 'two_stems' ? '2-stem' : '4-stem'} · {job.output_format?.toUpperCase()}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0 ml-3">
                       {(job.status === 'running' || job.status === 'queued') && (
-                        <div className="mt-2">
-                          <Progress value={job.progress || 0} className="h-1" />
+                        <div className="w-20 hidden sm:block">
+                          <Progress value={job.progress || 0} className="h-1 bg-white/5" />
                         </div>
                       )}
-                    </CardContent>
-                  </Card>
+                      <span className={`text-xs px-2 py-0.5 rounded-full capitalize ${STATUS_COLOR[job.status] || STATUS_COLOR.queued}`}>
+                        {job.status}
+                      </span>
+                    </div>
+                  </div>
                 </Link>
               ))}
             </div>
