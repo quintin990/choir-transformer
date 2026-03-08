@@ -185,18 +185,31 @@ export default function JobDetail() {
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-medium text-white/60">Downloads</h2>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={handleSaveToDrive}
-              disabled={savingToDrive}
-              className="gap-1.5 border-white/10 text-white/50 hover:text-white hover:bg-white/5 text-xs"
-            >
-              {savingToDrive ? <Loader2 className="w-3 h-3 animate-spin" /> : <Cloud className="w-3 h-3" />}
-              Save to Drive
-            </Button>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setShowPresetModal(true)}
+                title="Manage export presets"
+                className="flex items-center gap-1.5 h-7 px-2 rounded-md border border-white/10 text-white/40 hover:text-white hover:bg-white/5 text-xs transition-all"
+              >
+                <SlidersHorizontal className="w-3 h-3" />
+                {activePreset ? <span className="max-w-[80px] truncate">{activePreset.name}</span> : 'Presets'}
+              </button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleSaveToDrive()}
+                disabled={savingToDrive}
+                className="gap-1.5 border-white/10 text-white/50 hover:text-white hover:bg-white/5 text-xs"
+              >
+                {savingToDrive ? <Loader2 className="w-3 h-3 animate-spin" /> : <Cloud className="w-3 h-3" />}
+                Save to Drive
+              </Button>
+            </div>
           </div>
 
+          {activePreset && (
+            <p className="text-xs text-violet-400/70">Using preset: <span className="text-violet-300 font-medium">{activePreset.name}</span> · folder: <span className="font-mono">{resolveFolder(activePreset.folder_template)}</span></p>
+          )}
           {driveStatus === 'success' && <p className="text-xs text-emerald-400">Saved to Google Drive!</p>}
           {driveStatus === 'error' && <p className="text-xs text-red-400">Failed to save to Drive</p>}
 
