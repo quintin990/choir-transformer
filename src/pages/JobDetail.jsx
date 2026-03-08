@@ -27,6 +27,8 @@ export default function JobDetail() {
   const [loading, setLoading] = useState(true);
   const [savingToDrive, setSavingToDrive] = useState(false);
   const [driveStatus, setDriveStatus] = useState('');
+  const [showPresetModal, setShowPresetModal] = useState(false);
+  const [activePreset, setActivePreset] = useState(null);
 
   useEffect(() => {
     const init = async () => {
