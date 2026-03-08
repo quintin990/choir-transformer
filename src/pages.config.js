@@ -61,6 +61,10 @@ import Workspaces from './pages/Workspaces';
 import JobDetail from './pages/JobDetail';
 import Dashboard from './pages/Dashboard';
 import Jobs from './pages/Jobs';
+import NewJob from './pages/NewJob';
+import Settings from './pages/Settings';
+import Landing from './pages/Landing';
+import Pricing from './pages/Pricing';
 import __Layout from './Layout.jsx';
 
 
@@ -79,6 +83,10 @@ export const PAGES = {
     "JobDetail": JobDetail,
     "Dashboard": Dashboard,
     "Jobs": Jobs,
+    "NewJob": NewJob,
+    "Settings": Settings,
+    "Landing": Landing,
+    "Pricing": Pricing,
 }
 
 export const pagesConfig = {
