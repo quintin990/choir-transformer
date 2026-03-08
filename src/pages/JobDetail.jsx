@@ -278,5 +278,12 @@ export default function JobDetail() {
         </div>
       )}
     </div>
+
+      {showPresetModal && (
+        <ExportPresetModal
+          onClose={() => setShowPresetModal(false)}
+          onApply={handleApplyPreset}
+        />
+      )}
   );
 }
