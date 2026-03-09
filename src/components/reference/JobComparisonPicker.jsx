@@ -42,7 +42,7 @@ export default function JobComparisonPicker({ selectedJob, onSelect }) {
                   key={job.id}
                   onClick={() => { onSelect(job); setOpen(false); }}
                   className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-colors ${
-                    selectedJob?.id === job.id ? 'bg-violet-600/20 text-violet-300' : 'text-white/60 hover:bg-white/5 hover:text-white'
+                    selectedJob?.id === job.id ? 'bg-sky-500/20 text-sky-300' : 'text-white/60 hover:bg-white/5 hover:text-white'
                   }`}
                 >
                   <p className="font-medium truncate">{job.input_filename || job.title || 'Untitled'}</p>

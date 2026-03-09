@@ -28,10 +28,10 @@ export default function Layout({ children, currentPageName }) {
 
   if (isLanding) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f]">
+      <div className="min-h-screen bg-[#070d14]">
         <header className="border-b border-white/[0.04] px-6 py-4 flex items-center justify-between">
           <Link to={createPageUrl('Landing')} className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-violet-600 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-md bg-sky-500 flex items-center justify-center">
               <Music2 className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-semibold text-white text-sm">StemForge</span>
@@ -39,7 +39,7 @@ export default function Layout({ children, currentPageName }) {
           <nav className="flex items-center gap-5 text-sm">
             <Link to={createPageUrl('Pricing')} className="text-white/50 hover:text-white transition-colors">Pricing</Link>
             <Link to={createPageUrl('About')} className="text-white/50 hover:text-white transition-colors">About</Link>
-            <Link to={createPageUrl('Dashboard')} className="bg-violet-600 hover:bg-violet-500 text-white px-4 py-1.5 rounded-lg transition-colors text-xs font-semibold">
+            <Link to={createPageUrl('Dashboard')} className="bg-sky-500 hover:bg-sky-400 text-white px-4 py-1.5 rounded-lg transition-colors text-xs font-semibold">
               Open App
             </Link>
           </nav>
@@ -51,10 +51,10 @@ export default function Layout({ children, currentPageName }) {
 
   if (isPublic) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f]">
+      <div className="min-h-screen bg-[#070d14]">
         <header className="border-b border-white/[0.04] px-6 py-4 flex items-center justify-between">
           <Link to={createPageUrl('Landing')} className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-violet-600 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-md bg-sky-500 flex items-center justify-center">
               <Music2 className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-semibold text-white text-sm">StemForge</span>
@@ -62,7 +62,7 @@ export default function Layout({ children, currentPageName }) {
           <nav className="flex items-center gap-5 text-sm">
             <Link to={createPageUrl('Pricing')} className="text-white/50 hover:text-white transition-colors">Pricing</Link>
             <Link to={createPageUrl('About')} className="text-white/50 hover:text-white transition-colors">About</Link>
-            <Link to={createPageUrl('Dashboard')} className="bg-violet-600 hover:bg-violet-500 text-white px-4 py-1.5 rounded-lg transition-colors text-xs font-semibold">
+            <Link to={createPageUrl('Dashboard')} className="bg-sky-500 hover:bg-sky-400 text-white px-4 py-1.5 rounded-lg transition-colors text-xs font-semibold">
               Open App
             </Link>
           </nav>
@@ -73,18 +73,18 @@ export default function Layout({ children, currentPageName }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex">
+    <div className="min-h-screen bg-[#070d14] flex">
       {open && <div className="fixed inset-0 bg-black/60 z-40 lg:hidden" onClick={() => setOpen(false)} />}
 
       {/* Sidebar */}
       <aside className={`
-        fixed top-0 left-0 h-full w-52 bg-[#0d0d15] border-r border-white/[0.04] z-50
+        fixed top-0 left-0 h-full w-52 bg-[#081018] border-r border-white/[0.04] z-50
         flex flex-col transition-transform duration-200
         ${open ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static lg:z-auto
       `}>
         <div className="p-4 border-b border-white/[0.04] flex items-center justify-between">
           <Link to={createPageUrl('Landing')} className="flex items-center gap-2" onClick={() => setOpen(false)}>
-            <div className="w-6 h-6 rounded-md bg-violet-600 flex items-center justify-center shrink-0">
+            <div className="w-6 h-6 rounded-md bg-sky-500 flex items-center justify-center shrink-0">
               <Music2 className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-semibold text-white text-sm">StemForge</span>
@@ -105,7 +105,7 @@ export default function Layout({ children, currentPageName }) {
                 onClick={() => setOpen(false)}
                 className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition-all ${
                   active
-                    ? 'bg-violet-600/20 text-violet-300 font-medium'
+                    ? 'bg-sky-500/20 text-sky-300 font-medium'
                     : 'text-white/40 hover:text-white/80 hover:bg-white/[0.04]'
                 }`}
               >
@@ -134,7 +134,7 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Main content */}
       <div className="flex-1 min-w-0 flex flex-col">
-        <header className="sticky top-0 z-30 bg-[#0a0a0f]/80 backdrop-blur border-b border-white/[0.04] px-4 lg:px-6 py-3 flex items-center gap-3">
+        <header className="sticky top-0 z-30 bg-[#070d14]/80 backdrop-blur border-b border-white/[0.04] px-4 lg:px-6 py-3 flex items-center gap-3">
           <button
             onClick={() => setOpen(true)}
             className="lg:hidden p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/5 transition-colors"

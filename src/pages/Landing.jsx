@@ -5,16 +5,16 @@ import { Music2, Scissors, BarChart2, Download, ArrowRight, Clock, Shield } from
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white">
+    <div className="min-h-screen bg-[#070d14] text-white">
       {/* Hero */}
       <section className="max-w-3xl mx-auto px-6 pt-28 pb-20 text-center">
-        <div className="inline-flex items-center gap-2 bg-violet-500/10 border border-violet-500/20 rounded-full px-4 py-1.5 text-violet-300 text-xs font-medium mb-8">
+        <div className="inline-flex items-center gap-2 bg-sky-400/10 border border-sky-400/20 rounded-full px-4 py-1.5 text-violet-300 text-xs font-medium mb-8">
           <Music2 className="w-3.5 h-3.5" />
           AI stem separation powered by Demucs
         </div>
         <h1 className="text-5xl sm:text-6xl font-bold leading-[1.1] tracking-tight mb-5">
           Isolate any track<br />
-          <span className="text-violet-400">in minutes</span>
+          <span className="text-sky-400">in minutes</span>
         </h1>
         <p className="text-white/50 text-lg max-w-lg mx-auto mb-10 leading-relaxed">
           Upload your song, split it into stems — vocals, drums, bass, and more — and get detailed audio analysis.
@@ -22,7 +22,7 @@ export default function Landing() {
         <div className="flex items-center justify-center gap-3">
           <Link
             to={createPageUrl('NewJob')}
-            className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white rounded-xl h-11 px-6 text-sm font-semibold transition-colors"
+            className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white rounded-xl h-11 px-6 text-sm font-semibold transition-colors"
           >
             Start new job
             <ArrowRight className="w-4 h-4" />
@@ -46,7 +46,7 @@ export default function Landing() {
             { n: '3', title: 'Download & mix', desc: 'Get individual stems and a full ZIP. Preview in the browser.' },
           ].map(({ n, title, desc }) => (
             <div key={n} className="bg-white/[0.03] border border-white/5 rounded-2xl p-6">
-              <span className="text-xs font-bold text-violet-400 mb-3 block">{n}</span>
+              <span className="text-xs font-bold text-sky-400 mb-3 block">{n}</span>
               <h3 className="text-white font-semibold text-sm mb-2">{title}</h3>
               <p className="text-white/40 text-sm leading-relaxed">{desc}</p>
             </div>
@@ -66,8 +66,8 @@ export default function Landing() {
             { Icon: Music2, title: 'In-Browser Preview', desc: 'Listen to every stem directly in the app before downloading.' },
           ]).map(({ Icon, title, desc }) => (
             <div key={title} className="bg-white/[0.02] border border-white/[0.04] rounded-2xl p-5">
-              <div className="w-8 h-8 rounded-lg bg-violet-600/15 flex items-center justify-center mb-3">
-                <Icon className="w-4 h-4 text-violet-400" />
+              <div className="w-8 h-8 rounded-lg bg-sky-500/15 flex items-center justify-center mb-3">
+                <Icon className="w-4 h-4 text-sky-400" />
               </div>
               <h3 className="text-white text-sm font-semibold mb-1">{title}</h3>
               <p className="text-white/35 text-xs leading-relaxed">{desc}</p>
@@ -81,7 +81,7 @@ export default function Landing() {
         <h2 className="text-2xl font-bold text-white mb-4">Ready to separate?</h2>
         <Link
           to={createPageUrl('NewJob')}
-          className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white rounded-xl h-11 px-8 text-sm font-semibold transition-colors"
+          className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white rounded-xl h-11 px-8 text-sm font-semibold transition-colors"
         >
           Start for free
           <ArrowRight className="w-4 h-4" />

@@ -42,7 +42,7 @@ export default function Jobs() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-violet-400" />
+        <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
       </div>
     );
   }
@@ -57,7 +57,7 @@ export default function Jobs() {
         </div>
         <Link
           to={createPageUrl('NewJob')}
-          className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white rounded-xl h-9 px-4 text-sm font-medium transition-colors shrink-0"
+          className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white rounded-xl h-9 px-4 text-sm font-medium transition-colors shrink-0"
         >
           <Plus className="w-4 h-4" />
           New job
@@ -72,7 +72,7 @@ export default function Jobs() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search by filename…"
-            className="bg-white/[0.04] border border-white/10 rounded-xl pl-8 pr-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-violet-500/50 w-52"
+            className="bg-white/[0.04] border border-white/10 rounded-xl pl-8 pr-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-sky-400/50 w-52"
           />
         </div>
 
@@ -83,7 +83,7 @@ export default function Jobs() {
               onClick={() => setStatusFilter(s)}
               className={`h-8 px-3 rounded-lg text-xs font-medium transition-all capitalize ${
                 statusFilter === s
-                  ? 'bg-violet-600 text-white'
+                  ? 'bg-sky-500 text-white'
                   : 'text-white/40 hover:text-white/70 hover:bg-white/5'
               }`}
             >
@@ -99,7 +99,7 @@ export default function Jobs() {
               onClick={() => setModeFilter(m)}
               className={`h-8 px-3 rounded-lg text-xs font-medium transition-all ${
                 modeFilter === m
-                  ? 'bg-violet-600 text-white'
+                  ? 'bg-sky-500 text-white'
                   : 'text-white/40 hover:text-white/70 hover:bg-white/5'
               }`}
             >
@@ -116,7 +116,7 @@ export default function Jobs() {
           {jobs.length === 0 ? (
             <>
               <p className="text-white/30 text-sm mb-4">No jobs yet.</p>
-              <Link to={createPageUrl('NewJob')} className="inline-flex items-center gap-1.5 text-sm text-violet-400 hover:text-violet-300 transition-colors">
+              <Link to={createPageUrl('NewJob')} className="inline-flex items-center gap-1.5 text-sm text-sky-400 hover:text-sky-300 transition-colors">
                 <Plus className="w-4 h-4" /> Start your first job
               </Link>
             </>
@@ -138,7 +138,7 @@ export default function Jobs() {
               {filtered.map(job => (
                 <tr key={job.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors last:border-0">
                   <td className="px-4 py-3.5 max-w-[200px]">
-                    <Link to={`${createPageUrl('JobDetail')}?id=${job.id}`} className="text-white hover:text-violet-300 transition-colors font-medium truncate block">
+                    <Link to={`${createPageUrl('JobDetail')}?id=${job.id}`} className="text-white hover:text-sky-300 transition-colors font-medium truncate block">
                       {job.input_filename || job.title || 'Untitled'}
                     </Link>
                   </td>
@@ -163,7 +163,7 @@ export default function Jobs() {
                   <td className="px-4 py-3.5 whitespace-nowrap">
                     <Link
                       to={`${createPageUrl('JobDetail')}?id=${job.id}`}
-                      className="text-xs text-violet-400 hover:text-violet-300 transition-colors"
+                      className="text-xs text-sky-400 hover:text-sky-300 transition-colors"
                     >
                       View →
                     </Link>

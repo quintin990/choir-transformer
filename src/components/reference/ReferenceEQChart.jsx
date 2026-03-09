@@ -43,8 +43,8 @@ export default function ReferenceEQChart({ eqData, compareData, compareName }) {
         <AreaChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
           <defs>
             <linearGradient id="refGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
-              <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+              <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.3} />
+              <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0} />
             </linearGradient>
             <linearGradient id="cmpGrad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#34d399" stopOpacity={0.2} />
@@ -60,7 +60,7 @@ export default function ReferenceEQChart({ eqData, compareData, compareName }) {
             labelFormatter={v => `${freqLabel(v)} Hz`}
             formatter={(v, name) => [`${v?.toFixed ? v.toFixed(1) : v} dB`, name]}
           />
-          <Area type="monotone" dataKey="reference" stroke="#8b5cf6" strokeWidth={2} fill="url(#refGrad)" dot={false} />
+          <Area type="monotone" dataKey="reference" stroke="#0ea5e9" strokeWidth={2} fill="url(#refGrad)" dot={false} />
           {compareData && <Area type="monotone" dataKey={compareName || 'comparison'} stroke="#34d399" strokeWidth={2} fill="url(#cmpGrad)" dot={false} connectNulls />}
         </AreaChart>
       </ResponsiveContainer>

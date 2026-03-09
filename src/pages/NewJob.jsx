@@ -108,7 +108,7 @@ export default function NewJob() {
               value={title}
               onChange={e => setTitle(e.target.value)}
               placeholder="Track title"
-              className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-white/25 focus:outline-none focus:border-violet-500/60 transition-colors"
+              className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-white/25 focus:outline-none focus:border-sky-400/60 transition-colors"
             />
           </div>
         )}
@@ -161,7 +161,7 @@ export default function NewJob() {
             type="checkbox"
             checked={rights}
             onChange={handleRights}
-            className="mt-0.5 accent-violet-500 w-4 h-4 shrink-0"
+            className="mt-0.5 accent-sky-400 w-4 h-4 shrink-0"
           />
           <span className="text-sm text-white/60 group-hover:text-white/80 transition-colors leading-relaxed">
             I confirm I own or have the necessary rights to process this audio file.
@@ -172,7 +172,7 @@ export default function NewJob() {
         <button
           type="submit"
           disabled={!canSubmit}
-          className="w-full h-11 rounded-xl bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-all flex items-center justify-center gap-2"
+          className="w-full h-11 rounded-xl bg-sky-500 hover:bg-sky-400 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-all flex items-center justify-center gap-2"
         >
           {loading ? (
             <><Loader2 className="w-4 h-4 animate-spin" />{uploadProgress || 'Processing…'}</>

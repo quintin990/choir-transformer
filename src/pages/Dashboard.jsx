@@ -31,7 +31,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-violet-400" />
+        <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
       </div>
     );
   }
@@ -53,9 +53,9 @@ export default function Dashboard() {
       <div className="grid sm:grid-cols-3 gap-4">
         <Link
           to={createPageUrl('NewJob')}
-          className="group bg-violet-600/20 border border-violet-500/30 hover:bg-violet-600/30 rounded-2xl p-5 flex flex-col justify-between transition-all"
+          className="group bg-sky-500/20 border border-sky-400/30 hover:bg-sky-500/30 rounded-2xl p-5 flex flex-col justify-between transition-all"
         >
-          <Plus className="w-6 h-6 text-violet-400 mb-8" />
+          <Plus className="w-6 h-6 text-sky-400 mb-8" />
           <div>
             <p className="text-white font-semibold text-sm mb-0.5">New Job</p>
             <p className="text-white/40 text-xs">Upload and separate a track</p>
@@ -111,7 +111,7 @@ export default function Dashboard() {
       <div>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-semibold text-white/50 uppercase tracking-widest text-xs">Recent Jobs</h2>
-          <Link to={createPageUrl('Jobs')} className="text-xs text-violet-400 hover:text-violet-300 transition-colors flex items-center gap-1">
+          <Link to={createPageUrl('Jobs')} className="text-xs text-sky-400 hover:text-sky-300 transition-colors flex items-center gap-1">
             View all <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
@@ -119,7 +119,7 @@ export default function Dashboard() {
         {jobs.length === 0 ? (
           <div className="bg-white/[0.02] border border-white/[0.04] rounded-2xl p-10 text-center">
             <p className="text-white/25 text-sm mb-3">No jobs yet.</p>
-            <Link to={createPageUrl('NewJob')} className="inline-flex items-center gap-1.5 text-sm text-violet-400 hover:text-violet-300 transition-colors">
+            <Link to={createPageUrl('NewJob')} className="inline-flex items-center gap-1.5 text-sm text-sky-400 hover:text-sky-300 transition-colors">
               <Plus className="w-4 h-4" /> Start your first separation
             </Link>
           </div>

@@ -111,7 +111,7 @@ export default function JobDetail() {
   if (loading || !job) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-6 h-6 animate-spin text-violet-400" />
+        <Loader2 className="w-6 h-6 animate-spin text-sky-400" />
       </div>
     );
   }
@@ -199,7 +199,7 @@ export default function JobDetail() {
                 <a
                   href={job.output_zip_file}
                   download
-                  className="inline-flex items-center gap-1.5 h-7 px-3 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-xs font-medium transition-colors"
+                  className="inline-flex items-center gap-1.5 h-7 px-3 rounded-lg bg-sky-500 hover:bg-sky-400 text-white text-xs font-medium transition-colors"
                 >
                   <Download className="w-3 h-3" />
                   Download all (ZIP)
@@ -239,7 +239,7 @@ export default function JobDetail() {
           <>
             <button
               onClick={handleRetry}
-              className="inline-flex items-center gap-2 h-9 px-4 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-sm transition-colors"
+              className="inline-flex items-center gap-2 h-9 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-sm transition-colors"
             >
               <RefreshCw className="w-4 h-4" />
               Retry

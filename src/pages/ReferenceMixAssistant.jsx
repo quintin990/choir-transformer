@@ -32,14 +32,14 @@ function UploadZone({ onFile, uploading }) {
       onDrop={e => { e.preventDefault(); setDrag(false); pick(e.dataTransfer.files[0]); }}
       onClick={() => !uploading && document.getElementById('ref-file-input').click()}
       className={`border-2 border-dashed rounded-2xl p-12 text-center transition-all cursor-pointer select-none
-        ${drag ? 'border-violet-400 bg-violet-500/5' : 'border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.03]'}
+        ${drag ? 'border-sky-400 bg-sky-400/5' : 'border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.03]'}
         ${uploading ? 'pointer-events-none opacity-60' : ''}`}
     >
       <input id="ref-file-input" type="file" accept=".mp3,.wav,.flac,.aiff,.aif,.m4a,audio/*" className="hidden"
         onChange={e => { pick(e.target.files[0]); e.target.value = ''; }} />
       {uploading ? (
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
+          <Loader2 className="w-8 h-8 text-sky-400 animate-spin" />
           <p className="text-white/50 text-sm">Uploading & analysing…</p>
           <p className="text-white/25 text-xs">This may take a minute</p>
         </div>
@@ -70,8 +70,8 @@ function AnalysisResult({ analysis, onDelete }) {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-9 h-9 rounded-xl bg-violet-600/20 flex items-center justify-center shrink-0">
-            <Music2 className="w-4 h-4 text-violet-400" />
+          <div className="w-9 h-9 rounded-xl bg-sky-500/20 flex items-center justify-center shrink-0">
+            <Music2 className="w-4 h-4 text-sky-400" />
           </div>
           <div className="min-w-0">
             <h2 className="text-white font-semibold truncate">{analysis.title || analysis.reference_filename || 'Reference Track'}</h2>
@@ -90,8 +90,8 @@ function AnalysisResult({ analysis, onDelete }) {
       {compareJob && (
         <div className="grid grid-cols-2 gap-3 p-4 bg-white/[0.02] border border-white/5 rounded-xl text-xs">
           <div>
-            <p className="text-violet-300 font-semibold mb-1 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-violet-400 inline-block" />
+            <p className="text-sky-300 font-semibold mb-1 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-sky-400 inline-block" />
               Reference
             </p>
             <p className="text-white/60 truncate">{analysis.title || analysis.reference_filename}</p>
@@ -204,8 +204,8 @@ export default function ReferenceMixAssistant() {
     <div className="space-y-6 max-w-3xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl bg-violet-600/20 flex items-center justify-center">
-          <FlaskConical className="w-4 h-4 text-violet-400" />
+        <div className="w-9 h-9 rounded-xl bg-sky-500/20 flex items-center justify-center">
+          <FlaskConical className="w-4 h-4 text-sky-400" />
         </div>
         <div>
           <h1 className="text-2xl font-bold text-white">Reference Mix Assistant</h1>
@@ -236,7 +236,7 @@ export default function ReferenceMixAssistant() {
                 onClick={() => setSelected(a)}
                 className={`w-full text-left px-3 py-2.5 rounded-xl text-xs transition-all ${
                   selected?.id === a.id
-                    ? 'bg-violet-600/20 text-violet-300 border border-violet-500/20'
+                    ? 'bg-sky-500/20 text-sky-300 border border-sky-400/20'
                     : 'text-white/50 hover:text-white hover:bg-white/5 border border-transparent'
                 }`}
               >
@@ -248,7 +248,7 @@ export default function ReferenceMixAssistant() {
 
           <button
             onClick={() => setSelected(null)}
-            className="w-full text-left px-3 py-2.5 rounded-xl text-xs text-violet-400 hover:text-violet-300 hover:bg-violet-500/10 transition-all flex items-center gap-1.5 mt-1"
+            className="w-full text-left px-3 py-2.5 rounded-xl text-xs text-sky-400 hover:text-sky-300 hover:bg-sky-400/10 transition-all flex items-center gap-1.5 mt-1"
           >
             <Upload className="w-3 h-3" />
             New analysis
@@ -265,7 +265,7 @@ export default function ReferenceMixAssistant() {
             />
           ) : selected && selected.status === 'analyzing' ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
-              <Loader2 className="w-8 h-8 animate-spin text-violet-400" />
+              <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
               <p className="text-white/50 text-sm">Analysing your reference track…</p>
               <button onClick={loadAnalyses} className="inline-flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition-colors">
                 <RefreshCw className="w-3 h-3" /> Refresh
