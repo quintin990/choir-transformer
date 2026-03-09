@@ -1,144 +1,139 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
+import { Check, Zap } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { Check, ArrowRight, Loader2 } from 'lucide-react';
+import { createPageUrl } from '@/utils';
 
 const PLANS = [
   {
     name: 'Free',
     price: '$0',
-    period: '',
-    desc: 'Perfect for trying out stem separation.',
-    features: [
-      '2 jobs per day',
-      '2-stem separation (Vocals & Band)',
-      'WAV and MP3 output',
-      'Balanced quality model',
-      '7-day file retention',
-      'In-browser preview',
-    ],
-    cta: 'Get started free',
+    period: 'Forever',
+    description: 'Perfect to get started',
+    cta: 'Start Free',
     ctaUrl: 'StemsNew',
-    highlight: false,
+    features: [
+      { text: '2 jobs per day', included: true },
+      { text: '2-stem separation (vocals & band)', included: true },
+      { text: 'MP3 output', included: true },
+      { text: 'Balanced quality', included: true },
+      { text: '7-day retention', included: true },
+      { text: '4-stem & SATB modes', included: false },
+      { text: 'Clean audio & harmony', included: false },
+      { text: 'Projects & choir management', included: false },
+      { text: 'Reference & match features', included: false },
+      { text: 'Priority GPU', included: false },
+    ],
   },
   {
     name: 'Pro',
-    price: '$12',
-    period: '/ month',
-    desc: 'For producers, remixers, and audio engineers.',
-    features: [
-      'Unlimited jobs',
-      '2 & 4-stem separation',
-      'WAV, FLAC, and MP3 output',
-      'All quality models (Fast → High Quality)',
-      'Google Drive export',
-      'Batch upload',
-      'Reference mix assistant',
-      'Priority GPU processing',
-      '30-day file retention',
-    ],
+    price: '$9.99',
+    period: '/month',
+    description: 'For serious musicians',
     cta: 'Start Pro',
-    ctaUrl: 'StemsNew',
-    highlight: true,
+    ctaUrl: 'Pricing',
+    featured: true,
+    features: [
+      { text: 'Unlimited jobs', included: true },
+      { text: '2-4 stem modes + SATB', included: true },
+      { text: 'WAV, FLAC, MP3 output', included: true },
+      { text: 'High quality + artifact-free', included: true },
+      { text: '30-day retention', included: true },
+      { text: 'Clean audio & harmony guide', included: true },
+      { text: 'SATB split (experimental)', included: true },
+      { text: 'Projects & choir management', included: true },
+      { text: 'Reference analysis & match', included: true },
+      { text: 'Priority GPU processing', included: true },
+    ],
   },
 ];
 
 export default function Pricing() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleProClick = async () => {
-    if (window.self !== window.top) {
-      alert('Checkout is only available from the published app, not inside the editor preview.');
-      return;
-    }
-    setLoading(true);
-    setError('');
+  const handleProCheckout = async () => {
     try {
-      const res = await base44.functions.invoke('createCheckoutSession', {
-        priceId: 'price_1T8t6qDPbH08DQTSwIFtMT7c',
-      });
-      if (res.data?.checkoutUrl) {
-        window.location.href = res.data.checkoutUrl;
-      } else {
-        setError(res.data?.error || 'Failed to start checkout.');
-      }
+      const response = await base44.functions.invoke('createCheckoutSession', { plan: 'pro' });
+      window.location.href = response.data.url;
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to start checkout.');
-    } finally {
-      setLoading(false);
+      console.error('Checkout error:', err);
+      alert('Unable to proceed with checkout. Please try again.');
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-20">
-      <div className="text-center mb-14">
-        <h1 className="text-4xl font-bold text-white mb-3">Simple, transparent pricing</h1>
-        <p className="text-white/40 text-base">Start free. Upgrade when you need more power.</p>
+    <div className="max-w-5xl mx-auto px-5 py-12">
+      <div className="text-center mb-16">
+        <h1 className="text-4xl font-bold mb-4" style={{ color: '#EAF2FF', letterSpacing: '-0.03em' }}>Simple, Transparent Pricing</h1>
+        <p className="text-lg" style={{ color: '#6A8AAD' }}>Pay for what you use. No hidden fees. Cancel anytime.</p>
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+      <div className="grid sm:grid-cols-2 gap-6 mb-12">
         {PLANS.map(plan => (
           <div
             key={plan.name}
-            className={`rounded-2xl p-7 flex flex-col ${
-              plan.highlight
-                ? 'bg-sky-500/20 border-2 border-sky-400/40 relative'
-                : 'bg-white/[0.03] border border-white/5'
-            }`}
+            className="rounded-2xl border p-8 relative"
+            style={{
+              backgroundColor: '#0F1A2E',
+              borderColor: plan.featured ? '#1EA0FF' : '#1C2A44',
+              borderWidth: plan.featured ? '2px' : '1px',
+            }}
           >
-            {plan.highlight && (
-              <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-sky-400 text-white text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap">
-                Most popular
-              </span>
+            {plan.featured && (
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold"
+                style={{ backgroundColor: '#1EA0FF', color: '#fff' }}>
+                MOST POPULAR
+              </div>
             )}
-            <div className="mb-5">
-              <h2 className="text-lg font-bold text-white mb-1">{plan.name}</h2>
-              <p className="text-white/40 text-sm">{plan.desc}</p>
+
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold mb-2" style={{ color: '#EAF2FF' }}>{plan.name}</h2>
+              <p style={{ color: '#6A8AAD' }}>{plan.description}</p>
+              <div className="mt-4 flex items-baseline">
+                <span className="text-4xl font-bold" style={{ color: '#EAF2FF' }}>{plan.price}</span>
+                <span style={{ color: '#6A8AAD' }}>{plan.period}</span>
+              </div>
             </div>
-            <div className="mb-6 flex items-end gap-1">
-              <span className="text-4xl font-bold text-white">{plan.price}</span>
-              {plan.period && <span className="text-white/40 pb-1">{plan.period}</span>}
-            </div>
-            <ul className="space-y-2.5 flex-1 mb-7">
-              {plan.features.map(f => (
-                <li key={f} className="flex items-start gap-2.5 text-sm text-white/70">
-                  <Check className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
-                  {f}
-                </li>
+
+            <button
+              onClick={plan.name === 'Pro' ? handleProCheckout : null}
+              as={plan.name === 'Free' ? Link : undefined}
+              to={plan.name === 'Free' ? createPageUrl(plan.ctaUrl) : undefined}
+              className="w-full h-11 rounded-lg text-sm font-semibold transition-all mb-6"
+              style={{
+                backgroundColor: plan.featured ? '#1EA0FF' : '#1C2A44',
+                color: plan.featured ? '#fff' : '#9CB2D6',
+              }}
+              onMouseEnter={e => {
+                if (plan.featured) e.currentTarget.style.backgroundColor = '#3BAEFF';
+              }}
+              onMouseLeave={e => {
+                if (plan.featured) e.currentTarget.style.backgroundColor = '#1EA0FF';
+              }}
+            >
+              {plan.cta}
+            </button>
+
+            <div className="space-y-3">
+              {plan.features.map((feature, idx) => (
+                <div key={idx} className="flex items-start gap-3">
+                  {feature.included ? (
+                    <Check className="w-5 h-5 shrink-0 mt-0.5" style={{ color: '#19D3A2' }} />
+                  ) : (
+                    <div className="w-5 h-5 rounded border shrink-0 mt-0.5" style={{ borderColor: '#1C2A44' }} />
+                  )}
+                  <span className="text-sm" style={{ color: feature.included ? '#9CB2D6' : '#4A6080' }}>
+                    {feature.text}
+                  </span>
+                </div>
               ))}
-            </ul>
-            {plan.highlight ? (
-              <button
-                onClick={handleProClick}
-                disabled={loading}
-                className="inline-flex items-center justify-center gap-2 h-10 rounded-xl text-sm font-semibold transition-colors disabled:opacity-60 bg-sky-500 hover:bg-sky-400 text-white w-full"
-              >
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                {loading ? 'Redirecting…' : plan.cta}
-                {!loading && <ArrowRight className="w-3.5 h-3.5" />}
-              </button>
-            ) : (
-              <Link
-                to={createPageUrl('StemsNew')}
-                className="inline-flex items-center justify-center gap-2 h-10 rounded-xl text-sm font-semibold transition-colors bg-white/5 hover:bg-white/10 text-white"
-              >
-                {plan.cta}
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            )}
+            </div>
           </div>
         ))}
       </div>
 
-      {error && (
-        <div className="mt-6 text-center text-sm" style={{ color: '#FF4D6D' }}>{error}</div>
-      )}
-      {/* FAQ-style note */}
-      <div className="mt-14 text-center">
-        <p className="text-white/30 text-sm">
-          Have questions? <a href="mailto:support@auralyn.app" className="text-sky-400 hover:text-violet-300 transition-colors">Contact us</a>
+      <div className="rounded-xl border p-6 text-center" style={{ backgroundColor: '#0F1A2E', borderColor: '#1C2A44' }}>
+        <p style={{ color: '#9CB2D6' }}>
+          Need a custom plan or team license?{' '}
+          <a href="mailto:hello@auralyn.io" style={{ color: '#1EA0FF', fontWeight: 'bold' }}>Contact us</a>
         </p>
       </div>
     </div>
