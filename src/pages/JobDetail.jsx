@@ -21,6 +21,7 @@ export default function JobDetail() {
   const [cancelling, setCancelling] = useState(false);
   const [savingToDrive, setSavingToDrive] = useState(false);
   const [driveStatus, setDriveStatus] = useState('');
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const logRef = useRef(null);
 
   useEffect(() => {
