@@ -7,7 +7,8 @@ import Card, { CardHeader } from '../components/auralyn/Card';
 
 export default function ChoirAdminMembers() {
   const navigate = useNavigate();
-  const { choirId } = useParams();
+  const queryParams = new URLSearchParams(window.location.search);
+  const choirId = queryParams.get('choirId');
   const [choir, setChoir] = useState(null);
   const [pendingRequests, setPendingRequests] = useState([]);
   const [approvedMembers, setApprovedMembers] = useState([]);
