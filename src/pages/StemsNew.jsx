@@ -3,10 +3,11 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, Layers } from 'lucide-react';
+import { Loader2, Layers, Lock } from 'lucide-react';
 import Card, { CardHeader } from '../components/auralyn/Card';
 import FileDropZone from '../components/auralyn/FileDropZone';
 import WaveformEditor from '../components/waveform/WaveformEditor';
+import { ProBadge, UpgradeBanner } from '../components/auralyn/ProBadge';
 
 export default function StemsNew() {
   const navigate = useNavigate();
@@ -26,9 +27,12 @@ export default function StemsNew() {
   const [loading, setLoading] = useState(false);
   const [stage, setStage] = useState('');
   const [error, setError] = useState('');
+  const [plan, setPlan] = useState('free');
+  const [limitHit, setLimitHit] = useState(false);
 
   useEffect(() => {
     base44.auth.me().catch(() => base44.auth.redirectToLogin('/StemsNew'));
+    base44.functions.invoke('syncProfilePlan', {}).then(res => setPlan(res.data?.plan || 'free')).catch(() => {});
   }, []);
 
   const handleFile = (f, err) => {
@@ -76,7 +80,13 @@ export default function StemsNew() {
       await base44.functions.invoke('startJob', { job_id: jobId });
       navigate(`${createPageUrl('JobDetail')}?id=${jobId}`);
     } catch (err) {
-      setError(err.response?.data?.error || 'Something went wrong. Try again.');
+      const data = err.response?.data;
+      if (data?.upgrade_required) {
+        setLimitHit(true);
+        setError('');
+      } else {
+        setError(data?.error || 'Something went wrong. Try again.');
+      }
       setLoading(false);
       setStage('');
     }
@@ -98,7 +108,8 @@ export default function StemsNew() {
         )}
       </div>
 
-      {error && (
+      {limitHit && <UpgradeBanner />}
+      {error && !limitHit && (
         <div className="mb-5 rounded-lg border px-4 py-3 text-sm"
           style={{ backgroundColor: '#FF4D6D10', borderColor: '#FF4D6D30', color: '#FF4D6D' }}>
           {error}
@@ -126,39 +137,66 @@ export default function StemsNew() {
                 onBlur={e => e.target.style.borderColor = '#1C2A44'} />
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: '#9CB2D6' }}>Separation mode</label>
-              <Select value={mode} onValueChange={setMode}>
+              <label className="block text-xs font-medium mb-1.5 flex items-center gap-2" style={{ color: '#9CB2D6' }}>
+                Separation mode
+                {plan === 'free' && <span className="text-[10px]" style={{ color: '#9CB2D6' }}>· 4-stem requires <ProBadge /></span>}
+              </label>
+              <Select value={mode} onValueChange={v => { if (v === 'four_stems' && plan === 'free') return; setMode(v); }}>
                 <SelectTrigger className="h-9 text-sm rounded-lg" style={{ backgroundColor: '#0B1220', borderColor: '#1C2A44', color: '#EAF2FF' }}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="two_stems">2 Stems — Vocals + Band</SelectItem>
-                  <SelectItem value="four_stems">4 Stems — Vocals + Drums + Bass + Other</SelectItem>
+                  <SelectItem value="four_stems" disabled={plan === 'free'}>
+                    <span className="flex items-center gap-2">
+                      {plan === 'free' && <Lock className="w-3 h-3" />}
+                      4 Stems — Vocals + Drums + Bass + Other
+                      {plan === 'free' && <ProBadge />}
+                    </span>
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: '#9CB2D6' }}>Quality</label>
-              <Select value={quality} onValueChange={setQuality}>
+              <label className="block text-xs font-medium mb-1.5 flex items-center gap-2" style={{ color: '#9CB2D6' }}>
+                Quality
+                {plan === 'free' && <span className="text-[10px]" style={{ color: '#9CB2D6' }}>· HQ requires <ProBadge /></span>}
+              </label>
+              <Select value={quality} onValueChange={v => { if (v === 'hq' && plan === 'free') return; setQuality(v); }}>
                 <SelectTrigger className="h-9 text-sm rounded-lg" style={{ backgroundColor: '#0B1220', borderColor: '#1C2A44', color: '#EAF2FF' }}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="fast">Fast — quick preview</SelectItem>
                   <SelectItem value="balanced">Balanced — recommended</SelectItem>
-                  <SelectItem value="hq">High Quality — best result</SelectItem>
+                  <SelectItem value="hq" disabled={plan === 'free'}>
+                    <span className="flex items-center gap-2">
+                      {plan === 'free' && <Lock className="w-3 h-3" />}
+                      High Quality — best result
+                      {plan === 'free' && <ProBadge />}
+                    </span>
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: '#9CB2D6' }}>Output format</label>
-              <Select value={outputFormat} onValueChange={setOutputFormat}>
+              <label className="block text-xs font-medium mb-1.5 flex items-center gap-2" style={{ color: '#9CB2D6' }}>
+                Output format
+                {plan === 'free' && <span className="text-[10px]" style={{ color: '#9CB2D6' }}>· FLAC requires <ProBadge /></span>}
+              </label>
+              <Select value={outputFormat} onValueChange={v => { if (v === 'flac' && plan === 'free') return; setOutputFormat(v); }}>
                 <SelectTrigger className="h-9 text-sm rounded-lg" style={{ backgroundColor: '#0B1220', borderColor: '#1C2A44', color: '#EAF2FF' }}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="wav">WAV — lossless</SelectItem>
-                  <SelectItem value="flac">FLAC — compressed lossless</SelectItem>
+                  <SelectItem value="flac" disabled={plan === 'free'}>
+                    <span className="flex items-center gap-2">
+                      {plan === 'free' && <Lock className="w-3 h-3" />}
+                      FLAC — compressed lossless
+                      {plan === 'free' && <ProBadge />}
+                    </span>
+                  </SelectItem>
                   <SelectItem value="mp3">MP3 — compressed</SelectItem>
                 </SelectContent>
               </Select>
