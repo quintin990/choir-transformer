@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, Layers, Lock } from 'lucide-react';
+import { Loader2, Layers, Lock, Upload, Music, AlertCircle } from 'lucide-react';
 import Card, { CardHeader } from '../components/auralyn/Card';
 import FileDropZone from '../components/auralyn/FileDropZone';
 import WaveformEditor from '../components/waveform/WaveformEditor';
@@ -12,6 +11,7 @@ import { ProBadge, UpgradeBanner } from '../components/auralyn/ProBadge';
 import { SongInfoCollapsible } from '../components/auralyn/SongInfoPanel';
 import CleanAudioPanel from '../components/auralyn/CleanAudioPanel';
 import HarmonyPanel from '../components/auralyn/HarmonyPanel';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function StemsNew() {
   const navigate = useNavigate();
