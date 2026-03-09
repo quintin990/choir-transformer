@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Layers, FolderOpen, GitCompare, List, Settings, Menu, X, Activity, Zap } from 'lucide-react';
+import { Layers, FolderOpen, GitCompare, List, Settings, Menu, X, Activity, Zap, Users } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 
@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { label: 'Jobs',      icon: List,        page: 'Jobs',         activePages: ['Jobs', 'JobDetail'] },
   { label: 'Settings',  icon: Settings,    page: 'Settings',     activePages: ['Settings'] },
   { label: 'Pricing',   icon: Zap,         page: 'Pricing',      activePages: ['Pricing'] },
+  { label: 'Choir',    icon: Users,       page: 'Choir',        activePages: ['Choir', 'ChoirJoin', 'ChoirCreate', 'ChoirPart', 'ChoirSongs', 'ChoirSongDetail', 'ChoirAdmin', 'ChoirAdminSong'] },
 ];
 
 const LANDING_PAGES = ['Landing'];

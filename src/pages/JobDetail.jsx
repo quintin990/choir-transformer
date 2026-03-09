@@ -4,7 +4,8 @@ import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { Progress } from '@/components/ui/progress';
 import { format } from 'date-fns';
-import { ArrowLeft, Download, RefreshCw, X, Loader2, Cloud, FileAudio, BarChart2, Music2, Sliders, FolderOpen } from 'lucide-react';
+import { ArrowLeft, Download, RefreshCw, X, Loader2, Cloud, FileAudio, BarChart2, Music2, Sliders, FolderOpen, Upload } from 'lucide-react';
+import PublishToChoirModal from '../components/choir/PublishToChoirModal';
 import Card, { CardHeader } from '../components/auralyn/Card';
 import StatusBadge from '../components/auralyn/StatusBadge';
 import TagEditor from '../components/auralyn/TagEditor';
@@ -87,6 +88,16 @@ export default function JobDetail() {
   const [cancelling, setCancelling] = useState(false);
   const [driveMsg, setDriveMsg] = useState('');
   const [editTags, setEditTags] = useState(false);
+  const [showPublishModal, setShowPublishModal] = useState(false);
+  const [isDirector, setIsDirector] = useState(false);
+
+  useEffect(() => {
+    base44.auth.me().then(u =>
+      base44.entities.ChoirMembership.filter({ user_id: u.id, status: 'approved' })
+        .then(mems => setIsDirector(mems.some(m => ['admin', 'director'].includes(m.role))))
+        .catch(() => {})
+    ).catch(() => {});
+  }, []);
 
   const poll = async () => {
     const res = await base44.functions.invoke('pollJob', { job_id: jobId });
@@ -283,6 +294,13 @@ export default function JobDetail() {
               <Cloud className="w-3.5 h-3.5" /> Save to Drive
             </button>
           )}
+          {isDirector && isDone && (
+            <button onClick={() => setShowPublishModal(true)}
+              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-medium"
+              style={{ backgroundColor: '#9B74FF18', color: '#9B74FF', border: '1px solid #9B74FF30' }}>
+              <Upload className="w-3.5 h-3.5" /> Publish to Choir
+            </button>
+          )}
           {job.output_zip_file && (
             <a href={job.output_zip_file} download
               className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-medium"
@@ -293,6 +311,8 @@ export default function JobDetail() {
         </div>
         {driveMsg && <p className="text-xs mt-2" style={{ color: driveMsg.includes('✓') ? '#19D3A2' : '#FF4D6D' }}>{driveMsg}</p>}
       </Card>
+
+      {showPublishModal && <PublishToChoirModal job={job} onClose={() => setShowPublishModal(false)} />
 
       {/* Tabs */}
       <div className="flex border-b overflow-x-auto" style={{ borderColor: '#1C2A44' }}>
