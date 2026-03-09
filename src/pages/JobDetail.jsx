@@ -224,6 +224,31 @@ export default function JobDetail() {
       {/* Analysis */}
       {isDone && <AnalysisPanel job={job} />}
 
+      {/* Advanced — EQ per stem */}
+      {hasStemData && (
+        <div className="border border-white/[0.06] rounded-xl overflow-hidden">
+          <button
+            onClick={() => setShowAdvanced(v => !v)}
+            className="w-full flex items-center justify-between px-4 py-3.5 text-sm text-white/50 hover:text-white/80 hover:bg-white/[0.03] transition-all"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="w-1.5 h-1.5 rounded-full bg-sky-400/60" />
+              <span className="font-medium">Advanced · Stem EQ</span>
+              <span className="text-[11px] text-white/25 bg-white/5 rounded-md px-1.5 py-0.5">Preview filtering before download</span>
+            </div>
+            <span className="text-white/25 text-xs">{showAdvanced ? '▲' : '▼'}</span>
+          </button>
+          {showAdvanced && (
+            <div className="px-4 pb-4 border-t border-white/[0.05]">
+              <p className="text-xs text-white/30 mt-3 mb-4 leading-relaxed">
+                Apply high-pass or low-pass filters to visualise how each stem would sound after filtering. The EQ curve updates in real time as you adjust the cutoff frequency. Filters are for reference only — download the original stem and apply in your DAW for actual processing.
+              </p>
+              <StemEQPanel stems={job.stems} format={job.output_format || 'wav'} />
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Actions */}
       <div className="flex gap-3">
         {isActive && (
