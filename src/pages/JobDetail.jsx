@@ -414,28 +414,7 @@ export default function JobDetail() {
       )}
 
       {/* Song Info */}
-      {tab === 'song info' && (
-        <Card>
-          <CardHeader title="Song Info" subtitle="BPM, key, and time signature" />
-          <SongInfoPanel
-            data={{
-              bpm_detected: job.bpm_detected,
-              bpm_confirmed: job.bpm_confirmed,
-              bpm_confidence: job.bpm_confidence,
-              key_detected: job.key_detected,
-              key_confirmed: job.key_confirmed,
-              key_confidence: job.key_confidence,
-              time_signature_detected: job.time_signature_detected,
-              time_signature_confirmed: job.time_signature_confirmed,
-              time_signature_confidence: job.time_signature_confidence,
-            }}
-            onSave={async (vals) => {
-              await base44.functions.invoke('saveSongInfo', { job_id: job.id, ...vals });
-              setJob(j => ({ ...j, ...vals }));
-            }}
-          />
-        </Card>
-      )}
+      {tab === 'song info' && <SongInfoTabContent job={job} jobId={jobId} onJobUpdate={setJob} />}
 
       {/* Technical */}
       {tab === 'technical' && (
