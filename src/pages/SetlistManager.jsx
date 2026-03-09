@@ -5,7 +5,7 @@ import { ArrowLeft, Plus, Calendar, Music, Users, Save, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import Card, { CardHeader } from '../components/auralyn/Card';
-import SetlistSongRow from '../components/setlist/SetlistSongRow';
+import SetlistSongRow from '../components/setlist/SetlistSongRow.jsx';
 
 export default function SetlistManager() {
   const [user, setUser] = useState(null);
