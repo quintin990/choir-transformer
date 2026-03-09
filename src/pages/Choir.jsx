@@ -28,6 +28,7 @@ export default function Choir() {
   const [loading, setLoading] = useState(true);
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [leaving, setLeaving] = useState(false);
+  const [leaveConfirmOpen, setLeaveConfirmOpen] = useState(false);
 
   const membership = allMemberships.find(m => m.id === activeMembershipId) || null;
   const choir = membership ? allChoirs[membership.choir_id] : null;
