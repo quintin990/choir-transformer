@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import { Copy, Check, Plus, Loader2, ChevronRight, Users, Megaphone, Music, ArrowLeft, ListOrdered } from 'lucide-react';
+import { Copy, Check, Plus, Loader2, ChevronRight, Megaphone, Music, ArrowLeft, ListOrdered } from 'lucide-react';
 import Card, { CardHeader } from '../components/auralyn/Card';
 import SongReadinessBar from '../components/choir/SongReadinessBar';
 
