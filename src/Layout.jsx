@@ -78,7 +78,7 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Sidebar */}
       <aside className={`
-        fixed top-0 left-0 h-full w-52 bg-[#081018] border-r border-white/[0.04] z-50
+        fixed top-0 left-0 h-full w-52 bg-[#060c13] border-r border-sky-900/30 z-50
         flex flex-col transition-transform duration-200
         ${open ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static lg:z-auto
       `}>
@@ -134,7 +134,7 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Main content */}
       <div className="flex-1 min-w-0 flex flex-col">
-        <header className="sticky top-0 z-30 bg-[#070d14]/80 backdrop-blur border-b border-white/[0.04] px-4 lg:px-6 py-3 flex items-center gap-3">
+        <header className="sticky top-0 z-30 bg-[#070d14]/90 backdrop-blur border-b border-sky-900/20 px-4 lg:px-6 py-3 flex items-center gap-3">
           <button
             onClick={() => setOpen(true)}
             className="lg:hidden p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/5 transition-colors"
