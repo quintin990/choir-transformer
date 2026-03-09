@@ -277,6 +277,15 @@ export default function WaveformEditor({
     setEditingEnd(false);
   };
 
+  const handleKeyStep = (e, type) => {
+    const step = e.shiftKey ? 5 : 1;
+    const dir = e.key === 'ArrowUp' ? 1 : e.key === 'ArrowDown' ? -1 : 0;
+    if (!dir) return;
+    e.preventDefault();
+    const cur = parseTime(editVal);
+    if (!isNaN(cur)) setEditVal(fmt(cur + dir * step));
+  };
+
   return (
     <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: '#070E1A', borderColor: '#1C2A44' }}>
       {/* Header */}
