@@ -79,23 +79,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="max-w-5xl mx-auto px-5 py-20">
-        <h2 className="text-3xl font-bold text-center mb-12" style={{ letterSpacing: '-0.03em' }}>Loved by singers and directors</h2>
-        <div className="grid sm:grid-cols-3 gap-6">
-          {[
-            { quote: 'I uploaded our new song on Tuesday and by Thursday my sopranos were already singing their part.', role: 'Minister of Music' },
-            { quote: 'As an alto I always struggled to hear my part. Auralyn gave me my line clearly. Game changer.', role: 'Alto Section Leader' },
-            { quote: 'We learn a new complex piece in one week instead of four. Amazing tool.', role: 'Choir Director' },
-          ].map(({ quote, role }, idx) => (
-            <div key={idx} className="rounded-xl border p-6" style={{ backgroundColor: '#0F1A2E', borderColor: '#1C2A44' }}>
-              <p className="text-sm italic mb-4" style={{ color: '#9CB2D6' }}>"{quote}"</p>
-              <p className="text-xs font-semibold" style={{ color: '#1EA0FF' }}>{role}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Pricing CTA */}
       <section className="max-w-3xl mx-auto px-5 pb-24">
         <div className="rounded-2xl border p-12 text-center" style={{ backgroundColor: '#0F1A2E', borderColor: '#1C2A44' }}>
