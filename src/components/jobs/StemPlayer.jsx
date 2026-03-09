@@ -45,14 +45,15 @@ export default function StemPlayer({ name, url, format = 'wav' }) {
   };
 
   const STEM_COLORS = {
-    vocals: 'bg-violet-500',
+    vocals: 'bg-sky-500',
     drums: 'bg-blue-500',
     bass: 'bg-emerald-500',
     other: 'bg-amber-500',
+
     no_vocals: 'bg-cyan-500',
   };
 
-  const color = STEM_COLORS[name?.toLowerCase()] || 'bg-violet-500';
+  const color = STEM_COLORS[name?.toLowerCase()] || 'bg-sky-500';
 
   return (
     <div className="bg-white/[0.03] border border-white/5 rounded-xl px-4 py-3.5">
@@ -66,7 +67,7 @@ export default function StemPlayer({ name, url, format = 'wav' }) {
       <div className="flex items-center gap-3">
         <button
           onClick={togglePlay}
-          className="w-8 h-8 rounded-full bg-violet-600 hover:bg-violet-500 flex items-center justify-center shrink-0 transition-colors"
+          className="w-8 h-8 rounded-full bg-sky-500 hover:bg-sky-400 flex items-center justify-center shrink-0 transition-colors"
         >
           {playing
             ? <Pause className="w-3.5 h-3.5 text-white" />

@@ -29,8 +29,8 @@ export default function FileDropZone({ onFile, file }) {
       onDrop={handleDrop}
       onClick={() => !file && document.getElementById('audio-drop-input').click()}
       className={`border-2 border-dashed rounded-2xl p-12 text-center transition-all select-none ${
-        dragging ? 'border-violet-400 bg-violet-500/5' :
-        file ? 'border-violet-500/30 bg-violet-500/5 cursor-default' :
+        dragging ? 'border-sky-400 bg-sky-500/5' :
+        file ? 'border-sky-500/30 bg-sky-500/5 cursor-default' :
         'border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04] cursor-pointer'
       }`}
     >
@@ -44,7 +44,7 @@ export default function FileDropZone({ onFile, file }) {
 
       {file ? (
         <div className="flex items-center justify-center gap-4">
-          <Music2 className="w-8 h-8 text-violet-400 shrink-0" />
+          <Music2 className="w-8 h-8 text-sky-400 shrink-0" />
           <div className="text-left min-w-0">
             <p className="text-white font-medium truncate max-w-xs">{file.name}</p>
             <p className="text-white/40 text-sm mt-0.5">{(file.size / 1024 / 1024).toFixed(1)} MB</p>
