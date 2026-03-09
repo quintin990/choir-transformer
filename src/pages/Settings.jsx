@@ -211,14 +211,11 @@ export default function Settings() {
           >
             {saving ? 'Saving...' : 'Save Preferences'}
           </button>
-        </div>
-      </div>
+          </div>
+          </div>
+          )}
 
-        </div>
-      </div>
-      )}
-
-      {/* Billing Tab */}
+          {/* Billing Tab */}
       {activeTab === 'billing' && (
       <div className="space-y-6">
         <div className="rounded-xl border p-6" style={{ backgroundColor: 'hsl(var(--color-card))', borderColor: 'hsl(var(--color-border))' }}>
