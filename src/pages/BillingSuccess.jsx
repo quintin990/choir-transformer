@@ -29,11 +29,18 @@ export default function BillingSuccess() {
       <p className="text-sm mb-8" style={{ color: '#9CB2D6' }}>
         Welcome to Auralyn Pro. Unlimited jobs, all quality models, and priority GPU processing are now unlocked.
       </p>
-      <Link to={createPageUrl('Settings')}
-        className="inline-flex items-center justify-center h-10 px-6 rounded-lg text-sm font-semibold"
-        style={{ backgroundColor: '#1EA0FF', color: '#fff' }}>
-        Go to Settings
-      </Link>
+      <div className="flex gap-3 justify-center">
+        <Link to={createPageUrl('StemsNew')}
+          className="inline-flex items-center justify-center h-10 px-6 rounded-lg text-sm font-semibold"
+          style={{ backgroundColor: '#1EA0FF', color: '#fff' }}>
+          Start a job →
+        </Link>
+        <Link to={createPageUrl('Settings')}
+          className="inline-flex items-center justify-center h-10 px-6 rounded-lg text-sm font-semibold border"
+          style={{ borderColor: '#1C2A44', color: '#EAF2FF' }}>
+          Settings
+        </Link>
+      </div>
     </div>
   );
 }

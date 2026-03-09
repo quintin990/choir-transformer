@@ -69,6 +69,13 @@ export default function Landing() {
             <Activity className="w-4 h-4" />
             Analyze a Reference
           </Link>
+          <Link to={createPageUrl('Pricing')}
+            className="inline-flex items-center gap-2 px-6 h-11 rounded-lg text-sm font-semibold transition-all"
+            style={{ backgroundColor: 'transparent', color: '#9CB2D6' }}
+            onMouseEnter={e => e.currentTarget.style.color='#EAF2FF'}
+            onMouseLeave={e => e.currentTarget.style.color='#9CB2D6'}>
+            View Pricing
+          </Link>
         </div>
       </section>
 
