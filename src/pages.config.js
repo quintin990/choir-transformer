@@ -54,22 +54,30 @@ import AudioEnhancement from './pages/AudioEnhancement';
 import BatchDetail from './pages/BatchDetail';
 import BatchProcessing from './pages/BatchProcessing';
 import BatchUpload from './pages/BatchUpload';
+import BillingCancel from './pages/BillingCancel';
+import BillingSuccess from './pages/BillingSuccess';
 import ForgotPassword from './pages/ForgotPassword';
+import JobDetail from './pages/JobDetail';
 import Jobs from './pages/Jobs';
 import Landing from './pages/Landing';
 import Pricing from './pages/Pricing';
+import ProjectDetail from './pages/ProjectDetail';
+import ProjectNew from './pages/ProjectNew';
+import ProjectsList from './pages/ProjectsList';
 import ReferenceDetail from './pages/ReferenceDetail';
 import ReferenceNew from './pages/ReferenceNew';
 import ResetPassword from './pages/ResetPassword';
 import Settings from './pages/Settings';
 import StemsNew from './pages/StemsNew';
 import Workspaces from './pages/Workspaces';
-import ProjectsList from './pages/ProjectsList';
-import ProjectNew from './pages/ProjectNew';
-import ProjectDetail from './pages/ProjectDetail';
-import JobDetail from './pages/JobDetail';
-import BillingSuccess from './pages/BillingSuccess';
-import BillingCancel from './pages/BillingCancel';
+import Choir from './pages/Choir';
+import ChoirJoin from './pages/ChoirJoin';
+import ChoirCreate from './pages/ChoirCreate';
+import ChoirPart from './pages/ChoirPart';
+import ChoirSongs from './pages/ChoirSongs';
+import ChoirSongDetail from './pages/ChoirSongDetail';
+import ChoirAdmin from './pages/ChoirAdmin';
+import ChoirAdminSong from './pages/ChoirAdminSong';
 import __Layout from './Layout.jsx';
 
 
@@ -81,22 +89,30 @@ export const PAGES = {
     "BatchDetail": BatchDetail,
     "BatchProcessing": BatchProcessing,
     "BatchUpload": BatchUpload,
+    "BillingCancel": BillingCancel,
+    "BillingSuccess": BillingSuccess,
     "ForgotPassword": ForgotPassword,
+    "JobDetail": JobDetail,
     "Jobs": Jobs,
     "Landing": Landing,
     "Pricing": Pricing,
+    "ProjectDetail": ProjectDetail,
+    "ProjectNew": ProjectNew,
+    "ProjectsList": ProjectsList,
     "ReferenceDetail": ReferenceDetail,
     "ReferenceNew": ReferenceNew,
     "ResetPassword": ResetPassword,
     "Settings": Settings,
     "StemsNew": StemsNew,
     "Workspaces": Workspaces,
-    "ProjectsList": ProjectsList,
-    "ProjectNew": ProjectNew,
-    "ProjectDetail": ProjectDetail,
-    "JobDetail": JobDetail,
-    "BillingSuccess": BillingSuccess,
-    "BillingCancel": BillingCancel,
+    "Choir": Choir,
+    "ChoirJoin": ChoirJoin,
+    "ChoirCreate": ChoirCreate,
+    "ChoirPart": ChoirPart,
+    "ChoirSongs": ChoirSongs,
+    "ChoirSongDetail": ChoirSongDetail,
+    "ChoirAdmin": ChoirAdmin,
+    "ChoirAdminSong": ChoirAdminSong,
 }
 
 export const pagesConfig = {
