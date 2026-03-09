@@ -90,8 +90,6 @@ export default function Choir() {
 
   const handleLeave = async () => {
     if (!membership) return;
-    const choirName = choir?.name || 'this choir';
-    if (!confirm(`Leave "${choirName}"? This cannot be undone.`)) return;
     setLeaving(true);
     await base44.entities.ChoirMembership.update(membership.id, { status: 'removed' });
     const updated = allMemberships.filter(m => m.id !== membership.id);
