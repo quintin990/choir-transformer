@@ -8,6 +8,7 @@ import Card, { CardHeader } from '../components/auralyn/Card';
 import FileDropZone from '../components/auralyn/FileDropZone';
 import WaveformEditor from '../components/waveform/WaveformEditor';
 import { ProBadge, UpgradeBanner } from '../components/auralyn/ProBadge';
+import { SongInfoCollapsible } from '../components/auralyn/SongInfoPanel';
 
 export default function StemsNew() {
   const navigate = useNavigate();
@@ -29,6 +30,8 @@ export default function StemsNew() {
   const [error, setError] = useState('');
   const [plan, setPlan] = useState('free');
   const [limitHit, setLimitHit] = useState(false);
+  const [uploadedFileUrl, setUploadedFileUrl] = useState(null);
+  const [songInfo, setSongInfo] = useState({});
 
   useEffect(() => {
     base44.auth.me().catch(() => base44.auth.redirectToLogin('/StemsNew'));
@@ -57,6 +60,7 @@ export default function StemsNew() {
     try {
       setStage('Uploading file…');
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setUploadedFileUrl(file_url);
 
       setStage('Creating job…');
       const createRes = await base44.functions.invoke('createJob', {
@@ -73,6 +77,7 @@ export default function StemsNew() {
         clip_start_sec: clipStart || 0,
         clip_end_sec: clipEnd,
         project_id: projectId || null,
+        ...songInfo,
       });
 
       const jobId = createRes.data.job_id;
@@ -232,6 +237,28 @@ export default function StemsNew() {
         <div className="mb-4 px-3 py-2 rounded-lg text-xs" style={{ backgroundColor: '#1EA0FF08', border: '1px solid #1EA0FF20', color: '#9CB2D6' }}>
           Processing only <span style={{ color: '#EAF2FF' }}>{Math.round(clipEnd - clipStart)}s</span> of audio.
           Process only a section to save compute — useful for testing separation quality before running the full track.
+        </div>
+      )}
+
+      {file && (
+        <div className="mb-5">
+          <SongInfoCollapsible
+            file={file}
+            inputFileUrl={uploadedFileUrl}
+            clipStart={clipStart}
+            clipEnd={clipEnd}
+            onDetected={d => setSongInfo({
+              bpm_detected: d.bpm_detected,
+              bpm_confidence: d.bpm_confidence,
+              bpm_confirmed: d.bpm_confirmed ?? null,
+              key_detected: d.key_detected,
+              key_confidence: d.key_confidence,
+              key_confirmed: d.key_confirmed ?? null,
+              time_signature_detected: d.time_signature_detected,
+              time_signature_confidence: d.time_signature_confidence,
+              time_signature_confirmed: d.time_signature_confirmed ?? null,
+            })}
+          />
         </div>
       )}
 
