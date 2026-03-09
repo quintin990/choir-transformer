@@ -82,6 +82,7 @@ import ChoirSetlists from './pages/ChoirSetlists';
 import Match from './pages/Match';
 import SetlistManager from './pages/SetlistManager';
 import QueueManager from './pages/QueueManager';
+import ChoirMemberDashboard from './pages/ChoirMemberDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -121,6 +122,7 @@ export const PAGES = {
     "Match": Match,
     "SetlistManager": SetlistManager,
     "QueueManager": QueueManager,
+    "ChoirMemberDashboard": ChoirMemberDashboard,
 }
 
 export const pagesConfig = {
