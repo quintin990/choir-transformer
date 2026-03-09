@@ -216,7 +216,7 @@ export default function Settings() {
           )}
 
           {/* Billing Tab */}
-      {activeTab === 'billing' && (
+          {activeTab === 'billing' && (
       <div className="space-y-6">
         <div className="rounded-xl border p-6" style={{ backgroundColor: 'hsl(var(--color-card))', borderColor: 'hsl(var(--color-border))' }}>
           <h2 className="text-lg font-bold mb-4 flex items-center gap-2" style={{ color: 'hsl(var(--color-text))' }}>
