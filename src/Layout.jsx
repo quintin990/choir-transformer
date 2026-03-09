@@ -165,21 +165,34 @@ export default function Layout({ children, currentPageName }) {
         </div>
 
         {mobileOpen && (
-          <div className="md:hidden border-t px-5 py-3 space-y-1" style={{ borderColor: 'hsl(var(--color-border))', backgroundColor: 'hsl(var(--color-card))' }}>
+          <div className="md:hidden border-t px-4 py-4 space-y-2" style={{ borderColor: 'hsl(var(--color-border))', backgroundColor: 'hsl(var(--color-card))' }}>
             {[
               { label: 'New Separation', page: 'StemsNew' },
               { label: 'New Analysis', page: 'ReferenceNew' },
               { label: 'Projects', page: 'ProjectsList' },
               { label: 'Choir', page: 'Choir' },
               { label: 'Jobs', page: 'Jobs' },
-              { label: 'Settings', page: 'Settings' },
-              { label: 'Pricing', page: 'Pricing' },
             ].map(({ label, page }) => (
               <Link key={page} to={createPageUrl(page)} onClick={() => setMobileOpen(false)}
-                className="block px-3 py-2.5 rounded-lg text-sm font-medium" style={{ color: 'hsl(var(--color-muted))' }}>
+                className="block px-4 py-3 rounded-lg text-sm font-medium transition-colors" 
+                style={{ color: 'hsl(var(--color-muted))', backgroundColor: 'hsl(var(--color-background) / 0.5)' }}
+                onMouseEnter={e => e.currentTarget.style.backgroundColor = 'hsl(var(--color-input))'}
+                onMouseLeave={e => e.currentTarget.style.backgroundColor = 'hsl(var(--color-background) / 0.5)'}>
                 {label}
               </Link>
             ))}
+            <div className="border-t pt-2" style={{ borderColor: 'hsl(var(--color-border))' }}>
+              <Link to={createPageUrl('Settings')} onClick={() => setMobileOpen(false)}
+                className="block px-4 py-3 rounded-lg text-sm font-medium transition-colors" 
+                style={{ color: 'hsl(var(--color-muted))', backgroundColor: 'hsl(var(--color-background) / 0.5)' }}>
+                Settings
+              </Link>
+              <Link to={createPageUrl('Pricing')} onClick={() => setMobileOpen(false)}
+                className="block px-4 py-3 rounded-lg text-sm font-medium transition-colors" 
+                style={{ color: 'hsl(var(--color-primary))' }}>
+                Pricing
+              </Link>
+            </div>
           </div>
         )}
       </header>
