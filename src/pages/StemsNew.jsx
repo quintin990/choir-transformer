@@ -100,6 +100,17 @@ export default function StemsNew() {
           <h1 className="text-xl font-bold" style={{ color: '#EAF2FF', letterSpacing: '-0.02em' }}>Stem Separation</h1>
         </div>
         <p className="text-sm" style={{ color: '#9CB2D6' }}>Upload a track. Auralyn isolates vocals, drums, bass, and more.</p>
+        {plan === 'free' && (
+          <p className="text-xs mt-1 flex items-center gap-1.5" style={{ color: '#9CB2D6' }}>
+            Free plan · 2 jobs/day ·
+            <a href={createPageUrl('Pricing')} className="underline" style={{ color: '#1EA0FF' }}>Upgrade for unlimited</a>
+          </p>
+        )}
+        {plan === 'pro' && (
+          <span className="inline-flex items-center gap-1 text-[10px] mt-1 font-semibold" style={{ color: '#19D3A2' }}>
+            ✓ Pro — Unlimited jobs
+          </span>
+        )}
         {projectId && (
           <span className="inline-flex items-center gap-1 text-[11px] mt-2 px-2 py-0.5 rounded-md font-medium"
             style={{ backgroundColor: '#1EA0FF18', color: '#1EA0FF', border: '1px solid #1EA0FF30' }}>
