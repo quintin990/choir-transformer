@@ -57,7 +57,7 @@ export default function Pricing() {
     setError('');
     try {
       const res = await base44.functions.invoke('createCheckoutSession', {
-        priceId: import.meta.env.VITE_STRIPE_PRICE_PRO_MONTHLY || '',
+        priceId: 'price_1T8t6qDPbH08DQTSwIFtMT7c',
       });
       if (res.data?.checkoutUrl) {
         window.location.href = res.data.checkoutUrl;
