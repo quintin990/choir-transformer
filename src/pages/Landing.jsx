@@ -147,9 +147,8 @@ export default function Landing() {
 
         <div className="grid sm:grid-cols-3 gap-5">
           {FEATURES.map(({ icon: Icon, title, color, points, desc, soon, href }) => {
-            const inner = (
-              <div key={title}
-                className="rounded-2xl border p-6 relative flex flex-col transition-all group"
+            const card = (
+              <div className="rounded-2xl border p-6 relative flex flex-col h-full transition-all"
                 style={{ backgroundColor: '#0F1A2E', borderColor: '#1C2A44' }}>
                 {soon && (
                   <span className="absolute top-5 right-5 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase"
@@ -157,15 +156,12 @@ export default function Landing() {
                     Soon
                   </span>
                 )}
-                {/* Icon */}
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5 transition-all"
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5"
                   style={{ backgroundColor: `${color}15`, border: `1px solid ${color}25` }}>
                   <Icon className="w-5 h-5" style={{ color }} />
                 </div>
-
                 <h3 className="text-base font-bold mb-2" style={{ color: '#EAF2FF' }}>{title}</h3>
                 <p className="text-sm mb-5 leading-relaxed flex-1" style={{ color: '#6A8AAD' }}>{desc}</p>
-
                 <div className="space-y-2 mb-5">
                   {points.map(p => (
                     <div key={p} className="flex items-center gap-2.5 text-xs" style={{ color: '#9CB2D6' }}>
@@ -174,32 +170,49 @@ export default function Landing() {
                     </div>
                   ))}
                 </div>
-
                 {href && (
-                  <div className="flex items-center gap-1 text-xs font-medium mt-auto transition-all"
-                    style={{ color: color + 'aa' }}>
+                  <div className="flex items-center gap-1 text-xs font-medium" style={{ color: color + 'aa' }}>
                     Get started <ArrowRight className="w-3 h-3" />
                   </div>
                 )}
-
-                {/* Bottom glow on hover */}
-                <div className="absolute inset-x-0 bottom-0 h-px rounded-b-2xl transition-all"
-                  style={{ background: `linear-gradient(90deg, transparent, ${color}40, transparent)`, opacity: 0 }}
-                  ref={el => {
-                    if (!el) return;
-                    el.parentElement.addEventListener('mouseenter', () => el.style.opacity = '1');
-                    el.parentElement.addEventListener('mouseleave', () => el.style.opacity = '0');
-                  }} />
               </div>
             );
 
             return href
-              ? <Link key={title} to={createPageUrl(href)} className="block hover:no-underline"
-                  onMouseEnter={e => e.currentTarget.firstChild.style.borderColor = color + '40'}
-                  onMouseLeave={e => e.currentTarget.firstChild.style.borderColor = '#1C2A44'}>
-                  {inner}
+              ? (
+                <Link key={title} to={createPageUrl(href)} className="block hover:no-underline group"
+                  style={{ '--card-border': '#1C2A44', '--card-border-hover': color + '40' } as React.CSSProperties}>
+                  <div className="rounded-2xl border p-6 relative flex flex-col h-full transition-all group-hover:border-opacity-100"
+                    style={{ backgroundColor: '#0F1A2E', borderColor: '#1C2A44' }}
+                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = color + '40'}
+                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = '#1C2A44'}>
+                    {soon && (
+                      <span className="absolute top-5 right-5 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase"
+                        style={{ backgroundColor: '#1C2A44', color: '#9CB2D6', border: '1px solid #243550' }}>
+                        Soon
+                      </span>
+                    )}
+                    <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5"
+                      style={{ backgroundColor: `${color}15`, border: `1px solid ${color}25` }}>
+                      <Icon className="w-5 h-5" style={{ color }} />
+                    </div>
+                    <h3 className="text-base font-bold mb-2" style={{ color: '#EAF2FF' }}>{title}</h3>
+                    <p className="text-sm mb-5 leading-relaxed flex-1" style={{ color: '#6A8AAD' }}>{desc}</p>
+                    <div className="space-y-2 mb-5">
+                      {points.map(p => (
+                        <div key={p} className="flex items-center gap-2.5 text-xs" style={{ color: '#9CB2D6' }}>
+                          <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: color, opacity: 0.7 }} />
+                          {p}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-1 text-xs font-medium" style={{ color: color + 'aa' }}>
+                      Get started <ArrowRight className="w-3 h-3" />
+                    </div>
+                  </div>
                 </Link>
-              : <div key={title}>{inner}</div>;
+              )
+              : <div key={title}>{card}</div>;
           })}
         </div>
       </section>
