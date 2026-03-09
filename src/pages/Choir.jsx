@@ -208,10 +208,10 @@ export default function Choir() {
             <Users className="w-3.5 h-3.5" /> Director Dashboard
           </Link>
         )}
-        <button onClick={handleLeave} disabled={leaving}
-          className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-medium border transition-colors disabled:opacity-40 ml-auto"
+        <button onClick={() => setLeaveConfirmOpen(true)}
+          className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-medium border transition-colors ml-auto"
           style={{ borderColor: '#FF4D6D30', color: '#FF4D6D' }}>
-          <LogOut className="w-3.5 h-3.5" /> {leaving ? 'Leaving…' : 'Leave Choir'}
+          <LogOut className="w-3.5 h-3.5" /> Leave Choir
         </button>
       </div>
 
