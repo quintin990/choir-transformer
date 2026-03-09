@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import { Music2, Scissors, Upload, ArrowRight, CheckCircle, Loader2, Clock, XCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Plus, ListMusic, FlaskConical, Loader2, ArrowRight } from 'lucide-react';
 import { format } from 'date-fns';
-
-const STATUS_ICON = {
-  done: <CheckCircle className="w-4 h-4 text-emerald-400" />,
-  running: <Loader2 className="w-4 h-4 text-blue-400 animate-spin" />,
-  queued: <Clock className="w-4 h-4 text-white/30" />,
-  failed: <XCircle className="w-4 h-4 text-red-400" />,
-  cancelled: <XCircle className="w-4 h-4 text-white/20" />,
-};
+import JobStatusBadge from '../components/jobs/JobStatusBadge';
+import { Progress } from '@/components/ui/progress';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -43,7 +36,8 @@ export default function Dashboard() {
     );
   }
 
-  const doneJobs = jobs.filter(j => j.status === 'done').length;
+  const done = jobs.filter(j => j.status === 'done').length;
+  const active = jobs.filter(j => ['queued', 'uploading', 'running'].includes(j.status)).length;
 
   return (
     <div className="space-y-8">
@@ -52,74 +46,104 @@ export default function Dashboard() {
         <h1 className="text-2xl font-bold text-white">
           Welcome back{user?.full_name ? `, ${user.full_name.split(' ')[0]}` : ''}
         </h1>
-        <p className="text-white/40 text-sm mt-1">Separate and remix your audio stems with AI.</p>
+        <p className="text-white/40 text-sm mt-1">Your stem separation workspace.</p>
       </div>
 
       {/* Quick actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Link to={createPageUrl('NewJob')} className="group bg-violet-600/10 border border-violet-500/20 rounded-xl p-5 hover:bg-violet-600/20 transition-colors">
-          <div className="w-9 h-9 rounded-lg bg-violet-600/20 flex items-center justify-center mb-3">
-            <Scissors className="w-4 h-4 text-violet-400" />
+      <div className="grid sm:grid-cols-3 gap-4">
+        <Link
+          to={createPageUrl('NewJob')}
+          className="group bg-violet-600/20 border border-violet-500/30 hover:bg-violet-600/30 rounded-2xl p-5 flex flex-col justify-between transition-all"
+        >
+          <Plus className="w-6 h-6 text-violet-400 mb-8" />
+          <div>
+            <p className="text-white font-semibold text-sm mb-0.5">New Job</p>
+            <p className="text-white/40 text-xs">Upload and separate a track</p>
           </div>
-          <p className="text-white font-medium text-sm">Separate Track</p>
-          <p className="text-white/40 text-xs mt-0.5">Upload and split a new audio file</p>
-          <ArrowRight className="w-4 h-4 text-violet-400 mt-3 group-hover:translate-x-1 transition-transform" />
         </Link>
 
-        <Link to={createPageUrl('BatchUpload')} className="group bg-white/[0.03] border border-white/5 rounded-xl p-5 hover:bg-white/[0.06] transition-colors">
-          <div className="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center mb-3">
-            <Upload className="w-4 h-4 text-white/50" />
+        <Link
+          to={createPageUrl('Jobs')}
+          className="group bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] rounded-2xl p-5 flex flex-col justify-between transition-all"
+        >
+          <ListMusic className="w-6 h-6 text-white/40 mb-8" />
+          <div>
+            <p className="text-white font-semibold text-sm mb-0.5">My Jobs</p>
+            <p className="text-white/40 text-xs">Browse all your separations</p>
           </div>
-          <p className="text-white font-medium text-sm">Batch Upload</p>
-          <p className="text-white/40 text-xs mt-0.5">Process multiple files at once</p>
-          <ArrowRight className="w-4 h-4 text-white/30 mt-3 group-hover:translate-x-1 transition-transform" />
         </Link>
 
-        <Link to={createPageUrl('Jobs')} className="group bg-white/[0.03] border border-white/5 rounded-xl p-5 hover:bg-white/[0.06] transition-colors">
-          <div className="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center mb-3">
-            <Music2 className="w-4 h-4 text-white/50" />
+        <Link
+          to={createPageUrl('ReferenceMixAssistant')}
+          className="group bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] rounded-2xl p-5 flex flex-col justify-between transition-all"
+        >
+          <FlaskConical className="w-6 h-6 text-white/40 mb-8" />
+          <div>
+            <p className="text-white font-semibold text-sm mb-0.5">Reference Mix</p>
+            <p className="text-white/40 text-xs">Analyse a reference track</p>
           </div>
-          <p className="text-white font-medium text-sm">My Jobs</p>
-          <p className="text-white/40 text-xs mt-0.5">View all your separation jobs</p>
-          <ArrowRight className="w-4 h-4 text-white/30 mt-3 group-hover:translate-x-1 transition-transform" />
         </Link>
       </div>
+
+      {/* Stats */}
+      {jobs.length > 0 && (
+        <div className="flex gap-6 text-sm">
+          <div>
+            <span className="text-2xl font-bold text-white">{jobs.length}</span>
+            <span className="text-white/30 ml-2 text-xs">recent job{jobs.length !== 1 ? 's' : ''}</span>
+          </div>
+          {done > 0 && (
+            <div>
+              <span className="text-2xl font-bold text-emerald-400">{done}</span>
+              <span className="text-white/30 ml-2 text-xs">completed</span>
+            </div>
+          )}
+          {active > 0 && (
+            <div>
+              <span className="text-2xl font-bold text-blue-400">{active}</span>
+              <span className="text-white/30 ml-2 text-xs">active</span>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Recent jobs */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-medium text-white/50">Recent Jobs</h2>
-          <Link to={createPageUrl('Jobs')}>
-            <Button variant="ghost" size="sm" className="text-white/30 hover:text-white/60 text-xs h-7">
-              View all <ArrowRight className="w-3 h-3 ml-1" />
-            </Button>
+          <h2 className="text-sm font-semibold text-white/50 uppercase tracking-widest text-xs">Recent Jobs</h2>
+          <Link to={createPageUrl('Jobs')} className="text-xs text-violet-400 hover:text-violet-300 transition-colors flex items-center gap-1">
+            View all <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
 
         {jobs.length === 0 ? (
-          <div className="bg-white/[0.02] border border-white/5 rounded-xl p-8 text-center">
-            <Music2 className="w-8 h-8 text-white/10 mx-auto mb-3" />
-            <p className="text-white/30 text-sm">No jobs yet — upload your first track to get started.</p>
-            <Link to={createPageUrl('NewJob')}>
-              <Button size="sm" className="mt-4 bg-violet-600 hover:bg-violet-500 text-white border-0">
-                Separate a track
-              </Button>
+          <div className="bg-white/[0.02] border border-white/[0.04] rounded-2xl p-10 text-center">
+            <p className="text-white/25 text-sm mb-3">No jobs yet.</p>
+            <Link to={createPageUrl('NewJob')} className="inline-flex items-center gap-1.5 text-sm text-violet-400 hover:text-violet-300 transition-colors">
+              <Plus className="w-4 h-4" /> Start your first separation
             </Link>
           </div>
         ) : (
           <div className="space-y-2">
             {jobs.map(job => (
-              <Link key={job.id} to={`${createPageUrl('JobDetail')}?id=${job.id}`}>
-                <div className="flex items-center justify-between bg-white/[0.03] border border-white/5 rounded-xl px-4 py-3 hover:bg-white/[0.06] transition-colors">
-                  <div className="flex items-center gap-3 min-w-0">
-                    {STATUS_ICON[job.status] || STATUS_ICON.queued}
-                    <span className="text-sm text-white truncate">{job.title || job.input_filename || 'Untitled'}</span>
-                  </div>
-                  <div className="flex items-center gap-3 shrink-0 ml-4 text-xs text-white/30">
-                    <span className="hidden sm:block capitalize">{job.separation_mode?.replace('_', ' ')}</span>
-                    <span>{format(new Date(job.created_date), 'MMM d')}</span>
+              <Link
+                key={job.id}
+                to={`${createPageUrl('JobDetail')}?id=${job.id}`}
+                className="flex items-center justify-between bg-white/[0.02] border border-white/[0.04] rounded-xl px-4 py-3.5 hover:bg-white/[0.05] transition-colors group"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm text-white font-medium truncate">{job.input_filename || job.title || 'Untitled'}</p>
+                  <div className="flex items-center gap-3 mt-1">
+                    <span className="text-xs text-white/25">{format(new Date(job.created_date), 'MMM d, h:mm a')}</span>
+                    {['queued', 'running', 'uploading'].includes(job.status) && (
+                      <div className="flex items-center gap-1.5">
+                        <Progress value={job.progress || 0} className="h-1 w-16 bg-white/10" />
+                        <span className="text-xs text-white/30 tabular-nums">{job.progress || 0}%</span>
+                      </div>
+                    )}
                   </div>
                 </div>
+                <JobStatusBadge status={job.status} />
               </Link>
             ))}
           </div>
