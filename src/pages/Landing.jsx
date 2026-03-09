@@ -180,8 +180,7 @@ export default function Landing() {
 
             return href
               ? (
-                <Link key={title} to={createPageUrl(href)} className="block hover:no-underline group"
-                  style={{ '--card-border': '#1C2A44', '--card-border-hover': color + '40' } as React.CSSProperties}>
+                <Link key={title} to={createPageUrl(href)} className="block hover:no-underline group">
                   <div className="rounded-2xl border p-6 relative flex flex-col h-full transition-all group-hover:border-opacity-100"
                     style={{ backgroundColor: '#0F1A2E', borderColor: '#1C2A44' }}
                     onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = color + '40'}
