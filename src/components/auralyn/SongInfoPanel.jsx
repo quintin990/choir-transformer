@@ -143,11 +143,12 @@ export default function SongInfoPanel({ data = {}, onSave, readOnly = false }) {
   );
 }
 
+import { base44 } from '@/api/base44Client';
+
 export function SongInfoCollapsible({ file, inputFileUrl, clipStart, clipEnd, onDetected }) {
   const [open, setOpen] = useState(false);
   const [detecting, setDetecting] = useState(false);
   const [data, setData] = useState(null);
-  const { base44 } = require('@/api/base44Client');
 
   const handleDetect = async () => {
     setDetecting(true);
