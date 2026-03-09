@@ -169,6 +169,35 @@ export default function Choir() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-5">
+      {/* Leave Confirm Modal */}
+      {leaveConfirmOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
+          <div className="rounded-2xl p-6 w-full max-w-sm space-y-4" style={{ backgroundColor: '#0F1A2E', border: '1px solid #1C2A44' }}>
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center mx-auto" style={{ backgroundColor: '#FF4D6D15' }}>
+              <LogOut className="w-5 h-5" style={{ color: '#FF4D6D' }} />
+            </div>
+            <div className="text-center">
+              <p className="text-sm font-semibold mb-1" style={{ color: '#EAF2FF' }}>Leave "{choir?.name}"?</p>
+              <p className="text-xs leading-relaxed" style={{ color: '#9CB2D6' }}>
+                You'll lose access to this choir's songs and announcements. You can rejoin with an invite code.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => setLeaveConfirmOpen(false)}
+                className="flex-1 h-9 rounded-lg text-xs font-medium border"
+                style={{ borderColor: '#1C2A44', color: '#9CB2D6' }}>
+                Cancel
+              </button>
+              <button onClick={() => { setLeaveConfirmOpen(false); handleLeave(); }} disabled={leaving}
+                className="flex-1 h-9 rounded-lg text-xs font-semibold disabled:opacity-40"
+                style={{ backgroundColor: '#FF4D6D', color: '#fff' }}>
+                {leaving ? 'Leaving…' : 'Yes, leave'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Choir Switcher */}
       <ChoirSwitcher allMemberships={allMemberships} allChoirs={allChoirs} membership={membership} onSwitch={switchChoir} open={switcherOpen} setOpen={setSwitcherOpen} />
 
