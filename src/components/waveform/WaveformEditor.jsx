@@ -247,6 +247,36 @@ export default function WaveformEditor({
   const clipLen = selStart != null && selEnd != null ? selEnd - selStart : null;
   const isErr = clipLen != null && (clipLen < minClip || clipLen > maxClip);
 
+  const [editingStart, setEditingStart] = useState(false);
+  const [editingEnd, setEditingEnd] = useState(false);
+  const [editVal, setEditVal] = useState('');
+
+  const parseTime = (str) => {
+    const parts = str.trim().split(':');
+    if (parts.length === 2) return parseInt(parts[0]) * 60 + parseFloat(parts[1]);
+    return parseFloat(str);
+  };
+
+  const commitStart = () => {
+    const t = parseTime(editVal);
+    if (!isNaN(t)) {
+      const s = Math.max(0, Math.min(t, (selEnd ?? duration) - minClip));
+      setSelStart(s);
+      if (onRangeChange) onRangeChange({ start: s, end: selEnd, duration });
+    }
+    setEditingStart(false);
+  };
+
+  const commitEnd = () => {
+    const t = parseTime(editVal);
+    if (!isNaN(t)) {
+      const e = Math.max((selStart ?? 0) + minClip, Math.min(duration, Math.min((selStart ?? 0) + maxClip, t)));
+      setSelEnd(e);
+      if (onRangeChange) onRangeChange({ start: selStart, end: e, duration });
+    }
+    setEditingEnd(false);
+  };
+
   return (
     <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: '#070E1A', borderColor: '#1C2A44' }}>
       {/* Header */}
@@ -254,31 +284,60 @@ export default function WaveformEditor({
         <div>
           <p className="text-xs font-semibold" style={{ color: '#EAF2FF' }}>Trim Range</p>
           <p className="text-[10px] mt-0.5" style={{ color: '#9CB2D6' }}>
-            Drag handles to set start and end points.
+            Drag handles or click times to edit.
           </p>
         </div>
         {clipLen != null && (
           <div className="flex items-center gap-1.5 ml-3 shrink-0">
-            {/* Live playhead time */}
-            <div className="flex items-center gap-1 h-7 px-2.5 rounded-lg"
-              style={{ backgroundColor: playing ? '#FFB02015' : '#0B1220', border: `1px solid ${playing ? '#FFB02040' : '#1C2A44'}`, transition: 'all 0.2s' }}>
-              <span className="w-1.5 h-1.5 rounded-full shrink-0"
-                style={{ backgroundColor: playing ? '#FFB020' : '#1C2A44', boxShadow: playing ? '0 0 5px #FFB020' : 'none', transition: 'all 0.2s' }} />
-              <span className="text-[12px] font-mono tabular-nums font-semibold"
-                style={{ color: playing ? '#FFB020' : '#9CB2D6', letterSpacing: '0.04em', minWidth: 36, textAlign: 'right' }}>
-                {fmt(playing ? playhead : selStart)}
-              </span>
-            </div>
-            {/* Separator */}
+            {/* Start time — editable */}
+            {editingStart ? (
+              <input
+                autoFocus
+                value={editVal}
+                onChange={e => setEditVal(e.target.value)}
+                onBlur={commitStart}
+                onKeyDown={e => { if (e.key === 'Enter') commitStart(); if (e.key === 'Escape') setEditingStart(false); }}
+                className="h-7 px-2.5 rounded-lg text-[12px] font-mono tabular-nums font-semibold outline-none w-16 text-center"
+                style={{ backgroundColor: '#1EA0FF18', border: '1px solid #1EA0FF60', color: '#1EA0FF' }}
+              />
+            ) : (
+              <button
+                onClick={() => { setEditVal(fmt(playing ? playhead : selStart)); setEditingStart(true); }}
+                title="Click to edit start time"
+                className="flex items-center gap-1 h-7 px-2.5 rounded-lg transition-all"
+                style={{ backgroundColor: playing ? '#FFB02015' : '#0B1220', border: `1px solid ${playing ? '#FFB02040' : '#1C2A44'}` }}>
+                <span className="w-1.5 h-1.5 rounded-full shrink-0"
+                  style={{ backgroundColor: playing ? '#FFB020' : '#1C2A44', boxShadow: playing ? '0 0 5px #FFB020' : 'none', transition: 'all 0.2s' }} />
+                <span className="text-[12px] font-mono tabular-nums font-semibold"
+                  style={{ color: playing ? '#FFB020' : '#9CB2D6', letterSpacing: '0.04em', minWidth: 36, textAlign: 'right' }}>
+                  {fmt(playing ? playhead : selStart)}
+                </span>
+              </button>
+            )}
             <span className="text-[10px]" style={{ color: '#1C2A44' }}>—</span>
-            {/* End time */}
-            <div className="h-7 px-2.5 rounded-lg flex items-center"
-              style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44' }}>
-              <span className="text-[12px] font-mono tabular-nums font-semibold"
-                style={{ color: '#9CB2D6', letterSpacing: '0.04em' }}>
-                {fmt(selEnd)}
-              </span>
-            </div>
+            {/* End time — editable */}
+            {editingEnd ? (
+              <input
+                autoFocus
+                value={editVal}
+                onChange={e => setEditVal(e.target.value)}
+                onBlur={commitEnd}
+                onKeyDown={e => { if (e.key === 'Enter') commitEnd(); if (e.key === 'Escape') setEditingEnd(false); }}
+                className="h-7 px-2.5 rounded-lg text-[12px] font-mono tabular-nums font-semibold outline-none w-16 text-center"
+                style={{ backgroundColor: '#1EA0FF18', border: '1px solid #1EA0FF60', color: '#1EA0FF' }}
+              />
+            ) : (
+              <button
+                onClick={() => { setEditVal(fmt(selEnd)); setEditingEnd(true); }}
+                title="Click to edit end time"
+                className="h-7 px-2.5 rounded-lg flex items-center transition-all"
+                style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44' }}>
+                <span className="text-[12px] font-mono tabular-nums font-semibold"
+                  style={{ color: '#9CB2D6', letterSpacing: '0.04em' }}>
+                  {fmt(selEnd)}
+                </span>
+              </button>
+            )}
             {/* Duration pill */}
             <div className="h-7 px-2.5 rounded-lg flex items-center"
               style={{ backgroundColor: isErr ? '#FF4D6D12' : '#1EA0FF10', border: `1px solid ${isErr ? '#FF4D6D30' : '#1EA0FF25'}` }}>
