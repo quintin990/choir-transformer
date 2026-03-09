@@ -113,107 +113,108 @@ export default function Settings() {
 
       {/* Profile Tab */}
       {activeTab === 'profile' && (
-      <div className="space-y-6">
-        <div className="rounded-xl border p-6" style={{ backgroundColor: 'hsl(var(--color-card))', borderColor: 'hsl(var(--color-border))' }}>
-          <h2 className="text-lg font-bold mb-4" style={{ color: 'hsl(var(--color-text))' }}>Profile Information</h2>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: 'hsl(var(--color-muted))' }}>Display Name</label>
-              <input
-                type="text"
-                value={displayName}
-                disabled
-                className="w-full px-4 h-10 rounded-lg text-sm"
-                style={{ backgroundColor: 'hsl(var(--color-input))', borderColor: 'hsl(var(--color-border))', border: '1px solid', color: 'hsl(var(--color-muted))' }}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: 'hsl(var(--color-muted))' }}>Email</label>
-              <input
-                type="email"
-                value={user?.email || ''}
-                disabled
-                className="w-full px-4 h-10 rounded-lg text-sm"
-                style={{ backgroundColor: 'hsl(var(--color-input))', borderColor: 'hsl(var(--color-border))', border: '1px solid', color: 'hsl(var(--color-muted))' }}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: 'hsl(var(--color-muted))' }}>Plan</label>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm"
-                style={{ backgroundColor: user?.role === 'admin' ? 'hsl(var(--color-primary) / 0.1)' : 'hsl(var(--color-accent) / 0.1)' }}>
-                <span style={{ color: user?.role === 'admin' ? 'hsl(var(--color-primary))' : 'hsl(var(--color-accent))', fontWeight: 'bold' }}>
-                  {user?.role === 'admin' ? 'Pro' : 'Free'}
-                </span>
+        <div className="space-y-6">
+          <div className="rounded-xl border p-6" style={{ backgroundColor: 'hsl(var(--color-card))', borderColor: 'hsl(var(--color-border))' }}>
+            <h2 className="text-lg font-bold mb-4" style={{ color: 'hsl(var(--color-text))' }}>Profile Information</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2" style={{ color: 'hsl(var(--color-muted))' }}>Display Name</label>
+                <input
+                  type="text"
+                  value={displayName}
+                  disabled
+                  className="w-full px-4 h-10 rounded-lg text-sm"
+                  style={{ backgroundColor: 'hsl(var(--color-input))', borderColor: 'hsl(var(--color-border))', border: '1px solid', color: 'hsl(var(--color-muted))' }}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2" style={{ color: 'hsl(var(--color-muted))' }}>Email</label>
+                <input
+                  type="email"
+                  value={user?.email || ''}
+                  disabled
+                  className="w-full px-4 h-10 rounded-lg text-sm"
+                  style={{ backgroundColor: 'hsl(var(--color-input))', borderColor: 'hsl(var(--color-border))', border: '1px solid', color: 'hsl(var(--color-muted))' }}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2" style={{ color: 'hsl(var(--color-muted))' }}>Plan</label>
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm"
+                  style={{ backgroundColor: user?.role === 'admin' ? 'hsl(var(--color-primary) / 0.1)' : 'hsl(var(--color-accent) / 0.1)' }}>
+                  <span style={{ color: user?.role === 'admin' ? 'hsl(var(--color-primary))' : 'hsl(var(--color-accent))', fontWeight: 'bold' }}>
+                    {user?.role === 'admin' ? 'Pro' : 'Free'}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Preferences Section */}
-        <div className="rounded-xl border p-6" style={{ backgroundColor: 'hsl(var(--color-card))', borderColor: 'hsl(var(--color-border))' }}>
-        <h2 className="text-lg font-bold mb-4" style={{ color: 'hsl(var(--color-text))' }}>Preferences</h2>
-        <div className="space-y-4">
-          {/* Theme Toggle */}
-          <div>
-            <label className="block text-sm font-medium mb-3" style={{ color: 'hsl(var(--color-text))' }}>Theme</label>
-            <div className="flex items-center gap-3">
+          {/* Preferences Section */}
+          <div className="rounded-xl border p-6" style={{ backgroundColor: 'hsl(var(--color-card))', borderColor: 'hsl(var(--color-border))' }}>
+            <h2 className="text-lg font-bold mb-4" style={{ color: 'hsl(var(--color-text))' }}>Preferences</h2>
+            <div className="space-y-4">
+              {/* Theme Toggle */}
+              <div>
+                <label className="block text-sm font-medium mb-3" style={{ color: 'hsl(var(--color-text))' }}>Theme</label>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleThemeToggle}
+                    className="flex items-center gap-2 px-4 h-10 rounded-lg text-sm font-medium transition-all"
+                    style={{
+                      backgroundColor: isDarkTheme ? 'hsl(var(--color-input))' : 'hsl(var(--color-primary))',
+                      color: isDarkTheme ? 'hsl(var(--color-muted))' : 'hsl(var(--color-primary-foreground))',
+                      border: `1px solid hsl(var(--color-border))`
+                    }}
+                  >
+                    {isDarkTheme ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+                    {isDarkTheme ? 'Dark' : 'Light'}
+                  </button>
+                  <span className="text-xs" style={{ color: 'hsl(var(--color-muted))' }}>
+                    Currently using <strong>{isDarkTheme ? 'dark' : 'light'}</strong> theme
+                  </span>
+                </div>
+              </div>
+
+              <div className="border-t pt-4" style={{ borderColor: 'hsl(var(--color-border))' }}>
+                <label className="block text-sm font-medium mb-2" style={{ color: 'hsl(var(--color-text))' }}>Default Separation Mode</label>
+                <select
+                  value={defaultMode}
+                  onChange={e => setDefaultMode(e.target.value)}
+                  className="w-full px-4 h-10 rounded-lg text-sm"
+                  style={{ backgroundColor: 'hsl(var(--color-input))', borderColor: 'hsl(var(--color-border))', border: '1px solid', color: 'hsl(var(--color-text))' }}
+                >
+                  <option value="two_stems">2 Stems (Vocals & Band)</option>
+                  <option value="four_stems">4 Stems (Vocals, Drums, Bass, Other)</option>
+                  <option value="six_stems">6 Stems (Vocals, Drums, Bass, Guitar, Keys, Other)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2" style={{ color: 'hsl(var(--color-text))' }}>Default Quality</label>
+                <select
+                  value={defaultQuality}
+                  onChange={e => setDefaultQuality(e.target.value)}
+                  className="w-full px-4 h-10 rounded-lg text-sm"
+                  style={{ backgroundColor: 'hsl(var(--color-input))', borderColor: 'hsl(var(--color-border))', border: '1px solid', color: 'hsl(var(--color-text))' }}
+                >
+                  <option value="fast">Fast</option>
+                  <option value="balanced">Balanced</option>
+                  <option value="hq">High Quality</option>
+                </select>
+              </div>
+
               <button
-                onClick={handleThemeToggle}
-                className="flex items-center gap-2 px-4 h-10 rounded-lg text-sm font-medium transition-all"
-                style={{
-                  backgroundColor: isDarkTheme ? 'hsl(var(--color-input))' : 'hsl(var(--color-primary))',
-                  color: isDarkTheme ? 'hsl(var(--color-muted))' : 'hsl(var(--color-primary-foreground))',
-                  border: `1px solid hsl(var(--color-border))`
-                }}
+                onClick={handleSave}
+                disabled={saving}
+                className="px-6 h-10 rounded-lg text-sm font-semibold transition-all"
+                style={{ backgroundColor: 'hsl(var(--color-primary))', color: 'hsl(var(--color-primary-foreground))' }}
               >
-                {isDarkTheme ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-                {isDarkTheme ? 'Dark' : 'Light'}
+                {saving ? 'Saving...' : 'Save Preferences'}
               </button>
-              <span className="text-xs" style={{ color: 'hsl(var(--color-muted))' }}>
-                Currently using <strong>{isDarkTheme ? 'dark' : 'light'}</strong> theme
-              </span>
             </div>
           </div>
-
-          <div className="border-t pt-4" style={{ borderColor: 'hsl(var(--color-border))' }}>
-            <label className="block text-sm font-medium mb-2" style={{ color: 'hsl(var(--color-text))' }}>Default Separation Mode</label>
-            <select
-              value={defaultMode}
-              onChange={e => setDefaultMode(e.target.value)}
-              className="w-full px-4 h-10 rounded-lg text-sm"
-              style={{ backgroundColor: 'hsl(var(--color-input))', borderColor: 'hsl(var(--color-border))', border: '1px solid', color: 'hsl(var(--color-text))' }}
-            >
-              <option value="two_stems">2 Stems (Vocals & Band)</option>
-              <option value="four_stems">4 Stems (Vocals, Drums, Bass, Other)</option>
-              <option value="six_stems">6 Stems (Vocals, Drums, Bass, Guitar, Keys, Other)</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-2" style={{ color: 'hsl(var(--color-text))' }}>Default Quality</label>
-            <select
-              value={defaultQuality}
-              onChange={e => setDefaultQuality(e.target.value)}
-              className="w-full px-4 h-10 rounded-lg text-sm"
-              style={{ backgroundColor: 'hsl(var(--color-input))', borderColor: 'hsl(var(--color-border))', border: '1px solid', color: 'hsl(var(--color-text))' }}
-            >
-              <option value="fast">Fast</option>
-              <option value="balanced">Balanced</option>
-              <option value="hq">High Quality</option>
-            </select>
-          </div>
-
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="px-6 h-10 rounded-lg text-sm font-semibold transition-all"
-            style={{ backgroundColor: 'hsl(var(--color-primary))', color: 'hsl(var(--color-primary-foreground))' }}
-          >
-            {saving ? 'Saving...' : 'Save Preferences'}
-          </button>
-          </div>
-          </div>
-          )}
+        </div>
+      )}
 
           {/* Billing Tab */}
           {activeTab === 'billing' && (
