@@ -1,79 +1,107 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { CheckCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Check, ArrowRight } from 'lucide-react';
 
 const PLANS = [
   {
     name: 'Free',
     price: '$0',
-    period: 'forever',
-    features: ['5 jobs per month', '2-stem separation', 'WAV / MP3 output', 'Standard model only'],
-    cta: 'Get started',
+    period: '',
+    desc: 'Perfect for trying out stem separation.',
+    features: [
+      '2 jobs per day',
+      '2-stem separation (Vocals & Band)',
+      'WAV and MP3 output',
+      'Balanced quality model',
+      '7-day file retention',
+      'In-browser preview',
+    ],
+    cta: 'Get started free',
+    ctaUrl: 'NewJob',
     highlight: false,
   },
   {
     name: 'Pro',
     price: '$12',
-    period: 'per month',
-    features: ['Unlimited jobs', '2 & 4-stem separation', 'All output formats', 'All AI models', 'Google Drive export', 'Batch processing'],
+    period: '/ month',
+    desc: 'For producers, remixers, and audio engineers.',
+    features: [
+      'Unlimited jobs',
+      '2 & 4-stem separation',
+      'WAV, FLAC, and MP3 output',
+      'All quality models (Fast → High Quality)',
+      'Google Drive export',
+      'Batch upload',
+      'Reference mix assistant',
+      'Priority GPU processing',
+      '30-day file retention',
+    ],
     cta: 'Start Pro',
+    ctaUrl: 'NewJob',
     highlight: true,
-  },
-  {
-    name: 'Enterprise',
-    price: 'Custom',
-    period: '',
-    features: ['Everything in Pro', 'API access', 'Priority processing', 'Custom retention', 'Dedicated support'],
-    cta: 'Contact us',
-    highlight: false,
   },
 ];
 
 export default function Pricing() {
   return (
-    <div className="max-w-4xl mx-auto px-6 py-20">
+    <div className="max-w-3xl mx-auto px-6 py-20">
       <div className="text-center mb-14">
-        <h1 className="text-4xl font-bold text-white mb-3">Simple pricing</h1>
-        <p className="text-white/40">Start free, upgrade when you need more.</p>
+        <h1 className="text-4xl font-bold text-white mb-3">Simple, transparent pricing</h1>
+        <p className="text-white/40 text-base">Start free. Upgrade when you need more power.</p>
       </div>
 
-      <div className="grid sm:grid-cols-3 gap-6">
+      <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
         {PLANS.map(plan => (
           <div
             key={plan.name}
-            className={`rounded-2xl p-6 flex flex-col ${
+            className={`rounded-2xl p-7 flex flex-col ${
               plan.highlight
-                ? 'bg-violet-600/20 border-2 border-violet-500/40'
+                ? 'bg-violet-600/20 border-2 border-violet-500/40 relative'
                 : 'bg-white/[0.03] border border-white/5'
             }`}
           >
             {plan.highlight && (
-              <span className="text-xs font-semibold text-violet-300 bg-violet-500/20 rounded-full px-3 py-1 self-start mb-4">Most popular</span>
+              <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-violet-500 text-white text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap">
+                Most popular
+              </span>
             )}
-            <h2 className="text-lg font-bold text-white">{plan.name}</h2>
-            <div className="mt-2 mb-6">
-              <span className="text-3xl font-bold text-white">{plan.price}</span>
-              {plan.period && <span className="text-white/40 text-sm ml-1">{plan.period}</span>}
+            <div className="mb-5">
+              <h2 className="text-lg font-bold text-white mb-1">{plan.name}</h2>
+              <p className="text-white/40 text-sm">{plan.desc}</p>
             </div>
-
-            <ul className="space-y-2.5 flex-1 mb-6">
+            <div className="mb-6 flex items-end gap-1">
+              <span className="text-4xl font-bold text-white">{plan.price}</span>
+              {plan.period && <span className="text-white/40 pb-1">{plan.period}</span>}
+            </div>
+            <ul className="space-y-2.5 flex-1 mb-7">
               {plan.features.map(f => (
-                <li key={f} className="flex items-start gap-2 text-sm text-white/70">
-                  <CheckCircle className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
+                <li key={f} className="flex items-start gap-2.5 text-sm text-white/70">
+                  <Check className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
                   {f}
                 </li>
               ))}
             </ul>
-
-            <Link to={createPageUrl('Dashboard')}>
-              <Button className={`w-full ${plan.highlight ? 'bg-violet-600 hover:bg-violet-500 text-white border-0' : 'bg-white/5 hover:bg-white/10 text-white border-0'}`}>
-                {plan.cta}
-              </Button>
+            <Link
+              to={createPageUrl(plan.ctaUrl)}
+              className={`inline-flex items-center justify-center gap-2 h-10 rounded-xl text-sm font-semibold transition-colors ${
+                plan.highlight
+                  ? 'bg-violet-600 hover:bg-violet-500 text-white'
+                  : 'bg-white/5 hover:bg-white/10 text-white'
+              }`}
+            >
+              {plan.cta}
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         ))}
+      </div>
+
+      {/* FAQ-style note */}
+      <div className="mt-14 text-center">
+        <p className="text-white/30 text-sm">
+          Have questions? <a href="mailto:support@stemforge.app" className="text-violet-400 hover:text-violet-300 transition-colors">Contact us</a>
+        </p>
       </div>
     </div>
   );
