@@ -9,6 +9,7 @@ import { format } from 'date-fns';
 import JobStatusBadge from '../components/jobs/JobStatusBadge';
 import StemPlayer from '../components/jobs/StemPlayer';
 import AnalysisPanel from '../components/jobs/AnalysisPanel';
+import StemEQPanel from '../components/jobs/StemEQPanel';
 
 export default function JobDetail() {
   const location = useLocation();
