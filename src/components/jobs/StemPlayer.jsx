@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Play, Pause, Download } from 'lucide-react';
+import Tooltip from '../auralyn/Tooltip';
 
 export default function StemPlayer({ name, url, format = 'wav' }) {
   const audioRef = useRef(null);
@@ -49,7 +50,6 @@ export default function StemPlayer({ name, url, format = 'wav' }) {
     drums: 'bg-blue-500',
     bass: 'bg-emerald-500',
     other: 'bg-amber-500',
-
     no_vocals: 'bg-cyan-500',
   };
 
