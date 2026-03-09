@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Layers, BookOpen, GitCompare, List, Settings, Menu, X, Activity } from 'lucide-react';
+import { Layers, FolderOpen, GitCompare, List, Settings, Menu, X, Activity } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 
 const NAV_ITEMS = [
+  { label: 'Projects',  icon: FolderOpen,  page: 'ProjectsList', activePages: ['ProjectsList', 'ProjectNew', 'ProjectDetail'] },
   { label: 'Stems',     icon: Layers,      page: 'StemsNew',     activePages: ['StemsNew'] },
   { label: 'Reference', icon: Activity,    page: 'ReferenceNew', activePages: ['ReferenceNew'] },
   { label: 'Match',     icon: GitCompare,  page: 'Match',        activePages: ['Match'], soon: true },
