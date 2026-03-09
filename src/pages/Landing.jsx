@@ -57,35 +57,34 @@ export default function Landing() {
     <div style={{ backgroundColor: '#0B1220', color: '#EAF2FF', minHeight: '100vh' }}>
 
       {/* ── Hero ── */}
-      <section className="max-w-5xl mx-auto px-5 pt-24 pb-20 text-center">
+      <section className="max-w-5xl mx-auto px-5 pt-32 pb-24 text-center">
 
         {/* Eyebrow badge */}
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-8 text-xs font-medium"
           style={{ backgroundColor: '#1EA0FF12', border: '1px solid #1EA0FF30', color: '#1EA0FF' }}>
-          <Zap className="w-3 h-3" />
-          AI-powered audio tools for musicians &amp; producers
+          <ZapIcon className="w-3 h-3" />
+          INTRODUCING AURALYN
         </div>
 
         {/* Headline */}
-        <h1 className="text-5xl sm:text-7xl font-bold mb-6 leading-[1.02]"
+        <h1 className="text-6xl sm:text-8xl font-bold mb-8 leading-[1.0]"
           style={{ letterSpacing: '-0.04em' }}>
-          Hear it.{' '}
+          Stop struggling.{' '}
           <span style={{
-            color: '#1EA0FF',
             background: 'linear-gradient(135deg, #1EA0FF 0%, #19D3A2 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
           }}>
-            Shape it.
+            Start transforming.
           </span>
         </h1>
 
         {/* Subheadline */}
-        <p className="text-lg sm:text-xl max-w-xl mx-auto mb-3 leading-relaxed" style={{ color: '#9CB2D6' }}>
-          Split tracks into stems, analyze reference mixes, and share parts with your choir — all in one place.
+        <p className="text-lg sm:text-xl max-w-2xl mx-auto mb-4 leading-relaxed" style={{ color: '#9CB2D6' }}>
+          Upload your song, separate vocals and instruments, split harmony parts, and level up your practice — whether you're a solo singer or running a full choir.
         </p>
-        <p className="text-sm mb-12" style={{ color: '#4A6080' }}>
-          Studio-grade audio intelligence. No installation required.
+        <p className="text-sm mb-14" style={{ color: '#4A6080' }}>
+          Studio-grade audio separation. Smart practice tools. Complete choir management.
         </p>
 
         {/* CTAs */}
