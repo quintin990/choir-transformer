@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Check, ArrowRight } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { Check, ArrowRight, Loader2 } from 'lucide-react';
 
 const PLANS = [
   {
@@ -44,6 +45,32 @@ const PLANS = [
 ];
 
 export default function Pricing() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleProClick = async () => {
+    if (window.self !== window.top) {
+      alert('Checkout is only available from the published app, not inside the editor preview.');
+      return;
+    }
+    setLoading(true);
+    setError('');
+    try {
+      const res = await base44.functions.invoke('createCheckoutSession', {
+        priceId: import.meta.env.VITE_STRIPE_PRICE_PRO_MONTHLY || '',
+      });
+      if (res.data?.checkoutUrl) {
+        window.location.href = res.data.checkoutUrl;
+      } else {
+        setError(res.data?.error || 'Failed to start checkout.');
+      }
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to start checkout.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="max-w-3xl mx-auto px-6 py-20">
       <div className="text-center mb-14">
@@ -82,21 +109,32 @@ export default function Pricing() {
                 </li>
               ))}
             </ul>
-            <Link
-              to={createPageUrl(plan.ctaUrl)}
-              className={`inline-flex items-center justify-center gap-2 h-10 rounded-xl text-sm font-semibold transition-colors ${
-                plan.highlight
-                  ? 'bg-sky-500 hover:bg-sky-400 text-white'
-                  : 'bg-white/5 hover:bg-white/10 text-white'
-              }`}
-            >
-              {plan.cta}
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            {plan.highlight ? (
+              <button
+                onClick={handleProClick}
+                disabled={loading}
+                className="inline-flex items-center justify-center gap-2 h-10 rounded-xl text-sm font-semibold transition-colors disabled:opacity-60 bg-sky-500 hover:bg-sky-400 text-white w-full"
+              >
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                {loading ? 'Redirecting…' : plan.cta}
+                {!loading && <ArrowRight className="w-3.5 h-3.5" />}
+              </button>
+            ) : (
+              <Link
+                to={createPageUrl('StemsNew')}
+                className="inline-flex items-center justify-center gap-2 h-10 rounded-xl text-sm font-semibold transition-colors bg-white/5 hover:bg-white/10 text-white"
+              >
+                {plan.cta}
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            )}
           </div>
         ))}
       </div>
 
+      {error && (
+        <div className="mt-6 text-center text-sm" style={{ color: '#FF4D6D' }}>{error}</div>
+      )}
       {/* FAQ-style note */}
       <div className="mt-14 text-center">
         <p className="text-white/30 text-sm">
