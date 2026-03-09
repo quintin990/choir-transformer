@@ -9,6 +9,16 @@ Deno.serve(async (req) => {
     const { name, church_name, location, description } = await req.json();
     if (!name?.trim()) return Response.json({ error: 'Choir name is required' }, { status: 400 });
 
+    // Check for duplicate choir name owned by this user
+    const existing = await base44.asServiceRole.entities.Choir.filter({
+      owner_user_id: user.id,
+      name: name.trim()
+    });
+    
+    if (existing.length > 0) {
+      return Response.json({ error: 'You already have a choir with this name' }, { status: 400 });
+    }
+
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     const invite_code = Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
 
