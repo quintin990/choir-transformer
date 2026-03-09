@@ -1,57 +1,145 @@
-import React, { useState } from 'react';
-import { Mail, ArrowRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
+import { Music, Upload } from 'lucide-react';
+import MatchGuide from '../components/reference/MatchGuide';
+import FileDropZone from '../components/auralyn/FileDropZone';
 
 export default function Match() {
-  const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const location = useLocation();
+  const jobId = new URLSearchParams(location.search).get('id');
+  const [job, setJob] = useState(null);
+  const [reference, setReference] = useState(null);
+  const [userFile, setUserFile] = useState(null);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [userFileError, setUserFileError] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (email) {
-      setSubmitted(true);
-      setEmail('');
-      setTimeout(() => setSubmitted(false), 3000);
+  useEffect(() => {
+    if (jobId) {
+      const init = async () => {
+        try {
+          const jobs = await base44.entities.Job.filter({ id: jobId });
+          if (jobs.length > 0) {
+            setJob(jobs[0]);
+            // In production, fetch the corresponding reference analysis
+          }
+        } catch (err) {
+          console.error('Error loading job:', err);
+        } finally {
+          setLoading(false);
+        }
+      };
+      init();
+    } else {
+      setLoading(false);
+    }
+  }, [jobId]);
+
+  const handleUserFile = (file, err) => {
+    setUserFile(file);
+    setUserFileError(err || '');
+  };
+
+  const handleAnalyzeMatch = async () => {
+    if (!userFile || !job) {
+      alert('Please upload your mix file');
+      return;
+    }
+
+    setAnalyzing(true);
+    try {
+      // Upload user file
+      const { file_url } = await base44.integrations.Core.UploadFile({ file: userFile });
+
+      // Call match analysis (placeholder for now)
+      const mockReference = {
+        title: job.title,
+        lufs: -14.5,
+        peak_db: -3.2,
+        eq_curve: {
+          low_end: 1,
+          mids: -2,
+          high_end: 3,
+        },
+        dynamic_range: {
+          range_db: 12,
+          crest_factor: 11,
+        },
+        stereo_width: {
+          width_percent: 85,
+          correlation: 0.65,
+        },
+      };
+
+      setReference(mockReference);
+    } catch (err) {
+      console.error('Error analyzing:', err);
+      alert('Analysis failed. Try again.');
+    } finally {
+      setAnalyzing(false);
     }
   };
 
+  if (loading) {
+    return <div style={{ color: 'hsl(var(--color-muted))' }}>Loading...</div>;
+  }
+
+  if (!jobId) {
+    return (
+      <div className="max-w-3xl mx-auto text-center py-12">
+        <Music className="w-12 h-12 mx-auto mb-4" style={{ color: 'hsl(var(--color-muted))' }} />
+        <h2 className="text-2xl font-bold mb-2" style={{ color: 'hsl(var(--color-text))' }}>Reference Match</h2>
+        <p style={{ color: 'hsl(var(--color-muted))' }}>Select a reference job to compare against</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-3xl mx-auto text-center py-20">
-      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-8 text-xs font-medium"
-        style={{ backgroundColor: '#FFB02010', border: '1px solid #FFB02030', color: '#FFB020' }}>
-        Coming Soon
+    <div className="max-w-4xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2" style={{ color: 'hsl(var(--color-text))' }}>Match Your Mix</h1>
+        <p style={{ color: 'hsl(var(--color-muted))' }}>
+          Upload your mix to match against <strong>{job.title}</strong>
+        </p>
       </div>
 
-      <h1 className="text-4xl font-bold mb-4" style={{ color: '#EAF2FF', letterSpacing: '-0.03em' }}>Reference Match</h1>
-      <p className="text-lg mb-12 max-w-xl mx-auto" style={{ color: '#9CB2D6' }}>
-        Upload your mix and a reference track. Auralyn will compare and suggest tonal balance, loudness, dynamic and stereo adjustments to bring your mix in line with your favourite reference.
-      </p>
+      {!reference ? (
+        <div className="space-y-6">
+          {/* Upload Section */}
+          <div className="rounded-lg p-6" style={{ backgroundColor: 'hsl(var(--color-card))', border: `1px solid hsl(var(--color-border))` }}>
+            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: 'hsl(var(--color-text))' }}>
+              <Upload className="w-5 h-5" /> Upload Your Mix
+            </h3>
+            <FileDropZone file={userFile} onFile={handleUserFile} error={userFileError} />
+            <button
+              onClick={handleAnalyzeMatch}
+              disabled={analyzing || !userFile || !!userFileError}
+              className="w-full mt-6 h-12 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
+              style={{ backgroundColor: 'hsl(var(--color-primary))', color: 'hsl(var(--color-primary-foreground))' }}
+            >
+              {analyzing ? 'Analyzing...' : 'Analyze Match'}
+            </button>
+          </div>
 
-      <form onSubmit={handleSubmit} className="rounded-xl border p-8 max-w-md mx-auto" style={{ backgroundColor: '#0F1A2E', borderColor: '#1C2A44' }}>
-        <p className="text-sm mb-4" style={{ color: '#6A8AAD' }}>
-          Be among the first to try Reference Match. Join our beta.
-        </p>
-        <div className="flex gap-2">
-          <input
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            placeholder="your@email.com"
-            className="flex-1 px-4 h-10 rounded-lg text-sm"
-            style={{ backgroundColor: '#0B1220', borderColor: '#1C2A44', border: '1px solid #1C2A44', color: '#EAF2FF' }}
-            required
-          />
-          <button
-            type="submit"
-            className="px-6 h-10 rounded-lg text-sm font-semibold transition-all flex items-center gap-2"
-            style={{ backgroundColor: '#FFB020', color: '#0B1220' }}
-            onMouseEnter={e => e.currentTarget.style.opacity='0.9'} onMouseLeave={e => e.currentTarget.style.opacity='1'}>
-            <Mail className="w-4 h-4" />
-          </button>
+          {/* Reference Info */}
+          <div className="rounded-lg p-6" style={{ backgroundColor: 'hsl(var(--color-card))', border: `1px solid hsl(var(--color-border))` }}>
+            <h3 className="text-lg font-semibold mb-4" style={{ color: 'hsl(var(--color-text))' }}>Reference Track</h3>
+            <div className="space-y-2">
+              <div>
+                <p className="text-xs" style={{ color: 'hsl(var(--color-muted))' }}>Title</p>
+                <p style={{ color: 'hsl(var(--color-text))' }}>{job.title}</p>
+              </div>
+              <div>
+                <p className="text-xs" style={{ color: 'hsl(var(--color-muted))' }}>Mode</p>
+                <p style={{ color: 'hsl(var(--color-text))' }}>{job.mode}</p>
+              </div>
+            </div>
+          </div>
         </div>
-        {submitted && (
-          <p className="text-xs mt-3" style={{ color: '#19D3A2' }}>✓ Thanks! We'll be in touch soon.</p>
-        )}
-      </form>
+      ) : (
+        <MatchGuide referenceAnalysis={reference} userJob={job} />
+      )}
     </div>
   );
 }
