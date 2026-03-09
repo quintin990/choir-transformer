@@ -56,7 +56,7 @@ export default function StemPlayer({ name, url, format = 'wav' }) {
   const color = STEM_COLORS[name?.toLowerCase()] || 'bg-sky-500';
 
   return (
-    <div className="bg-white/[0.03] border border-white/5 rounded-xl px-4 py-3.5">
+    <div className="bg-white/[0.03] border border-white/5 rounded-xl px-4 py-3.5 transition-all hover:border-white/10 hover:bg-white/[0.04]">
       <audio
         ref={audioRef}
         src={url}
@@ -65,15 +65,17 @@ export default function StemPlayer({ name, url, format = 'wav' }) {
         onEnded={handleEnded}
       />
       <div className="flex items-center gap-3">
-        <button
-          onClick={togglePlay}
-          className="w-8 h-8 rounded-full bg-sky-500 hover:bg-sky-400 flex items-center justify-center shrink-0 transition-colors"
-        >
-          {playing
-            ? <Pause className="w-3.5 h-3.5 text-white" />
-            : <Play className="w-3.5 h-3.5 text-white ml-0.5" />
-          }
-        </button>
+        <Tooltip text={playing ? 'Pause' : 'Play'} position="top">
+          <button
+            onClick={togglePlay}
+            className="w-8 h-8 rounded-full bg-sky-500 hover:bg-sky-400 flex items-center justify-center shrink-0 transition-all transform hover:scale-110 active:scale-95"
+          >
+            {playing
+              ? <Pause className="w-3.5 h-3.5 text-white" />
+              : <Play className="w-3.5 h-3.5 text-white ml-0.5" />
+            }
+          </button>
+        </Tooltip>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-1.5">
@@ -83,7 +85,7 @@ export default function StemPlayer({ name, url, format = 'wav' }) {
             </span>
           </div>
           <div
-            className="h-1.5 bg-white/10 rounded-full cursor-pointer overflow-hidden"
+            className="h-1.5 bg-white/10 rounded-full cursor-pointer overflow-hidden transition-colors hover:bg-white/15"
             onClick={handleSeek}
           >
             <div
@@ -93,14 +95,16 @@ export default function StemPlayer({ name, url, format = 'wav' }) {
           </div>
         </div>
 
-        <a
-          href={url}
-          download={`${name}.${format}`}
-          onClick={e => e.stopPropagation()}
-          className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg text-white/40 hover:text-white hover:bg-white/5 transition-all"
-        >
-          <Download className="w-3.5 h-3.5" />
-        </a>
+        <Tooltip text="Download" position="top">
+          <a
+            href={url}
+            download={`${name}.${format}`}
+            onClick={e => e.stopPropagation()}
+            className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg text-white/40 hover:text-white hover:bg-white/5 transition-all transform hover:scale-110 active:scale-95"
+          >
+            <Download className="w-3.5 h-3.5" />
+          </a>
+        </Tooltip>
       </div>
     </div>
   );
