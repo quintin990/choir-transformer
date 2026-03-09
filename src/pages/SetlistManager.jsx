@@ -70,6 +70,18 @@ export default function SetlistManager() {
 
   const updateSetlistField = async (field, value) => {
     if (!setlist) return;
+
+    // Check for duplicate name if updating the name field
+    if (field === 'name' && value !== setlist.name) {
+      const existingSetlists = await base44.entities.Setlist.filter({ choir_id: choir.id });
+      const isDuplicate = existingSetlists.some(s => s.id !== setlist.id && s.name.toLowerCase() === value.toLowerCase());
+      if (isDuplicate) {
+        setError(`A setlist named "${value}" already exists in this choir.`);
+        return;
+      }
+    }
+
+    setError(null);
     const updated = { ...setlist, [field]: value };
     setSetlist(updated);
     await base44.entities.Setlist.update(setlist.id, { [field]: value });
