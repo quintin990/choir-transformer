@@ -54,15 +54,11 @@ import AudioEnhancement from './pages/AudioEnhancement';
 import BatchDetail from './pages/BatchDetail';
 import BatchProcessing from './pages/BatchProcessing';
 import BatchUpload from './pages/BatchUpload';
-import Dashboard from './pages/Dashboard';
 import ForgotPassword from './pages/ForgotPassword';
-import JobDetail from './pages/JobDetail';
 import Jobs from './pages/Jobs';
 import Landing from './pages/Landing';
-import NewJob from './pages/NewJob';
 import Pricing from './pages/Pricing';
 import ReferenceDetail from './pages/ReferenceDetail';
-import ReferenceMixAssistant from './pages/ReferenceMixAssistant';
 import ResetPassword from './pages/ResetPassword';
 import Settings from './pages/Settings';
 import Workspaces from './pages/Workspaces';
@@ -80,15 +76,11 @@ export const PAGES = {
     "BatchDetail": BatchDetail,
     "BatchProcessing": BatchProcessing,
     "BatchUpload": BatchUpload,
-    "Dashboard": Dashboard,
     "ForgotPassword": ForgotPassword,
-    "JobDetail": JobDetail,
     "Jobs": Jobs,
     "Landing": Landing,
-    "NewJob": NewJob,
     "Pricing": Pricing,
     "ReferenceDetail": ReferenceDetail,
-    "ReferenceMixAssistant": ReferenceMixAssistant,
     "ResetPassword": ResetPassword,
     "Settings": Settings,
     "Workspaces": Workspaces,
