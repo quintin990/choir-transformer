@@ -312,7 +312,7 @@ export default function JobDetail() {
         {driveMsg && <p className="text-xs mt-2" style={{ color: driveMsg.includes('✓') ? '#19D3A2' : '#FF4D6D' }}>{driveMsg}</p>}
       </Card>
 
-      {showPublishModal && <PublishToChoirModal job={job} onClose={() => setShowPublishModal(false)} />
+      {showPublishModal && <PublishToChoirModal job={job} onClose={() => setShowPublishModal(false)} />}
 
       {/* Tabs */}
       <div className="flex border-b overflow-x-auto" style={{ borderColor: '#1C2A44' }}>
