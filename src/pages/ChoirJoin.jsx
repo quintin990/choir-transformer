@@ -9,18 +9,25 @@ export default function ChoirJoin() {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [status, setStatus] = useState('');
+  const [choirName, setChoirName] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!code.trim()) return;
     setLoading(true);
     setError('');
+    setStatus('');
+    setChoirName('');
     const res = await base44.functions.invoke('joinChoirByInviteCode', { invite_code: code.trim() });
     setLoading(false);
+    
     if (res.data?.error) {
       setError(res.data.error);
     } else {
-      navigate(createPageUrl('Choir'));
+      setChoirName(res.data?.choir?.name || '');
+      setStatus('pending');
+      setTimeout(() => navigate(createPageUrl('Choir')), 2000);
     }
   };
 
@@ -43,14 +50,25 @@ export default function ChoirJoin() {
             onChange={e => setCode(e.target.value.toUpperCase())}
             placeholder="e.g. ABCD1234"
             maxLength={8}
-            className="w-full h-10 px-3 rounded-lg text-sm font-mono tracking-widest uppercase focus:outline-none"
+            disabled={status === 'pending'}
+            className="w-full h-10 px-3 rounded-lg text-sm font-mono tracking-widest uppercase focus:outline-none disabled:opacity-50"
             style={{ backgroundColor: '#0F1A2E', border: '1px solid #1C2A44', color: '#EAF2FF', caretColor: '#1EA0FF' }}
           />
         </div>
 
-        {error && <p className="text-xs" style={{ color: '#FF4D6D' }}>{error}</p>}
+        {error && (
+          <div className="p-3 rounded-lg text-xs" style={{ backgroundColor: '#FF4D6D10', border: '1px solid #FF4D6D30', color: '#FF4D6D' }}>
+            {error}
+          </div>
+        )}
 
-        <button type="submit" disabled={loading || !code.trim()}
+        {status === 'pending' && (
+          <div className="p-3 rounded-lg text-xs" style={{ backgroundColor: '#1EA0FF10', border: '1px solid #1EA0FF30', color: '#1EA0FF' }}>
+            <span className="font-semibold">Request sent!</span> Waiting for approval from {choirName} director.
+          </div>
+        )}
+
+        <button type="submit" disabled={loading || !code.trim() || status === 'pending'}
           className="w-full h-10 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
           style={{ backgroundColor: '#1EA0FF', color: '#fff' }}>
           {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <LogIn className="w-4 h-4" />}

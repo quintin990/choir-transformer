@@ -56,33 +56,33 @@ import BatchProcessing from './pages/BatchProcessing';
 import BatchUpload from './pages/BatchUpload';
 import BillingCancel from './pages/BillingCancel';
 import BillingSuccess from './pages/BillingSuccess';
+import Choir from './pages/Choir';
+import ChoirAdmin from './pages/ChoirAdmin';
+import ChoirAdminSong from './pages/ChoirAdminSong';
+import ChoirCreate from './pages/ChoirCreate';
+import ChoirJoin from './pages/ChoirJoin';
+import ChoirMemberDashboard from './pages/ChoirMemberDashboard';
+import ChoirPart from './pages/ChoirPart';
+import ChoirSetlists from './pages/ChoirSetlists';
+import ChoirSongDetail from './pages/ChoirSongDetail';
+import ChoirSongs from './pages/ChoirSongs';
 import ForgotPassword from './pages/ForgotPassword';
 import JobDetail from './pages/JobDetail';
 import Jobs from './pages/Jobs';
 import Landing from './pages/Landing';
+import Match from './pages/Match';
 import Pricing from './pages/Pricing';
 import ProjectDetail from './pages/ProjectDetail';
 import ProjectNew from './pages/ProjectNew';
 import ProjectsList from './pages/ProjectsList';
+import QueueManager from './pages/QueueManager';
 import ReferenceDetail from './pages/ReferenceDetail';
 import ReferenceNew from './pages/ReferenceNew';
 import ResetPassword from './pages/ResetPassword';
+import SetlistManager from './pages/SetlistManager';
 import Settings from './pages/Settings';
 import StemsNew from './pages/StemsNew';
 import Workspaces from './pages/Workspaces';
-import Choir from './pages/Choir';
-import ChoirJoin from './pages/ChoirJoin';
-import ChoirCreate from './pages/ChoirCreate';
-import ChoirPart from './pages/ChoirPart';
-import ChoirSongs from './pages/ChoirSongs';
-import ChoirSongDetail from './pages/ChoirSongDetail';
-import ChoirAdmin from './pages/ChoirAdmin';
-import ChoirAdminSong from './pages/ChoirAdminSong';
-import ChoirSetlists from './pages/ChoirSetlists';
-import Match from './pages/Match';
-import SetlistManager from './pages/SetlistManager';
-import QueueManager from './pages/QueueManager';
-import ChoirMemberDashboard from './pages/ChoirMemberDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -96,33 +96,33 @@ export const PAGES = {
     "BatchUpload": BatchUpload,
     "BillingCancel": BillingCancel,
     "BillingSuccess": BillingSuccess,
+    "Choir": Choir,
+    "ChoirAdmin": ChoirAdmin,
+    "ChoirAdminSong": ChoirAdminSong,
+    "ChoirCreate": ChoirCreate,
+    "ChoirJoin": ChoirJoin,
+    "ChoirMemberDashboard": ChoirMemberDashboard,
+    "ChoirPart": ChoirPart,
+    "ChoirSetlists": ChoirSetlists,
+    "ChoirSongDetail": ChoirSongDetail,
+    "ChoirSongs": ChoirSongs,
     "ForgotPassword": ForgotPassword,
     "JobDetail": JobDetail,
     "Jobs": Jobs,
     "Landing": Landing,
+    "Match": Match,
     "Pricing": Pricing,
     "ProjectDetail": ProjectDetail,
     "ProjectNew": ProjectNew,
     "ProjectsList": ProjectsList,
+    "QueueManager": QueueManager,
     "ReferenceDetail": ReferenceDetail,
     "ReferenceNew": ReferenceNew,
     "ResetPassword": ResetPassword,
+    "SetlistManager": SetlistManager,
     "Settings": Settings,
     "StemsNew": StemsNew,
     "Workspaces": Workspaces,
-    "Choir": Choir,
-    "ChoirJoin": ChoirJoin,
-    "ChoirCreate": ChoirCreate,
-    "ChoirPart": ChoirPart,
-    "ChoirSongs": ChoirSongs,
-    "ChoirSongDetail": ChoirSongDetail,
-    "ChoirAdmin": ChoirAdmin,
-    "ChoirAdminSong": ChoirAdminSong,
-    "ChoirSetlists": ChoirSetlists,
-    "Match": Match,
-    "SetlistManager": SetlistManager,
-    "QueueManager": QueueManager,
-    "ChoirMemberDashboard": ChoirMemberDashboard,
 }
 
 export const pagesConfig = {
