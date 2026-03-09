@@ -283,33 +283,64 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── Choir CTA strip ── */}
-      <section className="max-w-5xl mx-auto px-5 pb-24">
-        <div className="rounded-2xl border p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6"
-          style={{ backgroundColor: '#0F1A2E', borderColor: '#1C2A44', background: 'linear-gradient(135deg, #0F1A2E 60%, #1C1030 100%)' }}>
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Users className="w-4 h-4" style={{ color: '#9B74FF' }} />
-              <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#9B74FF' }}>For Choirs</span>
-            </div>
-            <h3 className="text-xl font-bold mb-2" style={{ color: '#EAF2FF', letterSpacing: '-0.02em' }}>
-              Share parts with your choir
-            </h3>
-            <p className="text-sm leading-relaxed max-w-md" style={{ color: '#6A8AAD' }}>
-              Split recordings into SATB parts, share with members by voice, and track rehearsal readiness — all in one place.
-            </p>
-          </div>
-          <Link to={createPageUrl('Choir')}
-            className="shrink-0 inline-flex items-center gap-2 px-6 h-11 rounded-xl text-sm font-semibold transition-all whitespace-nowrap"
-            style={{ backgroundColor: '#9B74FF', color: '#fff', boxShadow: '0 0 24px #9B74FF25' }}
-            onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#AB84FF'; }}
-            onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#9B74FF'; }}>
-            <Users className="w-4 h-4" />
-            Open Choir Hub
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
+      {/* ── Testimonials ── */}
+      <section className="max-w-5xl mx-auto px-5 py-24">
+       <div className="text-center mb-16">
+         <p className="text-xs uppercase tracking-widest mb-4" style={{ color: '#9B74FF' }}>FROM THE CHOIR FAMILY</p>
+         <h2 className="text-3xl sm:text-4xl font-bold" style={{ letterSpacing: '-0.03em', color: '#EAF2FF' }}>
+           Voices from the ministry.
+         </h2>
+       </div>
+
+       <div className="grid sm:grid-cols-3 gap-6">
+         {[
+           { quote: 'I uploaded our new Kirk Franklin song on Tuesday and by Thursday my sopranos were already singing their part. I\'ve never had that kind of turnaround before in 12 years of directing.', role: 'MINISTER OF MUSIC, GRACEFIELDS CHAPEL' },
+           { quote: 'As an alto I always struggled to hear my part in recordings. Auralyn gave me my line clearly and I could practice it at home before rehearsal. It changed everything for me.', role: 'ALTO SECTION LEADER, PRAISE TEAM, LONDON' },
+           { quote: 'We learn a new complex piece in one week instead of four. The SATB separation is amazing and I could practice on my own. I don\'t know how we managed without this tool.', role: 'CHOIR DIRECTOR, CHARIS FAMILY CHOIR - KNUST, GHANA' }
+         ].map(({ quote, role }, idx) => (
+           <div key={idx} className="rounded-xl border p-6" style={{ backgroundColor: '#0F1A2E', borderColor: '#1C2A44' }}>
+             <p className="text-sm leading-relaxed mb-4" style={{ color: '#9CB2D6', fontStyle: 'italic' }}>
+               "{quote}"
+             </p>
+             <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#9B74FF' }}>
+               {role}
+             </p>
+           </div>
+         ))}
+       </div>
       </section>
-    </div>
-  );
-}
+
+      {/* ── Final CTA ── */}
+      <section className="max-w-3xl mx-auto px-5 pb-24 text-center">
+       <div className="rounded-2xl border p-12 sm:p-16" style={{ backgroundColor: '#0F1A2E', borderColor: '#19D3A240', background: 'linear-gradient(135deg, rgba(15,26,46,0.8) 0%, rgba(28,16,48,0.6) 100%)' }}>
+         <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ letterSpacing: '-0.03em', color: '#EAF2FF' }}>
+           You deserve better music prep.
+         </h2>
+         <p className="text-base leading-relaxed mb-8 max-w-lg mx-auto" style={{ color: '#9CB2D6' }}>
+           Join singers and directors who've stopped wasting hours on prep and started focusing on what they do best — making music.
+         </p>
+         <div className="flex flex-col sm:flex-row gap-4 justify-center">
+           <Link to={createPageUrl('StemsNew')}
+             className="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-xl text-sm font-semibold transition-all"
+             style={{ backgroundColor: '#1EA0FF', color: '#fff' }}
+             onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3BAEFF'}
+             onMouseLeave={e => e.currentTarget.style.backgroundColor = '#1EA0FF'}>
+             Get Started — It's Free
+             <ArrowRight className="w-4 h-4" />
+           </Link>
+           <Link to={createPageUrl('Pricing')}
+             className="inline-flex items-center justify-center gap-2 px-7 h-12 rounded-xl text-sm font-semibold border transition-all"
+             style={{ borderColor: '#1C2A44', color: '#9CB2D6' }}
+             onMouseEnter={e => { e.currentTarget.style.borderColor = '#1EA0FF60'; e.currentTarget.style.backgroundColor = '#1EA0FF08'; }}
+             onMouseLeave={e => { e.currentTarget.style.borderColor = '#1C2A44'; e.currentTarget.style.backgroundColor = 'transparent'; }}>
+             View Pricing
+           </Link>
+         </div>
+         <p className="text-xs mt-8" style={{ color: '#4A6080' }}>
+           Free tier includes audio processing for everyone. Upgrade anytime for SATB parts, premium processing, and choir management tools.
+         </p>
+       </div>
+      </section>
+      </div>
+      );
+      }
