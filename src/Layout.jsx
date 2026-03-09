@@ -98,9 +98,15 @@ export default function Layout({ children, currentPageName }) {
           {/* Right side */}
           <div className="ml-auto flex items-center gap-3">
             {user && (
-              <span className="hidden sm:block text-xs truncate max-w-[140px]" style={{ color: '#9CB2D6' }}>
-                {user.email}
-              </span>
+              <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-lg" style={{ backgroundColor: '#0F1A2E', border: '1px solid #1C2A44' }}>
+                <div className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0"
+                  style={{ backgroundColor: '#1EA0FF25', color: '#1EA0FF' }}>
+                  {(user.full_name || user.email || '?')[0].toUpperCase()}
+                </div>
+                <span className="text-xs truncate max-w-[120px]" style={{ color: '#9CB2D6' }}>
+                  {user.full_name || user.email.split('@')[0]}
+                </span>
+              </div>
             )}
             {/* Mobile menu */}
             <button className="md:hidden p-1.5 rounded" style={{ color: '#9CB2D6' }} onClick={() => setMobileOpen(v => !v)}>
