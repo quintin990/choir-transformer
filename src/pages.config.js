@@ -65,6 +65,9 @@ import Workspaces from './pages/Workspaces';
 import StemsNew from './pages/StemsNew';
 import ReferenceNew from './pages/ReferenceNew';
 import Match from './pages/Match';
+import ProjectsList from './pages/ProjectsList';
+import ProjectNew from './pages/ProjectNew';
+import ProjectDetail from './pages/ProjectDetail';
 import __Layout from './Layout.jsx';
 
 
@@ -87,6 +90,9 @@ export const PAGES = {
     "StemsNew": StemsNew,
     "ReferenceNew": ReferenceNew,
     "Match": Match,
+    "ProjectsList": ProjectsList,
+    "ProjectNew": ProjectNew,
+    "ProjectDetail": ProjectDetail,
 }
 
 export const pagesConfig = {
