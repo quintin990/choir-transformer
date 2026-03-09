@@ -305,9 +305,9 @@ export default function WaveformEditor({
                 value={editVal}
                 onChange={e => setEditVal(e.target.value)}
                 onBlur={commitStart}
-                onKeyDown={e => { if (e.key === 'Enter') commitStart(); if (e.key === 'Escape') setEditingStart(false); }}
-                className="h-7 px-2.5 rounded-lg text-[12px] font-mono tabular-nums font-semibold outline-none w-16 text-center"
-                style={{ backgroundColor: '#1EA0FF18', border: '1px solid #1EA0FF60', color: '#1EA0FF' }}
+                onKeyDown={e => { handleKeyStep(e, 'start'); if (e.key === 'Enter') commitStart(); if (e.key === 'Escape') setEditingStart(false); }}
+                className="h-7 px-2.5 rounded-lg outline-none w-16 text-center"
+                style={{ backgroundColor: '#1EA0FF18', border: '1px solid #1EA0FF60', color: '#1EA0FF', fontFamily: "'DM Mono', monospace", fontSize: 12, fontWeight: 500 }}
               />
             ) : (
               <button
@@ -331,9 +331,9 @@ export default function WaveformEditor({
                 value={editVal}
                 onChange={e => setEditVal(e.target.value)}
                 onBlur={commitEnd}
-                onKeyDown={e => { if (e.key === 'Enter') commitEnd(); if (e.key === 'Escape') setEditingEnd(false); }}
-                className="h-7 px-2.5 rounded-lg text-[12px] font-mono tabular-nums font-semibold outline-none w-16 text-center"
-                style={{ backgroundColor: '#1EA0FF18', border: '1px solid #1EA0FF60', color: '#1EA0FF' }}
+                onKeyDown={e => { handleKeyStep(e, 'end'); if (e.key === 'Enter') commitEnd(); if (e.key === 'Escape') setEditingEnd(false); }}
+                className="h-7 px-2.5 rounded-lg outline-none w-16 text-center"
+                style={{ backgroundColor: '#1EA0FF18', border: '1px solid #1EA0FF60', color: '#1EA0FF', fontFamily: "'DM Mono', monospace", fontSize: 12, fontWeight: 500 }}
               />
             ) : (
               <button
