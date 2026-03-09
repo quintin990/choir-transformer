@@ -120,6 +120,12 @@ export default function SetlistManager() {
           subtitle={choir.name}
         />
 
+        {error && (
+          <div className="mb-4 p-3 rounded-lg text-sm" style={{ backgroundColor: '#EF444415', color: '#EF4444', border: '1px solid #EF444433' }}>
+            {error}
+          </div>
+        )}
+
         {editingSetlist ? (
           <div className="space-y-4">
             <div>
