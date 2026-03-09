@@ -78,6 +78,7 @@ import ChoirSongs from './pages/ChoirSongs';
 import ChoirSongDetail from './pages/ChoirSongDetail';
 import ChoirAdmin from './pages/ChoirAdmin';
 import ChoirAdminSong from './pages/ChoirAdminSong';
+import ChoirSetlists from './pages/ChoirSetlists';
 import __Layout from './Layout.jsx';
 
 
@@ -113,6 +114,7 @@ export const PAGES = {
     "ChoirSongDetail": ChoirSongDetail,
     "ChoirAdmin": ChoirAdmin,
     "ChoirAdminSong": ChoirAdminSong,
+    "ChoirSetlists": ChoirSetlists,
 }
 
 export const pagesConfig = {

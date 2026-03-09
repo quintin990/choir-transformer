@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Download, Music, FileText, Link2, Loader2 } from 'lucide-react';
 import Card, { CardHeader } from '../components/auralyn/Card';
+import ReadinessTracker from '../components/choir/ReadinessTracker';
 
 const PART_COLORS = { soprano: '#1EA0FF', alto: '#19D3A2', tenor: '#FFB020', bass: '#9B74FF', all: '#9CB2D6' };
 const ASSET_ICONS = { stem: Music, guide: Music, satb: Music, notes: FileText, pdf: FileText, link: Link2 };
@@ -13,12 +14,14 @@ export default function ChoirSongDetail() {
   const [song, setSong] = useState(null);
   const [assets, setAssets] = useState([]);
   const [myPart, setMyPart] = useState('none');
+  const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const init = async () => {
       try {
         const u = await base44.auth.me();
+        setUserId(u.id);
         const mems = await base44.entities.ChoirMembership.filter({ user_id: u.id, status: 'approved' });
         if (mems.length) setMyPart(mems[0].part || 'none');
 
@@ -58,6 +61,9 @@ export default function ChoirSongDetail() {
         {song.notes && (
           <p className="text-sm mt-3 leading-relaxed" style={{ color: '#9CB2D6' }}>{song.notes}</p>
         )}
+        <div className="mt-4 pt-4 border-t" style={{ borderColor: '#1C2A44' }}>
+          <ReadinessTracker songId={songId} userId={userId} />
+        </div>
       </Card>
 
       <Card>
