@@ -67,13 +67,13 @@ export default function ChoirSongDetail() {
         ) : (
           <div className="space-y-2">
             {visibleAssets.map(a => {
-              const Icon = ASSET_ICONS[a.type] || Music;
+              const AssetIcon = ASSET_ICONS[a.type] || Music;
               const color = PART_COLORS[a.part_scope] || '#9CB2D6';
               return (
                 <div key={a.id} className="flex items-center justify-between px-3 py-2.5 rounded-lg"
                   style={{ backgroundColor: '#0B1220', border: `1px solid ${color}20` }}>
                   <div className="flex items-center gap-2.5">
-                    <Icon className="w-4 h-4 shrink-0" style={{ color }} />
+                    <AssetIcon className="w-4 h-4 shrink-0" style={{ color }} />
                     <div>
                       <p className="text-xs font-medium" style={{ color: '#EAF2FF' }}>{a.name}</p>
                       <p className="text-[10px]" style={{ color: '#9CB2D6' }}>
