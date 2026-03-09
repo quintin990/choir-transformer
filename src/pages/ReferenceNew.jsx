@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, Activity } from 'lucide-react';
 import Card, { CardHeader } from '../components/auralyn/Card';
 import FileDropZone from '../components/auralyn/FileDropZone';
+import WaveformEditor from '../components/waveform/WaveformEditor';
 
 export default function ReferenceNew() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const projectId = new URLSearchParams(location.search).get('project_id');
+
   const [file, setFile] = useState(null);
   const [fileError, setFileError] = useState('');
   const [title, setTitle] = useState('');
   const [platform, setPlatform] = useState('streaming');
   const [customLufs, setCustomLufs] = useState('-14');
+  const [clipStart, setClipStart] = useState(0);
+  const [clipEnd, setClipEnd] = useState(null);
   const [loading, setLoading] = useState(false);
   const [stage, setStage] = useState('');
   const [error, setError] = useState('');
@@ -26,9 +32,15 @@ export default function ReferenceNew() {
     setFile(f);
     setFileError(err || '');
     if (f && !err) setTitle(f.name.replace(/\.[^.]+$/, ''));
+    if (!f) { setClipStart(0); setClipEnd(null); }
   };
 
-  const canSubmit = file && !fileError && !loading;
+  const handleRange = ({ start, end }) => {
+    setClipStart(start);
+    setClipEnd(end);
+  };
+
+  const canSubmit = file && !fileError && !loading && (clipEnd == null || (clipEnd - clipStart >= 5));
 
   const handleStart = async () => {
     if (!canSubmit) return;
@@ -49,6 +61,9 @@ export default function ReferenceNew() {
         target_platform: platform,
         target_lufs: platform === 'custom' ? parseFloat(customLufs) : platform === 'streaming' ? -14 : -23,
         rights_confirmed: true,
+        clip_start_sec: clipStart || 0,
+        clip_end_sec: clipEnd,
+        project_id: projectId || null,
       });
 
       const jobId = createRes.data.job_id;
@@ -70,8 +85,14 @@ export default function ReferenceNew() {
           <h1 className="text-xl font-bold" style={{ color: '#EAF2FF', letterSpacing: '-0.02em' }}>Reference Analysis</h1>
         </div>
         <p className="text-sm" style={{ color: '#9CB2D6' }}>
-          Upload a reference track. Auralyn will extract loudness, tonal balance, dynamics, and stereo width.
+          Upload a reference track. Auralyn extracts loudness, tonal balance, dynamics, and stereo width.
         </p>
+        {projectId && (
+          <span className="inline-flex items-center gap-1 text-[11px] mt-2 px-2 py-0.5 rounded-md font-medium"
+            style={{ backgroundColor: '#19D3A218', color: '#19D3A2', border: '1px solid #19D3A230' }}>
+            Attached to project
+          </span>
+        )}
       </div>
 
       {error && (
@@ -81,9 +102,9 @@ export default function ReferenceNew() {
         </div>
       )}
 
-      <div className="grid lg:grid-cols-2 gap-5">
+      <div className="grid lg:grid-cols-2 gap-5 mb-5">
         <Card>
-          <CardHeader title="Upload reference" subtitle="Any format. Auralyn will run a full technical analysis." />
+          <CardHeader title="Upload reference" subtitle="Any format. Full technical analysis." />
           <FileDropZone file={file} onFile={handleFile} error={fileError} />
         </Card>
 
@@ -92,17 +113,12 @@ export default function ReferenceNew() {
           <div className="space-y-4">
             <div>
               <label className="block text-xs font-medium mb-1.5" style={{ color: '#9CB2D6' }}>Job title</label>
-              <input
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-                placeholder="Reference name…"
-                className="w-full rounded-lg px-3 h-9 text-sm outline-none transition-colors"
+              <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Reference name…"
+                className="w-full rounded-lg px-3 h-9 text-sm outline-none"
                 style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44', color: '#EAF2FF' }}
-                onFocus={e => e.target.style.borderColor='#19D3A2'}
-                onBlur={e => e.target.style.borderColor='#1C2A44'}
-              />
+                onFocus={e => e.target.style.borderColor = '#19D3A2'}
+                onBlur={e => e.target.style.borderColor = '#1C2A44'} />
             </div>
-
             <div>
               <label className="block text-xs font-medium mb-1.5" style={{ color: '#9CB2D6' }}>Target platform</label>
               <Select value={platform} onValueChange={setPlatform}>
@@ -116,46 +132,45 @@ export default function ReferenceNew() {
                 </SelectContent>
               </Select>
             </div>
-
             {platform === 'custom' && (
               <div>
                 <label className="block text-xs font-medium mb-1.5" style={{ color: '#9CB2D6' }}>Target LUFS</label>
-                <input
-                  type="number"
-                  value={customLufs}
-                  onChange={e => setCustomLufs(e.target.value)}
-                  placeholder="-14"
-                  min="-40" max="-6" step="0.5"
+                <input type="number" value={customLufs} onChange={e => setCustomLufs(e.target.value)}
+                  placeholder="-14" min="-40" max="-6" step="0.5"
                   className="w-full rounded-lg px-3 h-9 text-sm outline-none"
-                  style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44', color: '#EAF2FF' }}
-                  onFocus={e => e.target.style.borderColor='#19D3A2'}
-                  onBlur={e => e.target.style.borderColor='#1C2A44'}
-                />
+                  style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44', color: '#EAF2FF' }} />
               </div>
             )}
-
-            {/* Info block */}
-            <div className="rounded-lg p-3 text-xs space-y-1" style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44' }}>
+            <div className="rounded-lg p-3 text-xs space-y-1.5" style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44' }}>
               <p className="font-semibold mb-2" style={{ color: '#EAF2FF' }}>Metrics extracted</p>
               {['Integrated LUFS', 'True peak dBTP', 'Loudness range (LRA)', 'Crest factor', 'Stereo correlation', 'Tonal balance curve', 'Stereo width by band'].map(m => (
                 <div key={m} className="flex items-center gap-2" style={{ color: '#9CB2D6' }}>
-                  <div className="w-1 h-1 rounded-full" style={{ backgroundColor: '#19D3A2' }} />
+                  <div className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: '#19D3A2' }} />
                   {m}
                 </div>
               ))}
             </div>
-
-            <button
-              disabled={!canSubmit}
-              onClick={handleStart}
-              className="w-full h-10 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed"
-              style={{ backgroundColor: '#19D3A2', color: '#0B1220' }}
-            >
-              {loading ? <><Loader2 className="w-4 h-4 animate-spin" />{stage || 'Working…'}</> : 'Analyze Reference'}
-            </button>
           </div>
         </Card>
       </div>
+
+      {/* Waveform */}
+      <div className="mb-5">
+        <WaveformEditor audioFile={file} onRangeChange={handleRange} maxClip={120} minClip={5} />
+      </div>
+
+      {file && clipStart != null && clipEnd != null && (
+        <div className="mb-4 px-3 py-2 rounded-lg text-xs" style={{ backgroundColor: '#19D3A208', border: '1px solid #19D3A220', color: '#9CB2D6' }}>
+          Analyzing <span style={{ color: '#EAF2FF' }}>{Math.round(clipEnd - clipStart)}s</span> of audio.
+          Process only a section to save compute — useful for quick reference checks before running the full track.
+        </div>
+      )}
+
+      <button disabled={!canSubmit} onClick={handleStart}
+        className="w-full h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+        style={{ backgroundColor: '#19D3A2', color: '#0B1220' }}>
+        {loading ? <><Loader2 className="w-4 h-4 animate-spin" />{stage || 'Working…'}</> : 'Analyze Reference'}
+      </button>
     </div>
   );
 }

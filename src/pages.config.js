@@ -68,6 +68,7 @@ import Match from './pages/Match';
 import ProjectsList from './pages/ProjectsList';
 import ProjectNew from './pages/ProjectNew';
 import ProjectDetail from './pages/ProjectDetail';
+import JobDetail from './pages/JobDetail';
 import __Layout from './Layout.jsx';
 
 
@@ -93,6 +94,7 @@ export const PAGES = {
     "ProjectsList": ProjectsList,
     "ProjectNew": ProjectNew,
     "ProjectDetail": ProjectDetail,
+    "JobDetail": JobDetail,
 }
 
 export const pagesConfig = {
