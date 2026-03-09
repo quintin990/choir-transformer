@@ -11,6 +11,8 @@ import TagEditor from '../components/auralyn/TagEditor';
 import MixConsole from '../components/mixer/MixConsole';
 import ExportPanel from '../components/export/ExportPanel';
 import SongInfoPanel from '../components/auralyn/SongInfoPanel';
+import EnhanceTab from '../components/jobs/EnhanceTab';
+import HarmonyTab from '../components/jobs/HarmonyTab';
 
 const ACTIVE = ['queued', 'uploading', 'processing', 'packaging'];
 
