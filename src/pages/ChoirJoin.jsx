@@ -1,80 +1,129 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, LogIn, Loader2 } from 'lucide-react';
+import { Users, Loader2 } from 'lucide-react';
 
 export default function ChoirJoin() {
   const navigate = useNavigate();
-  const [code, setCode] = useState('');
+  const [user, setUser] = useState(null);
+  const [inviteCode, setInviteCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [status, setStatus] = useState('');
-  const [choirName, setChoirName] = useState('');
 
-  const handleSubmit = async (e) => {
+  useEffect(() => {
+    base44.auth.me().then(setUser).catch(() => base44.auth.redirectToLogin());
+  }, []);
+
+  const handleJoin = async (e) => {
     e.preventDefault();
-    if (!code.trim()) return;
+    if (!inviteCode.trim()) {
+      setError('Please enter an invite code');
+      return;
+    }
+
     setLoading(true);
-    setError('');
-    setStatus('');
-    setChoirName('');
-    const res = await base44.functions.invoke('joinChoirByInviteCode', { invite_code: code.trim() });
-    setLoading(false);
-    
-    if (res.data?.error) {
-      setError(res.data.error);
-    } else {
-      setChoirName(res.data?.choir?.name || '');
-      setStatus('pending');
-      setTimeout(() => navigate(createPageUrl('Choir')), 2000);
+    try {
+      const choirs = await base44.entities.Choir.filter({ invite_code: inviteCode.toUpperCase() });
+      if (choirs.length === 0) {
+        setError('Invalid invite code');
+        setLoading(false);
+        return;
+      }
+
+      const choir = choirs[0];
+
+      // Check if already member
+      const existing = await base44.entities.ChoirMembership.filter({
+        choir_id: choir.id,
+        user_id: user.id
+      });
+
+      if (existing.length > 0) {
+        setError('You are already a member of this choir');
+        setLoading(false);
+        return;
+      }
+
+      // Create membership (pending)
+      await base44.entities.ChoirMembership.create({
+        choir_id: choir.id,
+        user_id: user.id,
+        user_email: user.email,
+        user_name: user.full_name,
+        status: 'pending',
+        role: 'member',
+        part: 'none',
+      });
+
+      navigate(createPageUrl('ChoirDashboard'));
+    } catch (err) {
+      setError(err.message || 'Failed to join choir');
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-16 space-y-6">
-      <Link to={createPageUrl('Choir')} className="inline-flex items-center gap-1.5 text-xs" style={{ color: '#9CB2D6' }}>
-        <ArrowLeft className="w-3.5 h-3.5" /> Back
-      </Link>
-
-      <div>
-        <h1 className="text-xl font-bold mb-1" style={{ color: '#EAF2FF' }}>Join a Choir</h1>
-        <p className="text-sm" style={{ color: '#9CB2D6' }}>Enter the invite code from your choir director.</p>
+    <div className="max-w-2xl mx-auto">
+      <div className="flex items-center gap-2.5 mb-8">
+        <Users className="w-6 h-6" style={{ color: 'hsl(var(--color-primary))' }} />
+        <h1 className="text-3xl font-bold" style={{ color: 'hsl(var(--color-text))' }}>Join Choir</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      {error && (
+        <div className="mb-6 p-4 rounded-lg text-sm" style={{ backgroundColor: 'hsl(var(--color-destructive) / 0.1)', border: `1px solid hsl(var(--color-destructive) / 0.3)`, color: 'hsl(var(--color-destructive))' }}>
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleJoin} className="rounded-lg p-6 space-y-6" style={{ backgroundColor: 'hsl(var(--color-card))', border: `1px solid hsl(var(--color-border))` }}>
         <div>
-          <label className="text-xs font-medium block mb-1.5" style={{ color: '#9CB2D6' }}>Invite Code</label>
+          <label className="block text-sm font-medium mb-2" style={{ color: 'hsl(var(--color-text))' }}>
+            Invite Code
+          </label>
           <input
-            value={code}
-            onChange={e => setCode(e.target.value.toUpperCase())}
-            placeholder="e.g. ABCD1234"
-            maxLength={8}
-            disabled={status === 'pending'}
-            className="w-full h-10 px-3 rounded-lg text-sm font-mono tracking-widest uppercase focus:outline-none disabled:opacity-50"
-            style={{ backgroundColor: '#0F1A2E', border: '1px solid #1C2A44', color: '#EAF2FF', caretColor: '#1EA0FF' }}
+            type="text"
+            value={inviteCode}
+            onChange={e => setInviteCode(e.target.value.toUpperCase())}
+            placeholder="Enter 6-character code"
+            maxLength="6"
+            className="w-full h-12 px-4 rounded-lg text-lg font-mono outline-none text-center tracking-widest"
+            style={{ backgroundColor: 'hsl(var(--color-input))', border: `1px solid hsl(var(--color-border))`, color: 'hsl(var(--color-text))' }}
+            onFocus={e => e.target.style.borderColor = 'hsl(var(--color-primary))'}
+            onBlur={e => e.target.style.borderColor = 'hsl(var(--color-border))'}
           />
+          <p className="text-xs mt-2" style={{ color: 'hsl(var(--color-muted))' }}>
+            Ask your choir director for the invite code
+          </p>
         </div>
 
-        {error && (
-          <div className="p-3 rounded-lg text-xs" style={{ backgroundColor: '#FF4D6D10', border: '1px solid #FF4D6D30', color: '#FF4D6D' }}>
-            {error}
-          </div>
-        )}
-
-        {status === 'pending' && (
-          <div className="p-3 rounded-lg text-xs" style={{ backgroundColor: '#1EA0FF10', border: '1px solid #1EA0FF30', color: '#1EA0FF' }}>
-            <span className="font-semibold">Request sent!</span> Waiting for approval from {choirName} director.
-          </div>
-        )}
-
-        <button type="submit" disabled={loading || !code.trim() || status === 'pending'}
-          className="w-full h-10 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
-          style={{ backgroundColor: '#1EA0FF', color: '#fff' }}>
-          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <LogIn className="w-4 h-4" />}
-          Request Access
-        </button>
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={() => navigate(createPageUrl('ChoirDashboard'))}
+            className="flex-1 h-10 rounded-lg text-sm font-semibold"
+            style={{ backgroundColor: 'hsl(var(--color-input))', color: 'hsl(var(--color-muted))', border: `1px solid hsl(var(--color-border))` }}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={loading || !inviteCode.trim()}
+            className="flex-1 h-10 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
+            style={{ backgroundColor: 'hsl(var(--color-primary))', color: 'hsl(var(--color-primary-foreground))' }}
+          >
+            {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+            Join Choir
+          </button>
+        </div>
       </form>
+
+      <div className="mt-8 p-6 rounded-lg" style={{ backgroundColor: 'hsl(var(--color-card))', border: `1px solid hsl(var(--color-border))` }}>
+        <h3 className="font-semibold mb-2" style={{ color: 'hsl(var(--color-text))' }}>Don't have an invite code?</h3>
+        <p style={{ color: 'hsl(var(--color-muted))' }} className="text-sm mb-3">
+          You can create your own choir or contact your director for an invite code.
+        </p>
+      </div>
     </div>
   );
 }
