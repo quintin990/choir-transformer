@@ -57,7 +57,6 @@ import BatchUpload from './pages/BatchUpload';
 import ForgotPassword from './pages/ForgotPassword';
 import Jobs from './pages/Jobs';
 import Landing from './pages/Landing';
-import Match from './pages/Match';
 import Pricing from './pages/Pricing';
 import ReferenceDetail from './pages/ReferenceDetail';
 import ReferenceNew from './pages/ReferenceNew';
@@ -85,7 +84,6 @@ export const PAGES = {
     "ForgotPassword": ForgotPassword,
     "Jobs": Jobs,
     "Landing": Landing,
-    "Match": Match,
     "Pricing": Pricing,
     "ReferenceDetail": ReferenceDetail,
     "ReferenceNew": ReferenceNew,
