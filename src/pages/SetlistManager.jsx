@@ -16,6 +16,7 @@ export default function SetlistManager() {
   const [loading, setLoading] = useState(true);
   const [editingSetlist, setEditingSetlist] = useState(false);
   const [editingNotes, setEditingNotes] = useState({});
+  const [error, setError] = useState(null);
 
   const setlistId = new URLSearchParams(window.location.search).get('id');
 
