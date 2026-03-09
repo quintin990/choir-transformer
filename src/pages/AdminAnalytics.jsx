@@ -8,6 +8,7 @@ import {
   XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid
 } from 'recharts';
 import { Users, Briefcase, CreditCard, TrendingUp, CheckCircle, XCircle, Loader2, Clock } from 'lucide-react';
+import { createPageUrl } from '@/utils';
 import { format, subDays, startOfDay } from 'date-fns';
 
 const PLAN_COLORS = { free: '#6b7280', starter: '#3b82f6', pro: '#8b5cf6', enterprise: '#f59e0b' };
@@ -45,7 +46,7 @@ export default function AdminAnalytics() {
       try {
         const me = await base44.auth.me();
         if (me.role !== 'admin') {
-          window.location.href = '/Dashboard';
+          window.location.href = createPageUrl('Jobs');
           return;
         }
         const [allJobs, allUsers] = await Promise.all([
