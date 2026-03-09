@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Music2, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -13,8 +13,8 @@ const OUTPUT_OPTIONS = [
 ];
 
 export default function HarmonyPanel({ mode, onMode, options, onOptions }) {
-  const [open, setOpen] = React.useState(false);
-  const [satbConfirmed, setSatbConfirmed] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [satbConfirmed, setSatbConfirmed] = useState(false);
 
   const setOpt = (key, val) => onOptions({ ...options, [key]: val });
   const toggleOpt = (key) => onOptions({ ...options, [key]: !options[key] });

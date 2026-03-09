@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
 
 const STEMS_OPTIONS = [
@@ -15,7 +15,7 @@ const REFERENCE_OPTIONS = [
 ];
 
 export default function CleanAudioPanel({ variant = 'stems', enabled, onToggle, options, onOptions }) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const opts = variant === 'stems' ? STEMS_OPTIONS : REFERENCE_OPTIONS;
 
   const toggle = (key) => {

@@ -9,6 +9,8 @@ import FileDropZone from '../components/auralyn/FileDropZone';
 import WaveformEditor from '../components/waveform/WaveformEditor';
 import { ProBadge, UpgradeBanner } from '../components/auralyn/ProBadge';
 import { SongInfoCollapsible } from '../components/auralyn/SongInfoPanel';
+import CleanAudioPanel from '../components/auralyn/CleanAudioPanel';
+import HarmonyPanel from '../components/auralyn/HarmonyPanel';
 
 export default function StemsNew() {
   const navigate = useNavigate();
@@ -32,6 +34,10 @@ export default function StemsNew() {
   const [limitHit, setLimitHit] = useState(false);
   const [uploadedFileUrl, setUploadedFileUrl] = useState(null);
   const [songInfo, setSongInfo] = useState({});
+  const [cleanEnabled, setCleanEnabled] = useState(false);
+  const [cleanOptions, setCleanOptions] = useState({});
+  const [harmonyMode, setHarmonyMode] = useState('none');
+  const [harmonyOptions, setHarmonyOptions] = useState({ focus: 'lead_vocal', guide_stem: true, notes: false });
 
   useEffect(() => {
     base44.auth.me().catch(() => base44.auth.redirectToLogin('/StemsNew'));
@@ -77,6 +83,10 @@ export default function StemsNew() {
         clip_start_sec: clipStart || 0,
         clip_end_sec: clipEnd,
         project_id: projectId || null,
+        clean_audio_enabled: cleanEnabled,
+        clean_audio_options_json: cleanEnabled ? cleanOptions : null,
+        harmony_mode: harmonyMode,
+        harmony_options_json: harmonyMode !== 'none' ? harmonyOptions : null,
         ...songInfo,
       });
 
@@ -237,6 +247,29 @@ export default function StemsNew() {
         <div className="mb-4 px-3 py-2 rounded-lg text-xs" style={{ backgroundColor: '#1EA0FF08', border: '1px solid #1EA0FF20', color: '#9CB2D6' }}>
           Processing only <span style={{ color: '#EAF2FF' }}>{Math.round(clipEnd - clipStart)}s</span> of audio.
           Process only a section to save compute — useful for testing separation quality before running the full track.
+        </div>
+      )}
+
+      {file && (
+        <div className="mb-3">
+          <CleanAudioPanel
+            variant="stems"
+            enabled={cleanEnabled}
+            onToggle={setCleanEnabled}
+            options={cleanOptions}
+            onOptions={setCleanOptions}
+          />
+        </div>
+      )}
+
+      {file && (
+        <div className="mb-3">
+          <HarmonyPanel
+            mode={harmonyMode}
+            onMode={setHarmonyMode}
+            options={harmonyOptions}
+            onOptions={setHarmonyOptions}
+          />
         </div>
       )}
 
