@@ -414,7 +414,7 @@ export default function JobDetail() {
       )}
 
       {/* Song Info */}
-      {tab === 'song info' && <SongInfoTabContent job={job} jobId={jobId} onJobUpdate={setJob} />}
+      {tab === 'song info' && <SongInfoTab job={job} jobId={jobId} onJobUpdate={setJob} />}
 
       {/* Technical */}
       {tab === 'technical' && (
