@@ -7,6 +7,7 @@ import { Loader2, Layers, Lock } from 'lucide-react';
 import Card, { CardHeader } from '../components/auralyn/Card';
 import FileDropZone from '../components/auralyn/FileDropZone';
 import WaveformEditor from '../components/waveform/WaveformEditor';
+import WaveformInteractive from '../components/waveform/WaveformInteractive';
 import { ProBadge, UpgradeBanner } from '../components/auralyn/ProBadge';
 import { SongInfoCollapsible } from '../components/auralyn/SongInfoPanel';
 import CleanAudioPanel from '../components/auralyn/CleanAudioPanel';
@@ -238,10 +239,16 @@ export default function StemsNew() {
         </Card>
       </div>
 
-      {/* Waveform / trim range */}
-      <div className="mb-5">
-        <WaveformEditor audioFile={file} onRangeChange={handleRange} maxClip={120} minClip={5} />
-      </div>
+      {/* Interactive waveform for precise clip selection */}
+      {file && (
+        <div className="mb-5">
+          <div className="mb-3">
+            <h3 className="text-sm font-semibold mb-2" style={{ color: '#EAF2FF' }}>Click and drag to select region</h3>
+            <p className="text-xs mb-3" style={{ color: '#9CB2D6' }}>Drag the handles or click the waveform to select the audio segment to process.</p>
+          </div>
+          <WaveformInteractive audioFile={file} onRangeChange={handleRange} maxClip={120} minClip={5} />
+        </div>
+      )}
 
       {file && clipStart != null && clipEnd != null && (
         <div className="mb-4 px-3 py-2 rounded-lg text-xs" style={{ backgroundColor: '#1EA0FF08', border: '1px solid #1EA0FF20', color: '#9CB2D6' }}>
