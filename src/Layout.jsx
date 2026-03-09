@@ -25,7 +25,7 @@ export default function Layout({ children, currentPageName }) {
       <div style={{ backgroundColor: '#0B1220', color: '#EAF2FF', minHeight: '100vh' }}>
         <header className="border-b sticky top-0 z-50" style={{ borderColor: '#1C2A44', backgroundColor: '#0B122099', backdropFilter: 'blur(12px)' }}>
           <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
-            <Link to={createPageUrl('Landing')} className="flex items-center gap-2.5">
+            <Link to={createPageUrl('Landing')} className="flex items-center gap-2.5 shrink-0">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#1EA0FF' }}>
                 <Layers className="w-4 h-4 text-white" />
               </div>
@@ -55,8 +55,21 @@ export default function Layout({ children, currentPageName }) {
                     style={{ backgroundColor: '#1EA0FF', color: '#fff' }}>Sign Up</Link>
                 </>
               )}
+              <button className="sm:hidden p-1.5 rounded" style={{ color: '#9CB2D6' }} onClick={() => setMobileOpen(v => !v)}>
+                {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
             </div>
           </div>
+          {mobileOpen && (
+            <div className="sm:hidden border-t px-5 py-3 space-y-1" style={{ borderColor: '#1C2A44', backgroundColor: '#0F1A2E' }}>
+              {[['Stems', 'StemsNew'], ['Reference', 'ReferenceNew'], ['Choir', 'Choir'], ['Pricing', 'Pricing']].map(([label, page]) => (
+                <Link key={page} to={createPageUrl(page)} onClick={() => setMobileOpen(false)}
+                  className="block px-3 py-2.5 rounded-lg text-sm font-medium" style={{ color: '#9CB2D6' }}>
+                  {label}
+                </Link>
+              ))}
+            </div>
+          )}
         </header>
         <main>{children}</main>
       </div>
