@@ -31,24 +31,29 @@ export default function Layout({ children, currentPageName }) {
     return (
       <div className="min-h-screen" style={{ backgroundColor: '#0B1220' }}>
         {/* Landing minimal header */}
-        <header className="border-b" style={{ borderColor: '#1C2A44', backgroundColor: '#0B1220' }}>
-          <div className="max-w-6xl mx-auto px-5 h-14 flex items-center justify-between">
+        <header className="border-b" style={{ borderColor: '#1C2A44', backgroundColor: '#0B122099', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 40 }}>
+          <div className="max-w-5xl mx-auto px-5 h-16 flex items-center justify-between">
             <Link to={createPageUrl('Landing')} className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded flex items-center justify-center" style={{ backgroundColor: '#1EA0FF' }}>
-                <Layers className="w-3.5 h-3.5 text-white" />
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#1EA0FF' }}>
+                <Layers className="w-4 h-4 text-white" />
               </div>
-              <span className="font-bold tracking-tight" style={{ color: '#EAF2FF', letterSpacing: '-0.02em' }}>Auralyn</span>
+              <span className="text-lg font-bold tracking-tight" style={{ color: '#EAF2FF', letterSpacing: '-0.03em' }}>Auralyn</span>
             </Link>
-            <nav className="hidden sm:flex items-center gap-6">
-              <Link to={createPageUrl('Jobs')} className="text-sm transition-colors" style={{ color: '#9CB2D6' }}
-                onMouseEnter={e => e.target.style.color='#EAF2FF'} onMouseLeave={e => e.target.style.color='#9CB2D6'}>
-                Jobs
-              </Link>
-              <Link to={createPageUrl('Settings')} className="text-sm transition-colors" style={{ color: '#9CB2D6' }}
-                onMouseEnter={e => e.target.style.color='#EAF2FF'} onMouseLeave={e => e.target.style.color='#9CB2D6'}>
-                Settings
-              </Link>
+            <nav className="hidden sm:flex items-center gap-8">
+              {[['Jobs', 'Jobs'], ['Pricing', 'Pricing'], ['Choir', 'Choir']].map(([label, page]) => (
+                <Link key={page} to={createPageUrl(page)} className="text-sm font-medium transition-colors" style={{ color: '#6A8AAD' }}
+                  onMouseEnter={e => e.currentTarget.style.color='#EAF2FF'} onMouseLeave={e => e.currentTarget.style.color='#6A8AAD'}>
+                  {label}
+                </Link>
+              ))}
             </nav>
+            <Link to={createPageUrl('StemsNew')}
+              className="hidden sm:inline-flex items-center gap-1.5 px-4 h-9 rounded-lg text-sm font-semibold transition-all"
+              style={{ backgroundColor: '#1EA0FF', color: '#fff' }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor='#3BAEFF'}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor='#1EA0FF'}>
+              Get started
+            </Link>
           </div>
         </header>
         <main>{children}</main>
