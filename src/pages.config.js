@@ -57,18 +57,20 @@ import BatchUpload from './pages/BatchUpload';
 import ForgotPassword from './pages/ForgotPassword';
 import Jobs from './pages/Jobs';
 import Landing from './pages/Landing';
+import Match from './pages/Match';
 import Pricing from './pages/Pricing';
 import ReferenceDetail from './pages/ReferenceDetail';
+import ReferenceNew from './pages/ReferenceNew';
 import ResetPassword from './pages/ResetPassword';
 import Settings from './pages/Settings';
-import Workspaces from './pages/Workspaces';
 import StemsNew from './pages/StemsNew';
-import ReferenceNew from './pages/ReferenceNew';
-import Match from './pages/Match';
+import Workspaces from './pages/Workspaces';
 import ProjectsList from './pages/ProjectsList';
 import ProjectNew from './pages/ProjectNew';
 import ProjectDetail from './pages/ProjectDetail';
 import JobDetail from './pages/JobDetail';
+import BillingSuccess from './pages/BillingSuccess';
+import BillingCancel from './pages/BillingCancel';
 import __Layout from './Layout.jsx';
 
 
@@ -83,18 +85,20 @@ export const PAGES = {
     "ForgotPassword": ForgotPassword,
     "Jobs": Jobs,
     "Landing": Landing,
+    "Match": Match,
     "Pricing": Pricing,
     "ReferenceDetail": ReferenceDetail,
+    "ReferenceNew": ReferenceNew,
     "ResetPassword": ResetPassword,
     "Settings": Settings,
-    "Workspaces": Workspaces,
     "StemsNew": StemsNew,
-    "ReferenceNew": ReferenceNew,
-    "Match": Match,
+    "Workspaces": Workspaces,
     "ProjectsList": ProjectsList,
     "ProjectNew": ProjectNew,
     "ProjectDetail": ProjectDetail,
     "JobDetail": JobDetail,
+    "BillingSuccess": BillingSuccess,
+    "BillingCancel": BillingCancel,
 }
 
 export const pagesConfig = {
