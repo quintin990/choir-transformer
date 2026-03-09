@@ -203,7 +203,7 @@ export default function JobDetail() {
     if (t === 'export') return showExport;
     if (t === 'enhance') return showEnhance;
     if (t === 'harmony') return showHarmony;
-    if (t === 'song info') return ['stems', 'reference'].includes(job.kind);
+    if (t === 'song info') return job.kind === 'stems';
     return true;
   });
 
