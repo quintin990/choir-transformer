@@ -143,6 +143,33 @@ export default function Choir() {
   if (membership?.status === 'pending') {
     return (
       <div className="max-w-xl mx-auto mt-10 space-y-5">
+        {leaveConfirmOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
+            <div className="rounded-2xl p-6 w-full max-w-sm space-y-4" style={{ backgroundColor: '#0F1A2E', border: '1px solid #1C2A44' }}>
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center mx-auto" style={{ backgroundColor: '#FF4D6D15' }}>
+                <LogOut className="w-5 h-5" style={{ color: '#FF4D6D' }} />
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-semibold mb-1" style={{ color: '#EAF2FF' }}>Cancel request to "{choir?.name}"?</p>
+                <p className="text-xs leading-relaxed" style={{ color: '#9CB2D6' }}>
+                  Your join request will be withdrawn. You can rejoin with the invite code.
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => setLeaveConfirmOpen(false)}
+                  className="flex-1 h-9 rounded-lg text-xs font-medium border"
+                  style={{ borderColor: '#1C2A44', color: '#9CB2D6' }}>
+                  Keep waiting
+                </button>
+                <button onClick={() => { setLeaveConfirmOpen(false); handleLeave(); }} disabled={leaving}
+                  className="flex-1 h-9 rounded-lg text-xs font-semibold disabled:opacity-40"
+                  style={{ backgroundColor: '#FF4D6D', color: '#fff' }}>
+                  {leaving ? 'Cancelling…' : 'Cancel request'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         <ChoirSwitcher allMemberships={allMemberships} allChoirs={allChoirs} membership={membership} onSwitch={switchChoir} open={switcherOpen} setOpen={setSwitcherOpen} />
         <div className="text-center space-y-4 py-8">
           <div className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center" style={{ backgroundColor: '#FFB02015' }}>
