@@ -84,6 +84,7 @@ import SetlistManager from './pages/SetlistManager';
 import Settings from './pages/Settings';
 import StemsNew from './pages/StemsNew';
 import Workspaces from './pages/Workspaces';
+import ChoirHub from './pages/ChoirHub';
 import __Layout from './Layout.jsx';
 
 
@@ -125,6 +126,7 @@ export const PAGES = {
     "Settings": Settings,
     "StemsNew": StemsNew,
     "Workspaces": Workspaces,
+    "ChoirHub": ChoirHub,
 }
 
 export const pagesConfig = {
