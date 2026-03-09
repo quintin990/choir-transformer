@@ -73,7 +73,7 @@ function StemPlayer({ name, url, format: fmt = 'wav' }) {
   );
 }
 
-const TABS = ['results', 'console', 'export', 'song info', 'technical', 'files'];
+const TABS = ['results', 'console', 'export', 'enhance', 'harmony', 'song info', 'technical', 'files'];
 
 export default function JobDetail() {
   const location = useLocation();
@@ -173,9 +173,14 @@ export default function JobDetail() {
   const showConsole = job.kind === 'stems' && isDone;
   const clipRange = job.clip_start_sec != null && job.clip_end_sec != null;
 
+  const showEnhance = job.clean_audio_enabled;
+  const showHarmony = job.harmony_mode && job.harmony_mode !== 'none';
+
   const visibleTabs = TABS.filter(t => {
     if (t === 'console') return showConsole;
     if (t === 'export') return showExport;
+    if (t === 'enhance') return showEnhance;
+    if (t === 'harmony') return showHarmony;
     if (t === 'song info') return ['stems', 'reference'].includes(job.kind);
     return true;
   });
@@ -296,7 +301,7 @@ export default function JobDetail() {
               color: tab === t ? '#EAF2FF' : '#9CB2D6',
               borderBottomColor: tab === t ? '#1EA0FF' : 'transparent',
             }}>
-            {t === 'console' ? 'Mix Console' : t === 'export' ? 'Export to DAW' : t === 'song info' ? 'Song Info' : t}
+            {t === 'console' ? 'Mix Console' : t === 'export' ? 'Export to DAW' : t === 'song info' ? 'Song Info' : t === 'enhance' ? 'Enhance' : t === 'harmony' ? 'Harmony' : t}
           </button>
         ))}
       </div>
@@ -359,6 +364,16 @@ export default function JobDetail() {
           <CardHeader title="Export to DAW Session" subtitle="Generate a project file you can open directly in your DAW" />
           <ExportPanel job={job} onJobUpdate={setJob} />
         </Card>
+      )}
+
+      {/* Enhance */}
+      {tab === 'enhance' && showEnhance && (
+        <EnhanceTab job={job} onJobUpdate={setJob} jobId={jobId} />
+      )}
+
+      {/* Harmony */}
+      {tab === 'harmony' && showHarmony && (
+        <HarmonyTab job={job} onJobUpdate={setJob} jobId={jobId} />
       )}
 
       {/* Song Info */}
