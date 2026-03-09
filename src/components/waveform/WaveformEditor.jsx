@@ -317,8 +317,7 @@ export default function WaveformEditor({
                 style={{ backgroundColor: playing ? '#FFB02015' : '#0B1220', border: `1px solid ${playing ? '#FFB02040' : '#1C2A44'}` }}>
                 <span className="w-1.5 h-1.5 rounded-full shrink-0"
                   style={{ backgroundColor: playing ? '#FFB020' : '#1C2A44', boxShadow: playing ? '0 0 5px #FFB020' : 'none', transition: 'all 0.2s' }} />
-                <span className="text-[12px] font-mono tabular-nums font-semibold"
-                  style={{ color: playing ? '#FFB020' : '#9CB2D6', letterSpacing: '0.04em', minWidth: 36, textAlign: 'right' }}>
+                <span style={{ color: playing ? '#FFB020' : '#9CB2D6', fontFamily: "'DM Mono', monospace", fontSize: 12, fontWeight: 500, minWidth: 36, textAlign: 'right', letterSpacing: '0.02em' }}>
                   {fmt(playing ? playhead : selStart)}
                 </span>
               </button>
@@ -341,8 +340,7 @@ export default function WaveformEditor({
                 title="Click to edit end time"
                 className="h-7 px-2.5 rounded-lg flex items-center transition-all"
                 style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44' }}>
-                <span className="text-[12px] font-mono tabular-nums font-semibold"
-                  style={{ color: '#9CB2D6', letterSpacing: '0.04em' }}>
+                <span style={{ color: '#9CB2D6', fontFamily: "'DM Mono', monospace", fontSize: 12, fontWeight: 500, letterSpacing: '0.02em' }}>
                   {fmt(selEnd)}
                 </span>
               </button>
@@ -350,8 +348,7 @@ export default function WaveformEditor({
             {/* Duration pill */}
             <div className="h-7 px-2.5 rounded-lg flex items-center"
               style={{ backgroundColor: isErr ? '#FF4D6D12' : '#1EA0FF10', border: `1px solid ${isErr ? '#FF4D6D30' : '#1EA0FF25'}` }}>
-              <span className="text-[11px] font-mono tabular-nums font-bold"
-                style={{ color: isErr ? '#FF4D6D' : '#1EA0FF', letterSpacing: '0.03em' }}>
+              <span style={{ color: isErr ? '#FF4D6D' : '#1EA0FF', fontFamily: "'DM Mono', monospace", fontSize: 12, fontWeight: 600, letterSpacing: '0.02em' }}>
                 {fmt(clipLen)}
               </span>
             </div>
