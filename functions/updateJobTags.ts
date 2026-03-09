@@ -6,16 +6,16 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { job_id } = await req.json();
+    const { job_id, tags } = await req.json();
     const jobs = await base44.entities.Job.filter({ id: job_id });
     const job = jobs[0];
     if (!job) return Response.json({ error: 'Not found' }, { status: 404 });
     if (job.user_id && job.user_id !== user.id) return Response.json({ error: 'Forbidden' }, { status: 403 });
 
-    await base44.entities.Job.update(job_id, { status: 'cancelled', stage: 'Cancelled' });
-    return Response.json({ ok: true });
+    const updated = await base44.entities.Job.update(job_id, { tags });
+    return Response.json({ job: updated });
   } catch (err) {
-    console.error('cancelJob error:', err);
+    console.error('updateJobTags error:', err);
     return Response.json({ error: err.message }, { status: 500 });
   }
 });
