@@ -155,10 +155,10 @@ export default function Choir() {
               Your request has been sent. You'll be notified once your director approves it.
             </p>
           </div>
-          <button onClick={handleLeave} disabled={leaving}
+          <button onClick={() => setLeaveConfirmOpen(true)}
             className="h-9 px-4 rounded-lg text-xs font-medium flex items-center gap-1.5 mx-auto"
             style={{ border: '1px solid #FF4D6D30', color: '#FF4D6D' }}>
-            <LogOut className="w-3.5 h-3.5" /> {leaving ? 'Leaving…' : 'Cancel request'}
+            <LogOut className="w-3.5 h-3.5" /> Cancel request
           </button>
         </div>
       </div>
