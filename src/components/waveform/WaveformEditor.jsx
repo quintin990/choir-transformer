@@ -250,17 +250,44 @@ export default function WaveformEditor({
   return (
     <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: '#070E1A', borderColor: '#1C2A44' }}>
       {/* Header */}
-      <div className="px-4 py-2.5 flex items-center justify-between border-b" style={{ borderColor: '#1C2A44', backgroundColor: '#0A1422' }}>
+      <div className="px-4 py-3 flex items-center justify-between border-b" style={{ borderColor: '#1C2A44', backgroundColor: '#0A1422' }}>
         <div>
           <p className="text-xs font-semibold" style={{ color: '#EAF2FF' }}>Trim Range</p>
           <p className="text-[10px] mt-0.5" style={{ color: '#9CB2D6' }}>
-            Process only a section to save compute. Drag the handles to set start and end points.
+            Drag handles to set start and end points.
           </p>
         </div>
         {clipLen != null && (
-          <span className="text-[11px] font-mono ml-3 shrink-0 tabular-nums" style={{ color: isErr ? '#FF4D6D' : '#1EA0FF' }}>
-            {fmt(selStart)} – {fmt(selEnd)} · {fmt(clipLen)}
-          </span>
+          <div className="flex items-center gap-1.5 ml-3 shrink-0">
+            {/* Live playhead time */}
+            <div className="flex items-center gap-1 h-7 px-2.5 rounded-lg"
+              style={{ backgroundColor: playing ? '#FFB02015' : '#0B1220', border: `1px solid ${playing ? '#FFB02040' : '#1C2A44'}`, transition: 'all 0.2s' }}>
+              <span className="w-1.5 h-1.5 rounded-full shrink-0"
+                style={{ backgroundColor: playing ? '#FFB020' : '#1C2A44', boxShadow: playing ? '0 0 5px #FFB020' : 'none', transition: 'all 0.2s' }} />
+              <span className="text-[12px] font-mono tabular-nums font-semibold"
+                style={{ color: playing ? '#FFB020' : '#9CB2D6', letterSpacing: '0.04em', minWidth: 36, textAlign: 'right' }}>
+                {fmt(playing ? playhead : selStart)}
+              </span>
+            </div>
+            {/* Separator */}
+            <span className="text-[10px]" style={{ color: '#1C2A44' }}>—</span>
+            {/* End time */}
+            <div className="h-7 px-2.5 rounded-lg flex items-center"
+              style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44' }}>
+              <span className="text-[12px] font-mono tabular-nums font-semibold"
+                style={{ color: '#9CB2D6', letterSpacing: '0.04em' }}>
+                {fmt(selEnd)}
+              </span>
+            </div>
+            {/* Duration pill */}
+            <div className="h-7 px-2.5 rounded-lg flex items-center"
+              style={{ backgroundColor: isErr ? '#FF4D6D12' : '#1EA0FF10', border: `1px solid ${isErr ? '#FF4D6D30' : '#1EA0FF25'}` }}>
+              <span className="text-[11px] font-mono tabular-nums font-bold"
+                style={{ color: isErr ? '#FF4D6D' : '#1EA0FF', letterSpacing: '0.03em' }}>
+                {fmt(clipLen)}
+              </span>
+            </div>
+          </div>
         )}
       </div>
 
