@@ -66,6 +66,9 @@ import ReferenceMixAssistant from './pages/ReferenceMixAssistant';
 import ResetPassword from './pages/ResetPassword';
 import Settings from './pages/Settings';
 import Workspaces from './pages/Workspaces';
+import StemsNew from './pages/StemsNew';
+import ReferenceNew from './pages/ReferenceNew';
+import Match from './pages/Match';
 import __Layout from './Layout.jsx';
 
 
@@ -89,6 +92,9 @@ export const PAGES = {
     "ResetPassword": ResetPassword,
     "Settings": Settings,
     "Workspaces": Workspaces,
+    "StemsNew": StemsNew,
+    "ReferenceNew": ReferenceNew,
+    "Match": Match,
 }
 
 export const pagesConfig = {
