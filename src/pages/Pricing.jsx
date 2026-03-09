@@ -138,7 +138,7 @@ export default function Pricing() {
       {/* FAQ-style note */}
       <div className="mt-14 text-center">
         <p className="text-white/30 text-sm">
-          Have questions? <a href="mailto:support@stemforge.app" className="text-sky-400 hover:text-violet-300 transition-colors">Contact us</a>
+          Have questions? <a href="mailto:support@auralyn.app" className="text-sky-400 hover:text-violet-300 transition-colors">Contact us</a>
         </p>
       </div>
     </div>
