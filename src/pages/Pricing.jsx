@@ -24,7 +24,21 @@ const PLANS = [
   },
   {
     name: 'Pro',
-...
+    price: '$12',
+    period: '/ month',
+    desc: 'For producers, remixers, and audio engineers.',
+    features: [
+      'Unlimited jobs',
+      '2 & 4-stem separation',
+      'WAV, FLAC, and MP3 output',
+      'All quality models (Fast → High Quality)',
+      'Google Drive export',
+      'Batch upload',
+      'Reference mix assistant',
+      'Priority GPU processing',
+      '30-day file retention',
+    ],
+    cta: 'Start Pro',
     ctaUrl: 'StemsNew',
     highlight: true,
   },
