@@ -415,7 +415,7 @@ export default function JobDetail() {
             </Card>
           ) : job.kind === 'stems' && hasStems ? (
             <Card>
-              <CardHeader title="Stems" subtitle="Click to preview · download individual files" />
+              <CardHeader title="Stems" subtitle="Hover a stem then press Space to play · click waveform to seek" />
               <div className="space-y-2">
                 {Object.entries(job.stems).map(([name, url]) => (
                   <StemPlayer key={name} name={name} url={url} format={job.output_format || 'wav'} />
