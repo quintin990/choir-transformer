@@ -29,7 +29,7 @@ export default function About() {
       </div>
 
       <div className="grid sm:grid-cols-3 gap-4">
-        {[
+        {([
           {
             Icon: Shield,
             title: 'Your rights matter',
@@ -45,7 +45,7 @@ export default function About() {
             title: 'Get in touch',
             desc: 'Questions, feedback, or issues? Email us at support@stemforge.app and we\'ll respond within 24 hours.',
           },
-        ].map(({ Icon, title, desc }) => (
+        ]).map(({ Icon, title, desc }) => (
           <div key={title} className="bg-white/[0.03] border border-white/5 rounded-xl p-5">
             <Icon className="w-5 h-5 text-violet-400 mb-3" />
             <h3 className="text-sm font-semibold text-white mb-1.5">{title}</h3>
