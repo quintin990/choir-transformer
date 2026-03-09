@@ -196,7 +196,7 @@ export default function JobDetail() {
   const clipRange = job.clip_start_sec != null && job.clip_end_sec != null;
 
   const showEnhance = job.clean_audio_enabled;
-  const showHarmony = job.harmony_mode && job.harmony_mode !== 'none';
+  const showHarmony = job.kind === 'stems';
 
   const visibleTabs = TABS.filter(t => {
     if (t === 'console') return showConsole;
