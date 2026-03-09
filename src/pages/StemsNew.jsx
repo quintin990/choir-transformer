@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import { Loader2, Layers, Lock, Upload, Music, AlertCircle } from 'lucide-react';
+import { Loader2, Layers, Lock, Upload, Music, AlertCircle, ChevronDown } from 'lucide-react';
 import Card, { CardHeader } from '../components/auralyn/Card';
 import FileDropZone from '../components/auralyn/FileDropZone';
-import WaveformEditor from '../components/waveform/WaveformEditor';
 import WaveformInteractive from '../components/waveform/WaveformInteractive';
 import { ProBadge, UpgradeBanner } from '../components/auralyn/ProBadge';
 import { SongInfoCollapsible } from '../components/auralyn/SongInfoPanel';
@@ -39,9 +38,10 @@ export default function StemsNew() {
   const [cleanOptions, setCleanOptions] = useState({});
   const [harmonyMode, setHarmonyMode] = useState('none');
   const [harmonyOptions, setHarmonyOptions] = useState({ focus: 'lead_vocal', guide_stem: true, notes: false });
+  const [expandedSettings, setExpandedSettings] = useState(true);
 
   useEffect(() => {
-    base44.auth.me().catch(() => base44.auth.redirectToLogin('/StemsNew'));
+    base44.auth.me().catch(() => base44.auth.redirectToLogin('/stems/new'));
     base44.functions.invoke('syncProfilePlan', {}).then(res => setPlan(res.data?.plan || 'free')).catch(() => {});
   }, []);
 
@@ -109,27 +109,26 @@ export default function StemsNew() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-7">
-        <div className="flex items-center gap-2.5 mb-1.5">
-          <Layers className="w-4 h-4" style={{ color: '#1EA0FF' }} />
-          <h1 className="text-xl font-bold" style={{ color: '#EAF2FF', letterSpacing: '-0.02em' }}>Stem Separation</h1>
+    <div className="max-w-5xl mx-auto">
+      <div className="mb-8">
+        <div className="flex items-center gap-2.5 mb-2">
+          <Layers className="w-5 h-5" style={{ color: 'hsl(var(--color-primary))' }} />
+          <h1 className="text-3xl font-bold" style={{ color: 'hsl(var(--color-text))' }}>Stem Separation</h1>
         </div>
-        <p className="text-sm" style={{ color: '#9CB2D6' }}>Upload a track. Auralyn isolates vocals, drums, bass, and more.</p>
+        <p className="text-base mb-2" style={{ color: 'hsl(var(--color-muted))' }}>Upload a track and isolate vocals, drums, bass, guitars and more using studio-quality AI.</p>
         {plan === 'free' && (
-          <p className="text-xs mt-1 flex items-center gap-1.5" style={{ color: '#9CB2D6' }}>
+          <p className="text-sm flex items-center gap-1.5" style={{ color: 'hsl(var(--color-muted))' }}>
             Free plan · 2 jobs/day ·
-            <a href={createPageUrl('Pricing')} className="underline" style={{ color: '#1EA0FF' }}>Upgrade for unlimited</a>
+            <a href={createPageUrl('Pricing')} className="underline font-medium" style={{ color: 'hsl(var(--color-primary))' }}>Upgrade for unlimited</a>
           </p>
         )}
         {plan === 'pro' && (
-          <span className="inline-flex items-center gap-1 text-[10px] mt-1 font-semibold" style={{ color: '#19D3A2' }}>
+          <span className="inline-flex items-center gap-1 text-sm font-semibold" style={{ color: 'hsl(var(--color-accent))' }}>
             ✓ Pro — Unlimited jobs
           </span>
         )}
         {projectId && (
-          <span className="inline-flex items-center gap-1 text-[11px] mt-2 px-2 py-0.5 rounded-md font-medium"
-            style={{ backgroundColor: '#1EA0FF18', color: '#1EA0FF', border: '1px solid #1EA0FF30' }}>
+          <span className="inline-flex items-center gap-1 text-xs mt-3 px-3 py-1 rounded-md font-medium" style={{ backgroundColor: 'hsl(var(--color-primary) / 0.1)', color: 'hsl(var(--color-primary))', border: `1px solid hsl(var(--color-primary) / 0.3)` }}>
             Attached to project
           </span>
         )}
@@ -137,60 +136,95 @@ export default function StemsNew() {
 
       {limitHit && <UpgradeBanner />}
       {error && !limitHit && (
-        <div className="mb-5 rounded-lg border px-4 py-3 text-sm"
-          style={{ backgroundColor: '#FF4D6D10', borderColor: '#FF4D6D30', color: '#FF4D6D' }}>
+        <div className="mb-6 rounded-lg border px-4 py-3 text-sm" style={{ backgroundColor: 'hsl(var(--color-destructive) / 0.1)', borderColor: 'hsl(var(--color-destructive) / 0.3)', color: 'hsl(var(--color-destructive))' }}>
           {error}
         </div>
       )}
 
-      <div className="grid lg:grid-cols-2 gap-5 mb-5">
-        <Card>
-          <CardHeader title="Upload audio" subtitle="MP3, WAV, FLAC, AIFF · max 200 MB" />
-          <FileDropZone file={file} onFile={handleFile} error={fileError} />
-          <p className="text-xs mt-4" style={{ color: '#9CB2D6' }}>
-            Files are processed securely. Outputs can be deleted after 7 days.
-          </p>
-        </Card>
+      {/* Upload & Waveform Section */}
+      <Card className="mb-6">
+        <CardHeader title="Upload & Trim" subtitle="MP3, WAV, FLAC, AIFF · max 200 MB" />
+        <FileDropZone file={file} onFile={handleFile} error={fileError} />
+        <p className="text-xs mt-4" style={{ color: 'hsl(var(--color-muted))' }}>
+          Files are processed securely. Outputs can be deleted after 7 days.
+        </p>
 
-        <Card>
-          <CardHeader title="Settings" />
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: '#9CB2D6' }}>Job title</label>
-              <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Track name…"
-                className="w-full rounded-lg px-3 h-9 text-sm outline-none"
-                style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44', color: '#EAF2FF' }}
-                onFocus={e => e.target.style.borderColor = '#1EA0FF'}
-                onBlur={e => e.target.style.borderColor = '#1C2A44'} />
+        {/* Waveform for trimming */}
+        {file && (
+          <div className="mt-6">
+            <div className="mb-3">
+              <h3 className="text-sm font-semibold mb-1" style={{ color: 'hsl(var(--color-text))' }}>Click and drag to select region</h3>
+              <p className="text-xs" style={{ color: 'hsl(var(--color-muted))' }}>Drag the handles to trim the track to process only a section.</p>
             </div>
+            <WaveformInteractive audioFile={file} onRangeChange={handleRange} maxClip={120} minClip={5} />
+          </div>
+        )}
+
+        {file && clipStart != null && clipEnd != null && (
+          <div className="mt-4 px-3 py-2 rounded-lg text-xs" style={{ backgroundColor: 'hsl(var(--color-primary) / 0.1)', border: `1px solid hsl(var(--color-primary) / 0.3)`, color: 'hsl(var(--color-muted))' }}>
+            Processing <span style={{ color: 'hsl(var(--color-text))', fontWeight: 600 }}>{Math.round(clipEnd - clipStart)}s</span> of audio. Processing a section saves compute—useful for testing quality before full track.
+          </div>
+        )}
+      </Card>
+
+      {/* Settings Section */}
+      <Card className="mb-6">
+        <div onClick={() => setExpandedSettings(!expandedSettings)} className="flex items-center justify-between cursor-pointer p-5 border-b" style={{ borderColor: 'hsl(var(--color-border))' }}>
+          <h3 className="text-lg font-semibold" style={{ color: 'hsl(var(--color-text))' }}>Processing Settings</h3>
+          <ChevronDown className="w-5 h-5 transition-transform" style={{ transform: expandedSettings ? 'rotate(180deg)' : '', color: 'hsl(var(--color-muted))' }} />
+        </div>
+
+        {expandedSettings && (
+          <div className="p-5 space-y-5">
+            {/* Job Title */}
             <div>
-              <label className="block text-xs font-medium mb-1.5 flex items-center gap-2" style={{ color: '#9CB2D6' }}>
+              <label className="block text-sm font-medium mb-2" style={{ color: 'hsl(var(--color-text))' }}>Job title</label>
+              <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Track name…"
+                className="w-full rounded-lg px-3 h-10 text-sm outline-none" style={{ backgroundColor: 'hsl(var(--color-input))', border: `1px solid hsl(var(--color-border))`, color: 'hsl(var(--color-text))' }}
+                onFocus={e => e.target.style.borderColor = 'hsl(var(--color-primary))'}
+                onBlur={e => e.target.style.borderColor = 'hsl(var(--color-border))'} />
+            </div>
+
+            {/* Separation Mode */}
+            <div>
+              <label className="block text-sm font-medium mb-2 flex items-center gap-2" style={{ color: 'hsl(var(--color-text))' }}>
                 Separation mode
-                {plan === 'free' && <span className="text-[10px]" style={{ color: '#9CB2D6' }}>· 4-stem requires <ProBadge /></span>}
+                {plan === 'free' && <span className="text-xs font-normal" style={{ color: 'hsl(var(--color-muted))' }}>· 6-stem requires <ProBadge /></span>}
               </label>
-              <Select value={mode} onValueChange={v => { if (v === 'four_stems' && plan === 'free') return; setMode(v); }}>
-                <SelectTrigger className="h-9 text-sm rounded-lg" style={{ backgroundColor: '#0B1220', borderColor: '#1C2A44', color: '#EAF2FF' }}>
+              <Select value={mode} onValueChange={v => { if (v.includes('six') && plan === 'free') return; setMode(v); }}>
+                <SelectTrigger className="h-10 text-sm rounded-lg" style={{ backgroundColor: 'hsl(var(--color-input))', borderColor: 'hsl(var(--color-border))', color: 'hsl(var(--color-text))' }}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="two_stems">2 Stems — Vocals + Band</SelectItem>
-                  <SelectItem value="four_stems" disabled={plan === 'free'}>
+                  <SelectItem value="four_stems">4 Stems — Vocals + Drums + Bass + Other</SelectItem>
+                  <SelectItem value="six_stems" disabled={plan === 'free'}>
                     <span className="flex items-center gap-2">
                       {plan === 'free' && <Lock className="w-3 h-3" />}
-                      4 Stems — Vocals + Drums + Bass + Other
+                      6 Stems — Vocals + Drums + Bass + Guitar + Keys + Other
+                      {plan === 'free' && <ProBadge />}
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="choir_vocals_band">Choir — Choir Vocals + Band</SelectItem>
+                  <SelectItem value="satb_experimental" disabled={plan === 'free'}>
+                    <span className="flex items-center gap-2">
+                      {plan === 'free' && <Lock className="w-3 h-3" />}
+                      SATB Experimental — Soprano, Alto, Tenor, Bass
                       {plan === 'free' && <ProBadge />}
                     </span>
                   </SelectItem>
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Quality */}
             <div>
-              <label className="block text-xs font-medium mb-1.5 flex items-center gap-2" style={{ color: '#9CB2D6' }}>
+              <label className="block text-sm font-medium mb-2 flex items-center gap-2" style={{ color: 'hsl(var(--color-text))' }}>
                 Quality
-                {plan === 'free' && <span className="text-[10px]" style={{ color: '#9CB2D6' }}>· HQ requires <ProBadge /></span>}
+                {plan === 'free' && <span className="text-xs font-normal" style={{ color: 'hsl(var(--color-muted))' }}>· HQ requires <ProBadge /></span>}
               </label>
               <Select value={quality} onValueChange={v => { if (v === 'hq' && plan === 'free') return; setQuality(v); }}>
-                <SelectTrigger className="h-9 text-sm rounded-lg" style={{ backgroundColor: '#0B1220', borderColor: '#1C2A44', color: '#EAF2FF' }}>
+                <SelectTrigger className="h-10 text-sm rounded-lg" style={{ backgroundColor: 'hsl(var(--color-input))', borderColor: 'hsl(var(--color-border))', color: 'hsl(var(--color-text))' }}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -206,13 +240,15 @@ export default function StemsNew() {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Output Format */}
             <div>
-              <label className="block text-xs font-medium mb-1.5 flex items-center gap-2" style={{ color: '#9CB2D6' }}>
+              <label className="block text-sm font-medium mb-2 flex items-center gap-2" style={{ color: 'hsl(var(--color-text))' }}>
                 Output format
-                {plan === 'free' && <span className="text-[10px]" style={{ color: '#9CB2D6' }}>· FLAC requires <ProBadge /></span>}
+                {plan === 'free' && <span className="text-xs font-normal" style={{ color: 'hsl(var(--color-muted))' }}>· FLAC requires <ProBadge /></span>}
               </label>
               <Select value={outputFormat} onValueChange={v => { if (v === 'flac' && plan === 'free') return; setOutputFormat(v); }}>
-                <SelectTrigger className="h-9 text-sm rounded-lg" style={{ backgroundColor: '#0B1220', borderColor: '#1C2A44', color: '#EAF2FF' }}>
+                <SelectTrigger className="h-10 text-sm rounded-lg" style={{ backgroundColor: 'hsl(var(--color-input))', borderColor: 'hsl(var(--color-border))', color: 'hsl(var(--color-text))' }}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -228,37 +264,22 @@ export default function StemsNew() {
                 </SelectContent>
               </Select>
             </div>
-            <label className="flex items-start gap-3 cursor-pointer pt-1">
+
+            {/* Rights Confirmation */}
+            <label className="flex items-start gap-3 cursor-pointer pt-2">
               <input type="checkbox" checked={rights} onChange={e => setRights(e.target.checked)}
-                className="mt-0.5 w-4 h-4 cursor-pointer accent-[#1EA0FF]" />
-              <span className="text-xs leading-relaxed" style={{ color: rights ? '#EAF2FF' : '#9CB2D6' }}>
+                className="mt-1 w-4 h-4 cursor-pointer accent-[hsl(var(--color-primary))]" />
+              <span className="text-sm leading-relaxed" style={{ color: rights ? 'hsl(var(--color-text))' : 'hsl(var(--color-muted))' }}>
                 I confirm I have the rights to process this audio.
               </span>
             </label>
           </div>
-        </Card>
-      </div>
+        )}
+      </Card>
 
-      {/* Interactive waveform for precise clip selection */}
+      {/* Clean Audio */}
       {file && (
-        <div className="mb-5">
-          <div className="mb-3">
-            <h3 className="text-sm font-semibold mb-2" style={{ color: '#EAF2FF' }}>Click and drag to select region</h3>
-            <p className="text-xs mb-3" style={{ color: '#9CB2D6' }}>Drag the handles or click the waveform to select the audio segment to process.</p>
-          </div>
-          <WaveformInteractive audioFile={file} onRangeChange={handleRange} maxClip={120} minClip={5} />
-        </div>
-      )}
-
-      {file && clipStart != null && clipEnd != null && (
-        <div className="mb-4 px-3 py-2 rounded-lg text-xs" style={{ backgroundColor: '#1EA0FF08', border: '1px solid #1EA0FF20', color: '#9CB2D6' }}>
-          Processing only <span style={{ color: '#EAF2FF' }}>{Math.round(clipEnd - clipStart)}s</span> of audio.
-          Process only a section to save compute — useful for testing separation quality before running the full track.
-        </div>
-      )}
-
-      {file && (
-        <div className="mb-3">
+        <div className="mb-6">
           <CleanAudioPanel
             variant="stems"
             enabled={cleanEnabled}
@@ -269,8 +290,9 @@ export default function StemsNew() {
         </div>
       )}
 
+      {/* Harmony Engine */}
       {file && (
-        <div className="mb-3">
+        <div className="mb-6">
           <HarmonyPanel
             mode={harmonyMode}
             onMode={setHarmonyMode}
@@ -280,8 +302,9 @@ export default function StemsNew() {
         </div>
       )}
 
+      {/* Song Info Detection */}
       {file && (
-        <div className="mb-5">
+        <div className="mb-6">
           <SongInfoCollapsible
             file={file}
             inputFileUrl={uploadedFileUrl}
@@ -302,9 +325,10 @@ export default function StemsNew() {
         </div>
       )}
 
+      {/* Submit Button */}
       <button disabled={!canSubmit} onClick={handleStart}
-        className="w-full h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-        style={{ backgroundColor: '#1EA0FF', color: '#fff' }}>
+        className="w-full h-12 rounded-lg text-base font-semibold flex items-center justify-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+        style={{ backgroundColor: 'hsl(var(--color-primary))', color: 'hsl(var(--color-primary-foreground))' }}>
         {loading ? <><Loader2 className="w-4 h-4 animate-spin" />{stage || 'Working…'}</> : 'Start Separation'}
       </button>
     </div>
