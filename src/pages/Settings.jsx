@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { Settings as SettingsIcon, User, Zap, LogOut } from 'lucide-react';
+import { createPageUrl } from '@/utils';
+import { Settings as SettingsIcon, Zap, LogOut, Loader2 } from 'lucide-react';
 import Card, { CardHeader } from '../components/auralyn/Card';
 
 const PLAN_LIMITS = { free: 5, pro: 100 };
 
 export default function Settings() {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [displayName, setDisplayName] = useState('');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [portalLoading, setPortalLoading] = useState(false);
+  const [billingError, setBillingError] = useState('');
 
   useEffect(() => {
     const init = async () => {
@@ -35,6 +40,21 @@ export default function Settings() {
       setTimeout(() => setSaved(false), 2000);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleBillingClick = async () => {
+    if (plan === 'free') { navigate(createPageUrl('Pricing')); return; }
+    setPortalLoading(true);
+    setBillingError('');
+    try {
+      const res = await base44.functions.invoke('createBillingPortalSession', {});
+      if (res.data?.portalUrl) window.location.href = res.data.portalUrl;
+      else setBillingError(res.data?.error || 'Could not open billing portal.');
+    } catch (err) {
+      setBillingError(err.response?.data?.error || 'Could not open billing portal.');
+    } finally {
+      setPortalLoading(false);
     }
   };
 
@@ -87,19 +107,27 @@ export default function Settings() {
 
         {/* Plan */}
         <Card>
-          <CardHeader title="Plan" subtitle="Auralyn Free" />
+          <CardHeader title="Plan" subtitle={plan === 'pro' ? 'Auralyn Pro' : 'Auralyn Free'} />
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Zap className="w-4 h-4" style={{ color: plan === 'pro' ? '#FFB020' : '#9CB2D6' }} />
                 <span className="text-sm font-semibold capitalize" style={{ color: '#EAF2FF' }}>{plan} plan</span>
+                {profile?.subscription_status && profile.subscription_status !== 'none' && (
+                  <span className="text-[10px] px-1.5 py-0.5 rounded font-semibold uppercase"
+                    style={{ backgroundColor: plan === 'pro' ? '#19D3A218' : '#1C2A44', color: plan === 'pro' ? '#19D3A2' : '#9CB2D6' }}>
+                    {profile.subscription_status}
+                  </span>
+                )}
               </div>
-              {plan === 'free' && (
-                <span className="text-[11px] px-2 py-0.5 rounded font-medium cursor-pointer transition-colors"
-                  style={{ backgroundColor: '#1EA0FF18', color: '#1EA0FF', border: '1px solid #1EA0FF30' }}>
-                  Upgrade to Pro →
-                </span>
-              )}
+              <button
+                onClick={handleBillingClick}
+                disabled={portalLoading}
+                className="text-[11px] px-2.5 py-1 rounded-lg font-medium flex items-center gap-1.5 transition-all disabled:opacity-50"
+                style={{ backgroundColor: plan === 'pro' ? '#1C2A44' : '#1EA0FF18', color: plan === 'pro' ? '#9CB2D6' : '#1EA0FF', border: `1px solid ${plan === 'pro' ? 'transparent' : '#1EA0FF30'}` }}>
+                {portalLoading && <Loader2 className="w-3 h-3 animate-spin" />}
+                {plan === 'pro' ? 'Manage billing' : 'Upgrade to Pro →'}
+              </button>
             </div>
             <div>
               <div className="flex justify-between text-xs mb-1.5" style={{ color: '#9CB2D6' }}>
@@ -111,6 +139,12 @@ export default function Settings() {
                   style={{ width: `${Math.min(100, (used / limit) * 100)}%`, backgroundColor: used >= limit ? '#FF4D6D' : '#1EA0FF' }} />
               </div>
             </div>
+            {billingError && <p className="text-xs" style={{ color: '#FF4D6D' }}>{billingError}</p>}
+            {profile?.current_period_end && plan === 'pro' && (
+              <p className="text-[11px]" style={{ color: '#9CB2D6' }}>
+                Renews {new Date(profile.current_period_end).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+              </p>
+            )}
           </div>
         </Card>
 
