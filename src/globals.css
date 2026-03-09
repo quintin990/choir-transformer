@@ -6,50 +6,90 @@
 
 @layer base {
   :root {
-    --background: 216 57% 9%;
-    --foreground: 215 100% 95%;
-    --card: 217 51% 12%;
-    --card-foreground: 215 100% 95%;
-    --popover: 217 51% 12%;
-    --popover-foreground: 215 100% 95%;
-    --primary: 211 100% 56%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 217 43% 18%;
-    --secondary-foreground: 214 37% 72%;
-    --muted: 217 45% 14%;
-    --muted-foreground: 214 37% 65%;
-    --accent: 163 76% 47%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 349 100% 65%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 217 43% 18%;
-    --input: 217 43% 18%;
-    --ring: 211 100% 56%;
-    --radius: 0.5rem;
+    /* Light theme (default) */
+    --color-background: 242 70% 97%;
+    --color-card: 227 40% 96%;
+    --color-border: 227 24% 88%;
+    --color-primary: 220 100% 60%;
+    --color-primary-foreground: 0 0% 100%;
+    --color-accent: 174 70% 44%;
+    --color-text: 220 15% 20%;
+    --color-muted: 220 15% 40%;
+    
+    /* Semantic colors (light) */
+    --color-foreground: var(--color-text);
+    --color-secondary: 227 40% 90%;
+    --color-secondary-foreground: var(--color-text);
+    --color-destructive: 0 84% 60%;
+    --color-destructive-foreground: 0 0% 100%;
+    --color-input: var(--color-card);
+    --color-ring: var(--color-primary);
+  }
+
+  .dark {
+    /* Dark theme */
+    --color-background: 220 29% 12%;
+    --color-card: 220 25% 18%;
+    --color-border: 220 20% 28%;
+    --color-primary: 220 100% 60%;
+    --color-primary-foreground: 0 0% 100%;
+    --color-accent: 174 70% 44%;
+    --color-text: 210 20% 88%;
+    --color-muted: 210 20% 60%;
+    
+    /* Semantic colors (dark) */
+    --color-foreground: var(--color-text);
+    --color-secondary: 220 20% 22%;
+    --color-secondary-foreground: var(--color-text);
+    --color-destructive: 0 84% 60%;
+    --color-destructive-foreground: 0 0% 100%;
+    --color-input: var(--color-card);
+    --color-ring: var(--color-primary);
   }
 }
 
 @layer base {
-  * { @apply border-border; }
+  * {
+    @apply border-border;
+  }
+
   body {
-    @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
-    background-color: #0B1220;
-    color: #EAF2FF;
+    background-color: hsl(var(--color-background));
+    color: hsl(var(--color-text));
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
 
-/* Vertical range input for faders */
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--color-border));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--color-muted));
+}
+
+/* Audio player styling */
+input[type="range"] {
+  accent-color: hsl(var(--color-primary));
+}
+
+/* Vertical range for faders */
 input[type="range"][orient="vertical"] {
   writing-mode: vertical-lr;
   direction: rtl;
   appearance: slider-vertical;
   -webkit-appearance: slider-vertical;
 }
-
-/* Custom scrollbar */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: #0B1220; }
-::-webkit-scrollbar-thumb { background: #1C2A44; border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: #1EA0FF33; }
