@@ -12,7 +12,7 @@ const NAV_ITEMS = [
   { label: 'Jobs',      icon: List,        page: 'Jobs',         activePages: ['Jobs', 'JobDetail'] },
   { label: 'Settings',  icon: Settings,    page: 'Settings',     activePages: ['Settings'] },
   { label: 'Pricing',   icon: Zap,         page: 'Pricing',      activePages: ['Pricing'] },
-  { label: 'Choir',    icon: Users,       page: 'Choir',        activePages: ['Choir', 'ChoirJoin', 'ChoirCreate', 'ChoirPart', 'ChoirSongs', 'ChoirSongDetail', 'ChoirAdmin', 'ChoirAdminSong'] },
+  { label: 'Choir',    icon: Users,       page: 'Choir',        activePages: ['Choir', 'ChoirJoin', 'ChoirCreate', 'ChoirPart', 'ChoirSongs', 'ChoirSongDetail', 'ChoirAdmin', 'ChoirAdminSong', 'ChoirSetlists'] },
 ];
 
 const LANDING_PAGES = ['Landing'];

@@ -146,9 +146,18 @@ export default function JobDetail() {
     setJob(j => ({ ...j, status: 'queued', stage: 'Queued', progress: 0 }));
   };
 
+  const [autoTagging, setAutoTagging] = useState(false);
+
   const handleTagChange = async (tags) => {
     setJob(j => ({ ...j, tags }));
     await base44.functions.invoke('updateJobTags', { job_id: jobId, tags });
+  };
+
+  const handleAutoTag = async () => {
+    setAutoTagging(true);
+    const res = await base44.functions.invoke('autoTagJob', { job_id: jobId });
+    if (res.data?.tags) setJob(j => ({ ...j, tags: res.data.tags }));
+    setAutoTagging(false);
   };
 
   const handleSaveToDrive = async () => {
@@ -243,6 +252,12 @@ export default function JobDetail() {
             onMouseEnter={e => e.target.style.color = '#1EA0FF'}
             onMouseLeave={e => e.target.style.color = '#9CB2D6'}>
             {editTags ? 'Done' : '+ tags'}
+          </button>
+          <button onClick={handleAutoTag} disabled={autoTagging}
+            className="flex items-center gap-1 text-[11px] px-2 h-6 rounded disabled:opacity-40 transition-colors"
+            style={{ backgroundColor: '#9B74FF15', color: '#9B74FF', border: '1px solid #9B74FF25' }}>
+            {autoTagging ? <Loader2 className="w-3 h-3 animate-spin" /> : '✦'}
+            {autoTagging ? 'Tagging…' : 'AI tags'}
           </button>
         </div>
 

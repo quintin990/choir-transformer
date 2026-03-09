@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import { Copy, Check, Plus, Loader2, ChevronRight, Users, Megaphone, Music, ArrowLeft } from 'lucide-react';
+import { Copy, Check, Plus, Loader2, ChevronRight, Users, Megaphone, Music, ArrowLeft, ListOrdered } from 'lucide-react';
 import Card, { CardHeader } from '../components/auralyn/Card';
+import SongReadinessBar from '../components/choir/SongReadinessBar';
 
 const PART_COLORS = { soprano: '#1EA0FF', alto: '#19D3A2', tenor: '#FFB020', bass: '#9B74FF', none: '#9CB2D6' };
 const STATUS_COLORS = { pending: '#FFB020', approved: '#19D3A2', rejected: '#FF4D6D', removed: '#9CB2D6' };
@@ -264,11 +265,47 @@ export default function ChoirAdmin() {
         </form>
       </Card>
 
+      {/* Rehearsal Progress */}
+      <Card>
+        <CardHeader
+          title="Rehearsal Progress"
+          subtitle="Member self-reported readiness per song"
+          action={
+            <Link to={createPageUrl('ChoirSetlists')} className="flex items-center gap-1.5 h-7 px-3 rounded-lg text-[11px] font-medium"
+              style={{ backgroundColor: '#1EA0FF15', color: '#1EA0FF', border: '1px solid #1EA0FF25' }}>
+              <ListOrdered className="w-3 h-3" /> Setlists
+            </Link>
+          }
+        />
+        <ChoirReadinessList choirId={choir?.id} memberCount={approvedMembers.length} />
+      </Card>
+
       {/* Songs with asset management links */}
       <Card>
         <CardHeader title="Manage Song Assets" />
         <ChoirSongsList choirId={choir?.id} />
       </Card>
+    </div>
+  );
+}
+
+function ChoirReadinessList({ choirId, memberCount }) {
+  const [songs, setSongs] = useState([]);
+  useEffect(() => {
+    if (!choirId) return;
+    base44.entities.ChoirSong.filter({ choir_id: choirId }, '-created_date', 20).then(setSongs).catch(() => {});
+  }, [choirId]);
+
+  if (!songs.length) return <p className="text-xs text-center py-4" style={{ color: '#9CB2D6' }}>No songs yet.</p>;
+
+  return (
+    <div className="space-y-3">
+      {songs.map(s => (
+        <div key={s.id}>
+          <p className="text-xs font-medium mb-1.5" style={{ color: '#EAF2FF' }}>{s.title}</p>
+          <SongReadinessBar songId={s.id} totalMembers={memberCount} />
+        </div>
+      ))}
     </div>
   );
 }
