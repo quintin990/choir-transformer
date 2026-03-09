@@ -57,14 +57,14 @@ export default function Landing() {
       {/* Features */}
       <section className="max-w-3xl mx-auto px-6 pb-24">
         <div className="grid sm:grid-cols-3 gap-4">
-          {[
+          {([
             { Icon: Scissors, title: '2 & 4 Stem Modes', desc: 'Vocals + Band, or full four-way separation: vocals, drums, bass, other.' },
             { Icon: BarChart2, title: 'Detailed Analysis', desc: 'Duration, sample rate, LUFS, crest factor, and stereo width after separation.' },
             { Icon: Clock, title: '7-Day Storage', desc: 'Files are retained for 7 days then automatically deleted for your privacy.' },
             { Icon: Shield, title: 'Rights-First Design', desc: 'You confirm ownership before every job. Your music, your control.' },
             { Icon: Download, title: 'Multiple Formats', desc: 'Download stems as WAV, FLAC, or MP3 and grab a full ZIP archive.' },
             { Icon: Music2, title: 'In-Browser Preview', desc: 'Listen to every stem directly in the app before downloading.' },
-          ].map(({ Icon, title, desc }) => (
+          ]).map(({ Icon, title, desc }) => (
             <div key={title} className="bg-white/[0.02] border border-white/[0.04] rounded-2xl p-5">
               <div className="w-8 h-8 rounded-lg bg-violet-600/15 flex items-center justify-center mb-3">
                 <Icon className="w-4 h-4 text-violet-400" />
