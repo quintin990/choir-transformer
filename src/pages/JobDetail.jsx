@@ -28,48 +28,109 @@ function MetricBlock({ label, value, unit }) {
   );
 }
 
+// Registry so Space bar can target the last-focused stem
+const activeStemRef = { current: null };
+
+function PlayIcon({ color, size = 10 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 10 10" fill="none">
+      <polygon points="1,0.5 9.5,5 1,9.5" fill={color} />
+    </svg>
+  );
+}
+function PauseIcon({ color, size = 10 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 10 10" fill="none">
+      <rect x="1" y="0.5" width="3" height="9" rx="1" fill={color} />
+      <rect x="6" y="0.5" width="3" height="9" rx="1" fill={color} />
+    </svg>
+  );
+}
+
 function StemPlayer({ name, url, format: fmt = 'wav' }) {
   const audioRef = useRef(null);
+  const rowRef = useRef(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [current, setCurrent] = useState(0);
+  const [hovered, setHovered] = useState(false);
+
   const COLORS = { vocals: '#1EA0FF', drums: '#19D3A2', bass: '#FFB020', other: '#9B74FF', no_vocals: '#00D8FF' };
   const color = COLORS[name?.toLowerCase()] || '#1EA0FF';
   const fmtT = s => { if (!s || isNaN(s)) return '0:00'; return `${Math.floor(s / 60)}:${Math.floor(s % 60).toString().padStart(2, '0')}`; };
+
   const toggle = () => {
     if (!audioRef.current) return;
-    playing ? audioRef.current.pause() : audioRef.current.play();
+    if (playing) {
+      audioRef.current.pause();
+    } else {
+      // Pause all other stems
+      document.querySelectorAll('audio').forEach(a => { if (a !== audioRef.current) a.pause(); });
+      audioRef.current.play();
+    }
     setPlaying(v => !v);
   };
+
+  // Register this stem as active on focus/hover
+  const makeActive = () => { activeStemRef.current = toggle; };
+
+  // Space bar shortcut
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.code !== 'Space') return;
+      if (['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(e.target.tagName)) return;
+      if (activeStemRef.current === toggle) {
+        e.preventDefault();
+        toggle();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [playing]);
+
   return (
-    <div className="rounded-lg px-4 py-3 flex items-center gap-3" style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44' }}>
+    <div ref={rowRef}
+      tabIndex={0}
+      onFocus={makeActive}
+      onMouseEnter={() => { setHovered(true); makeActive(); }}
+      onMouseLeave={() => setHovered(false)}
+      className="rounded-xl px-4 py-3 flex items-center gap-3 outline-none transition-colors"
+      style={{ backgroundColor: hovered ? color + '08' : '#0B1220', border: `1px solid ${hovered ? color + '35' : '#1C2A44'}` }}>
       <audio ref={audioRef} src={url}
         onTimeUpdate={() => { if (!audioRef.current?.duration) return; setCurrent(audioRef.current.currentTime); setProgress((audioRef.current.currentTime / audioRef.current.duration) * 100); }}
         onLoadedMetadata={() => setDuration(audioRef.current?.duration || 0)}
         onEnded={() => setPlaying(false)} />
-      <button onClick={toggle} className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-        style={{ backgroundColor: color + '20', border: `1px solid ${color}40` }}>
+
+      {/* Play/Pause button */}
+      <button onClick={toggle}
+        className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-all"
+        style={{ backgroundColor: playing ? color + '25' : color + '18', border: `1.5px solid ${color}50`, boxShadow: playing ? `0 0 12px ${color}30` : 'none' }}
+        title={`${playing ? 'Pause' : 'Play'} (Space)`}>
         {playing
-          ? <span className="w-2.5 h-2.5 flex gap-0.5">{[0, 1].map(i => <span key={i} className="w-1 h-full rounded-sm" style={{ backgroundColor: color }} />)}</span>
-          : <span className="w-0 h-0 ml-0.5 border-t-[5px] border-b-[5px] border-l-[8px] border-transparent" style={{ borderLeftColor: color }} />
+          ? <PauseIcon color={color} />
+          : <PlayIcon color={color} />
         }
       </button>
+
       <div className="flex-1 min-w-0">
-        <div className="flex justify-between mb-1.5">
+        <div className="flex justify-between mb-2">
           <span className="text-xs font-semibold capitalize" style={{ color: '#EAF2FF' }}>{name?.replace('_', ' ')}</span>
-          <span className="text-[11px] font-mono tabular-nums" style={{ color: '#9CB2D6' }}>{fmtT(current)} / {fmtT(duration)}</span>
+          <span className="text-[11px] tabular-nums" style={{ fontFamily: "'DM Mono', monospace", color: '#9CB2D6' }}>{fmtT(current)} / {fmtT(duration)}</span>
         </div>
-        <div className="h-1 rounded-full overflow-hidden cursor-pointer" style={{ backgroundColor: '#1C2A44' }}
+        {/* Progress bar */}
+        <div className="h-1.5 rounded-full overflow-hidden cursor-pointer group"
+          style={{ backgroundColor: '#1C2A44' }}
           onClick={e => { if (!audioRef.current?.duration) return; const r = e.currentTarget.getBoundingClientRect(); audioRef.current.currentTime = ((e.clientX - r.left) / r.width) * audioRef.current.duration; }}>
-          <div className="h-full rounded-full" style={{ width: `${progress}%`, backgroundColor: color }} />
+          <div className="h-full rounded-full transition-all" style={{ width: `${progress}%`, backgroundColor: color }} />
         </div>
       </div>
+
       <a href={url} download={`${name}.${fmt}`}
-        className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+        className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all"
         style={{ color: '#9CB2D6', border: '1px solid #1C2A44' }}
-        onMouseEnter={e => { e.currentTarget.style.color = '#1EA0FF'; e.currentTarget.style.borderColor = '#1EA0FF40'; }}
-        onMouseLeave={e => { e.currentTarget.style.color = '#9CB2D6'; e.currentTarget.style.borderColor = '#1C2A44'; }}>
+        onMouseEnter={e => { e.currentTarget.style.color = '#EAF2FF'; e.currentTarget.style.borderColor = '#1EA0FF40'; e.currentTarget.style.backgroundColor = '#1EA0FF12'; }}
+        onMouseLeave={e => { e.currentTarget.style.color = '#9CB2D6'; e.currentTarget.style.borderColor = '#1C2A44'; e.currentTarget.style.backgroundColor = 'transparent'; }}>
         <Download className="w-3.5 h-3.5" />
       </a>
     </div>
