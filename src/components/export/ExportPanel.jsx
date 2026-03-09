@@ -123,6 +123,30 @@ export default function ExportPanel({ job, onJobUpdate }) {
 
       {error && <p className="text-xs" style={{ color: '#FF4D6D' }}>{error}</p>}
 
+      {/* Session Tempo */}
+      {(() => {
+        const bpm = job.bpm_confirmed ?? job.bpm_detected;
+        const timeSig = job.time_signature_confirmed ?? job.time_signature_detected;
+        return (
+          <div className="rounded-lg p-3 space-y-1" style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44' }}>
+            <p className="text-xs font-semibold mb-2" style={{ color: '#EAF2FF' }}>Session Tempo</p>
+            <div className="flex gap-4">
+              <div>
+                <p className="text-[10px] mb-0.5" style={{ color: '#9CB2D6' }}>BPM</p>
+                <p className="text-sm font-bold tabular-nums" style={{ color: bpm ? '#EAF2FF' : '#9CB2D6' }}>{bpm ?? '—'}</p>
+              </div>
+              <div>
+                <p className="text-[10px] mb-0.5" style={{ color: '#9CB2D6' }}>Time Sig</p>
+                <p className="text-sm font-bold" style={{ color: timeSig ? '#EAF2FF' : '#9CB2D6' }}>{timeSig ?? '—'}</p>
+              </div>
+            </div>
+            <p className="text-[10px] pt-1" style={{ color: '#9CB2D6' }}>
+              {bpm ? (job.bpm_confirmed ? '✓ Confirmed BPM.' : 'Auto-detected BPM.') + ' Reaper export will embed tempo and time signature when available.' : 'No BPM detected. Add it in the Song Info tab.'}
+            </p>
+          </div>
+        );
+      })()}
+
       <div className="p-3 rounded-lg text-xs leading-relaxed" style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44', color: '#9CB2D6' }}>
         <span style={{ color: '#EAF2FF' }}>Reaper:</span> Exports a .rpp project file with stems loaded as individual tracks, gain and pan staging pre-applied, and the selected clip range set as the session loop. Open directly in Reaper 6+.
       </div>

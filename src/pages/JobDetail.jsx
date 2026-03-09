@@ -10,6 +10,7 @@ import StatusBadge from '../components/auralyn/StatusBadge';
 import TagEditor from '../components/auralyn/TagEditor';
 import MixConsole from '../components/mixer/MixConsole';
 import ExportPanel from '../components/export/ExportPanel';
+import SongInfoPanel from '../components/auralyn/SongInfoPanel';
 
 const ACTIVE = ['queued', 'uploading', 'processing', 'packaging'];
 
@@ -72,7 +73,7 @@ function StemPlayer({ name, url, format: fmt = 'wav' }) {
   );
 }
 
-const TABS = ['results', 'console', 'export', 'technical', 'files'];
+const TABS = ['results', 'console', 'export', 'song info', 'technical', 'files'];
 
 export default function JobDetail() {
   const location = useLocation();
@@ -175,6 +176,7 @@ export default function JobDetail() {
   const visibleTabs = TABS.filter(t => {
     if (t === 'console') return showConsole;
     if (t === 'export') return showExport;
+    if (t === 'song info') return ['stems', 'reference'].includes(job.kind);
     return true;
   });
 
@@ -294,7 +296,7 @@ export default function JobDetail() {
               color: tab === t ? '#EAF2FF' : '#9CB2D6',
               borderBottomColor: tab === t ? '#1EA0FF' : 'transparent',
             }}>
-            {t === 'console' ? 'Mix Console' : t === 'export' ? 'Export to DAW' : t}
+            {t === 'console' ? 'Mix Console' : t === 'export' ? 'Export to DAW' : t === 'song info' ? 'Song Info' : t}
           </button>
         ))}
       </div>
@@ -356,6 +358,30 @@ export default function JobDetail() {
         <Card>
           <CardHeader title="Export to DAW Session" subtitle="Generate a project file you can open directly in your DAW" />
           <ExportPanel job={job} onJobUpdate={setJob} />
+        </Card>
+      )}
+
+      {/* Song Info */}
+      {tab === 'song info' && (
+        <Card>
+          <CardHeader title="Song Info" subtitle="BPM, key, and time signature" />
+          <SongInfoPanel
+            data={{
+              bpm_detected: job.bpm_detected,
+              bpm_confirmed: job.bpm_confirmed,
+              bpm_confidence: job.bpm_confidence,
+              key_detected: job.key_detected,
+              key_confirmed: job.key_confirmed,
+              key_confidence: job.key_confidence,
+              time_signature_detected: job.time_signature_detected,
+              time_signature_confirmed: job.time_signature_confirmed,
+              time_signature_confidence: job.time_signature_confidence,
+            }}
+            onSave={async (vals) => {
+              await base44.functions.invoke('saveSongInfo', { job_id: job.id, ...vals });
+              setJob(j => ({ ...j, ...vals }));
+            }}
+          />
         </Card>
       )}
 
