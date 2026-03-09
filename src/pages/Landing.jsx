@@ -183,8 +183,8 @@ export default function Landing() {
                 <Link key={title} to={createPageUrl(href)} className="block hover:no-underline group">
                   <div className="rounded-2xl border p-6 relative flex flex-col h-full transition-all group-hover:border-opacity-100"
                     style={{ backgroundColor: '#0F1A2E', borderColor: '#1C2A44' }}
-                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = color + '40'}
-                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = '#1C2A44'}>
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = color + '40'; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = '#1C2A44'; }}>
                     {soon && (
                       <span className="absolute top-5 right-5 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase"
                         style={{ backgroundColor: '#1C2A44', color: '#9CB2D6', border: '1px solid #243550' }}>
