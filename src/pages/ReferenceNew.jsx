@@ -8,6 +8,7 @@ import Card, { CardHeader } from '../components/auralyn/Card';
 import FileDropZone from '../components/auralyn/FileDropZone';
 import WaveformEditor from '../components/waveform/WaveformEditor';
 import { SongInfoCollapsible } from '../components/auralyn/SongInfoPanel';
+import CleanAudioPanel from '../components/auralyn/CleanAudioPanel';
 
 export default function ReferenceNew() {
   const navigate = useNavigate();
@@ -26,6 +27,8 @@ export default function ReferenceNew() {
   const [error, setError] = useState('');
   const [uploadedFileUrl, setUploadedFileUrl] = useState(null);
   const [songInfo, setSongInfo] = useState({});
+  const [cleanEnabled, setCleanEnabled] = useState(false);
+  const [cleanOptions, setCleanOptions] = useState({});
 
   useEffect(() => {
     base44.auth.me().catch(() => base44.auth.redirectToLogin('/ReferenceNew'));
@@ -68,6 +71,8 @@ export default function ReferenceNew() {
         clip_start_sec: clipStart || 0,
         clip_end_sec: clipEnd,
         project_id: projectId || null,
+        clean_audio_enabled: cleanEnabled,
+        clean_audio_options_json: cleanEnabled ? cleanOptions : null,
         ...songInfo,
       });
 
@@ -168,6 +173,18 @@ export default function ReferenceNew() {
         <div className="mb-4 px-3 py-2 rounded-lg text-xs" style={{ backgroundColor: '#19D3A208', border: '1px solid #19D3A220', color: '#9CB2D6' }}>
           Analyzing <span style={{ color: '#EAF2FF' }}>{Math.round(clipEnd - clipStart)}s</span> of audio.
           Process only a section to save compute — useful for quick reference checks before running the full track.
+        </div>
+      )}
+
+      {file && (
+        <div className="mb-3">
+          <CleanAudioPanel
+            variant="reference"
+            enabled={cleanEnabled}
+            onToggle={setCleanEnabled}
+            options={cleanOptions}
+            onOptions={setCleanOptions}
+          />
         </div>
       )}
 

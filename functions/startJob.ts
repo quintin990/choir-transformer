@@ -49,6 +49,10 @@ Deno.serve(async (req) => {
             output_format: job.output_format || 'wav',
             callback_token: job.callback_token,
             callback_url: callbackUrl,
+            clean_audio_enabled: job.clean_audio_enabled || false,
+            clean_audio_options_json: job.clean_audio_options_json || null,
+            harmony_mode: job.harmony_mode || 'none',
+            harmony_options_json: job.harmony_options_json || null,
           }
         })
       }

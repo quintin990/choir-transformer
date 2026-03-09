@@ -16,7 +16,10 @@ Deno.serve(async (req) => {
       error_message,
       duration_seconds,
       sample_rate,
-      channels
+      channels,
+      clean_assets,
+      harmony_assets,
+      satb_confidence_json,
     } = payload;
 
     // Fetch job using service role (no user auth required for callbacks)
@@ -63,7 +66,22 @@ Deno.serve(async (req) => {
       updates.channels = channels;
     }
 
+    if (satb_confidence_json) {
+      updates.satb_confidence_json = satb_confidence_json;
+    }
+
     await base44.asServiceRole.entities.Job.update(job_id, updates);
+
+    // Save clean audio / harmony assets into JobAsset
+    const assetTypes = [
+      ...(clean_assets ? Object.entries(clean_assets) : []),
+      ...(harmony_assets ? Object.entries(harmony_assets) : []),
+    ];
+    for (const [type, url] of assetTypes) {
+      if (url) {
+        await base44.asServiceRole.entities.JobAsset.create({ job_id, type, url, name: type });
+      }
+    }
 
     // Log event
     const eventLevel = status === 'failed' ? 'error' : 'info';
