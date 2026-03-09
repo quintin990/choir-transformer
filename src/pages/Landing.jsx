@@ -135,14 +135,82 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── Problem/Solution ── */}
+      <section className="max-w-5xl mx-auto px-5 py-24">
+       <div className="text-center mb-16">
+         <h2 className="text-3xl sm:text-4xl font-bold mb-6" style={{ letterSpacing: '-0.03em', color: '#EAF2FF' }}>
+           The problem
+         </h2>
+         <p className="text-lg max-w-2xl mx-auto mb-12" style={{ color: '#9CB2D6' }}>
+           Whether you're learning your alto part at midnight or preparing Sunday's set on Thursday morning, hours get lost on tasks that steal time from what matters.
+         </p>
+
+         <div className="grid sm:grid-cols-2 gap-6 mb-8">
+           <div className="rounded-xl border p-6" style={{ backgroundColor: '#0F1A2E', borderColor: '#FF4D6D40' }}>
+             <p className="text-sm leading-relaxed" style={{ color: '#9CB2D6' }}>
+               <span style={{ color: '#FF4D6D', fontWeight: 'bold' }}>❌ Struggling</span> to isolate your voice part from a full recording
+             </p>
+           </div>
+           <div className="rounded-xl border p-6" style={{ backgroundColor: '#0F1A2E', borderColor: '#FF4D6D40' }}>
+             <p className="text-sm leading-relaxed" style={{ color: '#9CB2D6' }}>
+               <span style={{ color: '#FF4D6D', fontWeight: 'bold' }}>❌ Manually teaching</span> or recording each part one by one
+             </p>
+           </div>
+           <div className="rounded-xl border p-6" style={{ backgroundColor: '#0F1A2E', borderColor: '#FF4D6D40' }}>
+             <p className="text-sm leading-relaxed" style={{ color: '#9CB2D6' }}>
+               <span style={{ color: '#FF4D6D', fontWeight: 'bold' }}>❌ Juggling spreadsheets,</span> emails, and file sharing for choir admin
+             </p>
+           </div>
+           <div className="rounded-xl border p-6" style={{ backgroundColor: '#0F1A2E', borderColor: '#FF4D6D40' }}>
+             <p className="text-sm leading-relaxed" style={{ color: '#9CB2D6' }}>
+               <span style={{ color: '#FF4D6D', fontWeight: 'bold' }}>❌ Hours wasted</span> every week on prep that steals from making music
+             </p>
+           </div>
+         </div>
+
+         <p className="text-sm mb-16" style={{ color: '#4A6080' }}>
+           <span style={{ color: '#19D3A2', fontWeight: 'bold' }}>✓ More time making music. Less time managing it.</span>
+         </p>
+       </div>
+      </section>
+
+      {/* ── How it Works ── */}
+      <section className="max-w-5xl mx-auto px-5 pb-24">
+       <div className="text-center mb-16">
+         <p className="text-xs uppercase tracking-widest mb-4" style={{ color: '#9B74FF' }}>HOW IT WORKS</p>
+         <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ letterSpacing: '-0.03em', color: '#EAF2FF' }}>
+           Three steps. That's it.
+         </h2>
+         <p className="text-sm" style={{ color: '#6A8AAD' }}>From a single song to individual practice parts in minutes — not hours.</p>
+       </div>
+
+       <div className="grid sm:grid-cols-3 gap-8">
+         {[
+           { num: '01', icon: Download, title: 'Upload Your Song', desc: 'Drop in any song or track — MP3, WAV, FLAC. One file is all it takes.' },
+           { num: '02', icon: ZapIcon, title: 'Auralyn Separates & Processes', desc: 'Our AI separates vocals from instruments, splits harmony parts (SATB), and even isolates individual band stems — automatically.' },
+           { num: '03', icon: Share2, title: 'Practice, Plan & Manage', desc: 'Practice with the Smart Practice Player, track your song progress, build personal practice plans — or share parts with your choir if you\'re a director.' }
+         ].map(({ num, icon: Icon, title, desc }) => (
+           <div key={num} className="text-left">
+             <p className="text-4xl font-bold mb-6 opacity-20" style={{ color: '#1EA0FF' }}>{num}</p>
+             <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-4" style={{ backgroundColor: '#1EA0FF15', border: '1px solid #1EA0FF25' }}>
+               <Icon className="w-6 h-6" style={{ color: '#1EA0FF' }} />
+             </div>
+             <h3 className="text-lg font-bold mb-3" style={{ color: '#EAF2FF' }}>{title}</h3>
+             <p className="text-sm leading-relaxed" style={{ color: '#6A8AAD' }}>{desc}</p>
+           </div>
+         ))}
+       </div>
+      </section>
+
       {/* ── Feature cards ── */}
-      <section className="max-w-5xl mx-auto px-5 pt-20 pb-24">
-        <div className="text-center mb-12">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-3" style={{ letterSpacing: '-0.03em', color: '#EAF2FF' }}>
-            Everything your ears need
-          </h2>
-          <p className="text-sm" style={{ color: '#6A8AAD' }}>Three tools. One workflow.</p>
-        </div>
+      <section className="max-w-5xl mx-auto px-5 pt-24 pb-24">
+       <div className="text-center mb-12">
+         <p className="text-xs uppercase tracking-widest mb-4" style={{ color: '#9B74FF' }}>FEATURES</p>
+         <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ letterSpacing: '-0.03em', color: '#EAF2FF' }}>
+           Everything you need. Nothing you don't.
+         </h2>
+         <p className="text-sm" style={{ color: '#6A8AAD' }}>Built for singers, arrangers, and choir directors who want to spend less time on logistics and more time on music.</p>
+       </div>
 
         <div className="grid sm:grid-cols-3 gap-5">
           {FEATURES.map(({ icon: Icon, title, color, points, desc, soon, href }) => {
