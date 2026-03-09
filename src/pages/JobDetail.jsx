@@ -3,35 +3,92 @@ import { Link, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { Progress } from '@/components/ui/progress';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ArrowLeft, Download, RefreshCw, X, Cloud, Loader2, XCircle } from 'lucide-react';
 import { format } from 'date-fns';
-import JobStatusBadge from '../components/jobs/JobStatusBadge';
-import StemPlayer from '../components/jobs/StemPlayer';
-import AnalysisPanel from '../components/jobs/AnalysisPanel';
-import StemEQPanel from '../components/jobs/StemEQPanel';
+import { ArrowLeft, Download, RefreshCw, X, Loader2, Cloud, FileAudio, Sliders, BarChart2 } from 'lucide-react';
+import Card, { CardHeader } from '../components/auralyn/Card';
+import StatusBadge from '../components/auralyn/StatusBadge';
+import StemMixer from '../components/auralyn/StemMixer';
+import TagEditor from '../components/auralyn/TagEditor';
+
+const ACTIVE = ['queued', 'uploading', 'processing', 'packaging'];
+
+function MetricBlock({ label, value, unit }) {
+  return (
+    <div className="rounded-lg p-3" style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44' }}>
+      <p className="text-[10px] font-medium uppercase tracking-wider mb-1" style={{ color: '#9CB2D6' }}>{label}</p>
+      <p className="text-lg font-bold tabular-nums" style={{ color: '#EAF2FF' }}>
+        {value ?? '—'}{unit && <span className="text-xs font-normal ml-1" style={{ color: '#9CB2D6' }}>{unit}</span>}
+      </p>
+    </div>
+  );
+}
+
+function StemPlayer({ name, url, format: fmt = 'wav' }) {
+  const audioRef = useRef(null);
+  const [playing, setPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [current, setCurrent] = useState(0);
+  const COLORS = { vocals: '#1EA0FF', drums: '#19D3A2', bass: '#FFB020', other: '#9B74FF', no_vocals: '#00D8FF' };
+  const color = COLORS[name?.toLowerCase()] || '#1EA0FF';
+  const fmtT = s => { if (!s || isNaN(s)) return '0:00'; return `${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,'0')}`; };
+  const toggle = () => { if (!audioRef.current) return; playing ? audioRef.current.pause() : audioRef.current.play(); setPlaying(v=>!v); };
+  return (
+    <div className="rounded-lg px-4 py-3 flex items-center gap-3" style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44' }}>
+      <audio ref={audioRef} src={url}
+        onTimeUpdate={() => { if (!audioRef.current?.duration) return; setCurrent(audioRef.current.currentTime); setProgress((audioRef.current.currentTime/audioRef.current.duration)*100); }}
+        onLoadedMetadata={() => setDuration(audioRef.current?.duration || 0)}
+        onEnded={() => setPlaying(false)} />
+      <button onClick={toggle} className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors"
+        style={{ backgroundColor: color + '20', border: `1px solid ${color}40` }}>
+        {playing
+          ? <span className="w-2.5 h-2.5 flex gap-0.5">{[0,1].map(i=><span key={i} className="w-1 h-full rounded-sm" style={{backgroundColor:color}} />)}</span>
+          : <span className="w-0 h-0 ml-0.5 border-t-[5px] border-b-[5px] border-l-[8px] border-transparent" style={{borderLeftColor:color}} />
+        }
+      </button>
+      <div className="flex-1 min-w-0">
+        <div className="flex justify-between mb-1.5">
+          <span className="text-xs font-semibold capitalize" style={{ color: '#EAF2FF' }}>{name}</span>
+          <span className="text-[11px] font-mono tabular-nums" style={{ color: '#9CB2D6' }}>{fmtT(current)} / {fmtT(duration)}</span>
+        </div>
+        <div className="h-1 rounded-full overflow-hidden cursor-pointer" style={{ backgroundColor: '#1C2A44' }}
+          onClick={e => { if (!audioRef.current?.duration) return; const r=e.currentTarget.getBoundingClientRect(); audioRef.current.currentTime=((e.clientX-r.left)/r.width)*audioRef.current.duration; }}>
+          <div className="h-full rounded-full transition-none" style={{ width: `${progress}%`, backgroundColor: color }} />
+        </div>
+      </div>
+      <a href={url} download={`${name}.${fmt}`}
+        className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors"
+        style={{ color: '#9CB2D6', border: '1px solid #1C2A44' }}
+        onMouseEnter={e => { e.currentTarget.style.color='#1EA0FF'; e.currentTarget.style.borderColor='#1EA0FF40'; }}
+        onMouseLeave={e => { e.currentTarget.style.color='#9CB2D6'; e.currentTarget.style.borderColor='#1C2A44'; }}>
+        <Download className="w-3.5 h-3.5" />
+      </a>
+    </div>
+  );
+}
 
 export default function JobDetail() {
   const location = useLocation();
   const jobId = new URLSearchParams(location.search).get('id');
 
   const [job, setJob] = useState(null);
-  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState('results');
   const [cancelling, setCancelling] = useState(false);
   const [savingToDrive, setSavingToDrive] = useState(false);
-  const [driveStatus, setDriveStatus] = useState('');
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const logRef = useRef(null);
+  const [driveMsg, setDriveMsg] = useState('');
+  const [editTags, setEditTags] = useState(false);
+
+  const poll = async () => {
+    const res = await base44.functions.invoke('pollJob', { job_id: jobId });
+    if (res.data.job) setJob(res.data.job);
+  };
 
   useEffect(() => {
     const init = async () => {
       try {
         await base44.auth.me();
-        const jobs = await base44.entities.Job.filter({ id: jobId });
-        if (jobs.length > 0) setJob(jobs[0]);
-        const evts = await base44.entities.JobEvent.filter({ job_id: jobId }, '-created_date', 20);
-        setEvents(evts.reverse());
+        await poll();
       } catch {
         base44.auth.redirectToLogin('/JobDetail?id=' + jobId);
       } finally {
@@ -41,25 +98,11 @@ export default function JobDetail() {
     init();
   }, [jobId]);
 
-  // Poll while active
   useEffect(() => {
-    if (!job || ['done', 'failed', 'cancelled'].includes(job.status)) return;
-    const interval = setInterval(async () => {
-      const res = await base44.functions.invoke('providerPollStatus', { job_id: jobId });
-      if (res.data.job) {
-        setJob(res.data.job);
-        // Also refresh events
-        const evts = await base44.entities.JobEvent.filter({ job_id: jobId }, '-created_date', 20);
-        setEvents(evts.reverse());
-      }
-    }, 3000);
-    return () => clearInterval(interval);
+    if (!job || !ACTIVE.includes(job.status)) return;
+    const t = setInterval(poll, 2000);
+    return () => clearInterval(t);
   }, [job?.status]);
-
-  // Auto-scroll log
-  useEffect(() => {
-    if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
-  }, [events]);
 
   const handleCancel = async () => {
     setCancelling(true);
@@ -69,217 +112,296 @@ export default function JobDetail() {
   };
 
   const handleRetry = async () => {
-    const res = await base44.functions.invoke('createJobAndStart', {
-      title: job.title,
-      input_file_url: job.input_file,
-      input_file_meta: { filename: job.input_filename, mime: job.input_mime, size: job.input_size_bytes },
-      separation_mode: job.separation_mode,
-      separation_model: job.separation_model,
-      output_format: job.output_format,
-      apply_repair: false,
-    });
-    if (res.data.job_id) window.location.href = createPageUrl('JobDetail') + '?id=' + res.data.job_id;
+    const res = await base44.functions.invoke('startJob', { job_id: jobId });
+    setJob(j => ({ ...j, status: 'queued', stage: 'Queued', progress: 0 }));
+  };
+
+  const handleTagChange = async (tags) => {
+    setJob(j => ({ ...j, tags }));
+    await base44.functions.invoke('updateJobTags', { job_id: jobId, tags });
   };
 
   const handleSaveToDrive = async () => {
     setSavingToDrive(true);
-    setDriveStatus('');
+    setDriveMsg('');
     try {
       const stems = job.stems || {};
-      const folderName = `StemForge – ${job.title || job.input_filename || 'Stems'}`;
-      const uploads = Object.entries(stems).map(([name, url]) =>
-        base44.functions.invoke('googleDriveUpload', {
-          file_url: url,
-          file_name: `${name}.${job.output_format || 'wav'}`,
-          folder_name: folderName
-        })
+      const folder = `Auralyn – ${job.title || 'Stems'}`;
+      const uploads = Object.entries(stems).map(([n, url]) =>
+        base44.functions.invoke('googleDriveUpload', { file_url: url, file_name: `${n}.${job.output_format||'wav'}`, folder_name: folder })
       );
-      if (job.output_zip_file) {
-        uploads.push(base44.functions.invoke('googleDriveUpload', {
-          file_url: job.output_zip_file,
-          file_name: `${job.title || 'stems'}_all.zip`,
-          folder_name: folderName
-        }));
-      }
+      if (job.output_zip_file) uploads.push(base44.functions.invoke('googleDriveUpload', { file_url: job.output_zip_file, file_name: `${job.title||'stems'}_all.zip`, folder_name: folder }));
       await Promise.all(uploads);
-      setDriveStatus('success');
+      setDriveMsg('Saved to Google Drive ✓');
     } catch {
-      setDriveStatus('error');
+      setDriveMsg('Failed to save to Drive.');
     } finally {
       setSavingToDrive(false);
     }
   };
 
   if (loading || !job) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-6 h-6 animate-spin text-sky-400" />
-      </div>
-    );
+    return <div className="flex items-center justify-center min-h-[50vh]"><Loader2 className="w-5 h-5 animate-spin" style={{ color: '#1EA0FF' }} /></div>;
   }
 
-  const isActive = ['queued', 'uploading', 'running'].includes(job.status);
+  const isActive = ACTIVE.includes(job.status);
   const isDone = job.status === 'done';
   const isFailed = job.status === 'failed';
-  const hasStemData = isDone && job.stems && Object.keys(job.stems).length > 0;
+  const hasStems = isDone && job.stems && Object.keys(job.stems).length > 0;
+  const backendNotConnected = job.stage === 'Backend not connected';
+  const analysis = job.analysis || {};
 
-  const LOG_COLORS = {
-    info: 'text-white/60',
-    warn: 'text-amber-400',
-    error: 'text-red-400',
-  };
+  const TABS = ['results', 'technical', 'files'];
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-5">
       {/* Back */}
-      <Link to={createPageUrl('Jobs')} className="inline-flex items-center gap-1.5 text-xs text-white/40 hover:text-white/70 transition-colors">
-        <ArrowLeft className="w-3.5 h-3.5" />
-        All jobs
+      <Link to={createPageUrl('Jobs')} className="inline-flex items-center gap-1.5 text-xs transition-colors"
+        style={{ color: '#9CB2D6' }}
+        onMouseEnter={e => e.currentTarget.style.color='#EAF2FF'}
+        onMouseLeave={e => e.currentTarget.style.color='#9CB2D6'}>
+        <ArrowLeft className="w-3.5 h-3.5" /> All jobs
       </Link>
 
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <h1 className="text-xl font-bold text-white truncate">{job.title || job.input_filename || 'Untitled job'}</h1>
-          <p className="text-white/30 text-xs mt-1">
-            {job.input_filename} · {job.separation_mode === 'two_stems' ? '2 Stems' : '4 Stems'} · {job.separation_model} · {job.output_format?.toUpperCase()} · {format(new Date(job.created_date), 'MMM d, yyyy h:mm a')}
-          </p>
-        </div>
-        <JobStatusBadge status={job.status} />
-      </div>
-
-      {/* Progress */}
-      {isActive && (
-        <div className="bg-white/[0.03] border border-white/5 rounded-xl p-5 space-y-3">
-          <div className="flex justify-between text-xs text-white/40">
-            <span>{job.stage || 'Processing…'}</span>
-            <span className="tabular-nums">{job.progress || 0}%</span>
+      {/* Header card */}
+      <Card>
+        <div className="flex items-start justify-between gap-4 mb-3">
+          <div className="min-w-0">
+            <h1 className="text-base font-bold truncate" style={{ color: '#EAF2FF' }}>
+              {job.title || job.input_file_name || 'Untitled'}
+            </h1>
+            <p className="text-xs mt-0.5" style={{ color: '#9CB2D6' }}>
+              {job.kind} · {job.mode ? (job.mode === 'four_stems' ? '4 stems' : '2 stems') : ''} · {job.quality || ''} · {job.output_format?.toUpperCase() || ''}
+            </p>
           </div>
-          <Progress value={job.progress || 0} className="h-1.5 bg-white/5" />
-          <p className="text-xs text-white/25">This typically takes 2–10 minutes. You can leave this page and come back.</p>
+          <StatusBadge status={job.status} />
         </div>
-      )}
 
-      {/* Error */}
-      {isFailed && (
-        <Alert className="bg-red-500/10 border-red-500/20">
-          <XCircle className="h-4 w-4 text-red-400" />
-          <AlertDescription className="text-red-400">{job.error_message || 'An unknown error occurred.'}</AlertDescription>
-        </Alert>
-      )}
-
-      {/* Log */}
-      {events.length > 0 && (
-        <div className="bg-white/[0.02] border border-white/5 rounded-xl overflow-hidden">
-          <div className="px-4 py-2.5 border-b border-white/5 text-xs font-medium text-white/30 uppercase tracking-widest">Activity Log</div>
-          <div ref={logRef} className="max-h-40 overflow-y-auto p-4 space-y-1.5 font-mono text-xs">
-            {events.map(evt => (
-              <div key={evt.id} className="flex items-start gap-3">
-                <span className="text-white/20 shrink-0 tabular-nums">{format(new Date(evt.created_date), 'HH:mm:ss')}</span>
-                <span className={LOG_COLORS[evt.level] || 'text-white/60'}>{evt.message}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Stems */}
-      {hasStemData && (
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-white">Stems</h2>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleSaveToDrive}
-                disabled={savingToDrive}
-                className="inline-flex items-center gap-1.5 h-7 px-3 rounded-lg border border-white/10 text-xs text-white/50 hover:text-white hover:bg-white/5 transition-all disabled:opacity-50"
-              >
-                {savingToDrive ? <Loader2 className="w-3 h-3 animate-spin" /> : <Cloud className="w-3 h-3" />}
-                Save to Drive
-              </button>
-              {job.output_zip_file && (
-                <a
-                  href={job.output_zip_file}
-                  download
-                  className="inline-flex items-center gap-1.5 h-7 px-3 rounded-lg bg-sky-500 hover:bg-sky-400 text-white text-xs font-medium transition-colors"
-                >
-                  <Download className="w-3 h-3" />
-                  Download all (ZIP)
-                </a>
-              )}
-            </div>
-          </div>
-
-          {driveStatus === 'success' && <p className="text-xs text-emerald-400">Saved to Google Drive ✓</p>}
-          {driveStatus === 'error' && <p className="text-xs text-red-400">Failed to save to Drive.</p>}
-
-          <div className="space-y-2">
-            {Object.entries(job.stems).map(([name, url]) => (
-              <StemPlayer key={name} name={name} url={url} format={job.output_format || 'wav'} />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Analysis */}
-      {isDone && <AnalysisPanel job={job} />}
-
-      {/* Advanced — EQ per stem */}
-      {hasStemData && (
-        <div className="border border-white/[0.06] rounded-xl overflow-hidden">
-          <button
-            onClick={() => setShowAdvanced(v => !v)}
-            className="w-full flex items-center justify-between px-4 py-3.5 text-sm text-white/50 hover:text-white/80 hover:bg-white/[0.03] transition-all"
-          >
-            <div className="flex items-center gap-2.5">
-              <div className="w-1.5 h-1.5 rounded-full bg-sky-400/60" />
-              <span className="font-medium">Advanced · Stem EQ</span>
-              <span className="text-[11px] text-white/25 bg-white/5 rounded-md px-1.5 py-0.5">Preview filtering before download</span>
-            </div>
-            <span className="text-white/25 text-xs">{showAdvanced ? '▲' : '▼'}</span>
+        {/* Tags */}
+        <div className="flex items-center gap-2 flex-wrap mb-3">
+          <TagEditor tags={job.tags || []} onChange={handleTagChange} readonly={!editTags} />
+          <button onClick={() => setEditTags(v => !v)} className="text-[11px] transition-colors"
+            style={{ color: '#9CB2D6' }}
+            onMouseEnter={e => e.target.style.color='#1EA0FF'}
+            onMouseLeave={e => e.target.style.color='#9CB2D6'}>
+            {editTags ? 'Done' : '+ tags'}
           </button>
-          {showAdvanced && (
-            <div className="px-4 pb-4 border-t border-white/[0.05]">
-              <p className="text-xs text-white/30 mt-3 mb-4 leading-relaxed">
-                Apply high-pass or low-pass filters to visualise how each stem would sound after filtering. The EQ curve updates in real time as you adjust the cutoff frequency. Filters are for reference only — download the original stem and apply in your DAW for actual processing.
-              </p>
-              <StemEQPanel stems={job.stems} format={job.output_format || 'wav'} />
-            </div>
-          )}
         </div>
-      )}
 
-      {/* Actions */}
-      <div className="flex gap-3">
+        {/* Progress */}
         {isActive && (
-          <button
-            onClick={handleCancel}
-            disabled={cancelling}
-            className="inline-flex items-center gap-2 h-9 px-4 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 text-sm transition-all disabled:opacity-50"
-          >
-            {cancelling ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" />}
-            Cancel job
-          </button>
+          <div className="space-y-1.5 mt-3 pt-3 border-t" style={{ borderColor: '#1C2A44' }}>
+            {backendNotConnected ? (
+              <div className="rounded-lg p-3 text-xs" style={{ backgroundColor: '#FFB02010', border: '1px solid #FFB02030', color: '#FFB020' }}>
+                Backend not connected yet. UI is ready. Once the GPU backend is connected, this job type will run.
+              </div>
+            ) : (
+              <>
+                <div className="flex justify-between text-xs" style={{ color: '#9CB2D6' }}>
+                  <span>{job.stage || 'Processing…'}</span>
+                  <span className="tabular-nums font-mono">{job.progress || 0}%</span>
+                </div>
+                <Progress value={job.progress || 0} className="h-1.5" style={{ backgroundColor: '#1C2A44' }} />
+                <p className="text-[11px]" style={{ color: '#9CB2D6' }}>Typically 2–10 minutes. You can leave and come back.</p>
+              </>
+            )}
+          </div>
         )}
 
         {isFailed && (
-          <>
-            <button
-              onClick={handleRetry}
-              className="inline-flex items-center gap-2 h-9 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-sm transition-colors"
-            >
-              <RefreshCw className="w-4 h-4" />
-              Retry
-            </button>
-            <a
-              href="mailto:support@stemforge.app"
-              className="inline-flex items-center h-9 px-4 rounded-xl border border-white/10 text-white/50 hover:text-white hover:bg-white/5 text-sm transition-all"
-            >
-              Contact support
-            </a>
-          </>
+          <div className="mt-3 pt-3 border-t rounded-lg p-3 text-xs" style={{ borderColor: '#1C2A44', backgroundColor: '#FF4D6D10', color: '#FF4D6D' }}>
+            {job.error_message || 'An error occurred during processing.'}
+          </div>
         )}
+
+        {/* Actions */}
+        <div className="flex gap-2 mt-3 pt-3 border-t" style={{ borderColor: '#1C2A44' }}>
+          {isActive && !backendNotConnected && (
+            <button onClick={handleCancel} disabled={cancelling}
+              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-medium transition-all disabled:opacity-50"
+              style={{ border: '1px solid #FF4D6D30', color: '#FF4D6D', backgroundColor: 'transparent' }}>
+              {cancelling ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <X className="w-3.5 h-3.5" />}
+              Cancel
+            </button>
+          )}
+          {isFailed && (
+            <button onClick={handleRetry}
+              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-medium transition-all"
+              style={{ backgroundColor: '#1EA0FF', color: '#fff' }}>
+              <RefreshCw className="w-3.5 h-3.5" /> Retry
+            </button>
+          )}
+          {hasStems && (
+            <button onClick={handleSaveToDrive} disabled={savingToDrive}
+              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-medium transition-all disabled:opacity-50"
+              style={{ border: '1px solid #1C2A44', color: '#9CB2D6', backgroundColor: 'transparent' }}>
+              {savingToDrive ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Cloud className="w-3.5 h-3.5" />}
+              Save to Drive
+            </button>
+          )}
+          {job.output_zip_file && (
+            <a href={job.output_zip_file} download
+              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-medium transition-all"
+              style={{ backgroundColor: '#1EA0FF18', color: '#1EA0FF', border: '1px solid #1EA0FF30' }}>
+              <Download className="w-3.5 h-3.5" /> Download ZIP
+            </a>
+          )}
+        </div>
+        {driveMsg && <p className="text-xs mt-2" style={{ color: driveMsg.includes('✓') ? '#19D3A2' : '#FF4D6D' }}>{driveMsg}</p>}
+      </Card>
+
+      {/* Tabs */}
+      <div className="flex border-b" style={{ borderColor: '#1C2A44' }}>
+        {TABS.map(t => (
+          <button key={t} onClick={() => setTab(t)}
+            className="px-4 py-2.5 text-xs font-medium capitalize transition-colors border-b-2 -mb-px"
+            style={{
+              color: tab === t ? '#EAF2FF' : '#9CB2D6',
+              borderBottomColor: tab === t ? '#1EA0FF' : 'transparent',
+            }}>
+            {t}
+          </button>
+        ))}
       </div>
+
+      {/* ── Results tab ── */}
+      {tab === 'results' && (
+        <div className="space-y-5">
+          {!isDone ? (
+            <Card className="text-center py-12">
+              <Loader2 className="w-6 h-6 animate-spin mx-auto mb-3" style={{ color: isActive ? '#1EA0FF' : '#9CB2D6' }} />
+              <p className="text-sm font-medium" style={{ color: '#EAF2FF' }}>{isActive ? 'Processing…' : job.status}</p>
+              <p className="text-xs mt-1" style={{ color: '#9CB2D6' }}>{job.stage || ''}</p>
+              {backendNotConnected && (
+                <div className="mt-4 mx-auto max-w-sm rounded-lg p-3 text-xs"
+                  style={{ backgroundColor: '#FFB02010', border: '1px solid #FFB02030', color: '#FFB020' }}>
+                  Backend not connected yet. UI is ready. Once the GPU backend is connected, this job type will run automatically.
+                </div>
+              )}
+            </Card>
+          ) : job.kind === 'stems' && hasStems ? (
+            <>
+              {/* Stem players */}
+              <Card>
+                <CardHeader title="Stems" subtitle="Click to preview · download individual files" />
+                <div className="space-y-2">
+                  {Object.entries(job.stems).map(([name, url]) => (
+                    <StemPlayer key={name} name={name} url={url} format={job.output_format || 'wav'} />
+                  ))}
+                </div>
+              </Card>
+
+              {/* Live Mix Console */}
+              <Card padding="p-0">
+                <div className="px-5 pt-5 pb-3 border-b flex items-center gap-2" style={{ borderColor: '#1C2A44' }}>
+                  <Sliders className="w-4 h-4" style={{ color: '#1EA0FF' }} />
+                  <div>
+                    <p className="text-sm font-semibold" style={{ color: '#EAF2FF' }}>Live Mix Console</p>
+                    <p className="text-xs mt-0.5" style={{ color: '#9CB2D6' }}>Adjust gain per stem and preview the balance before exporting</p>
+                  </div>
+                </div>
+                <div className="p-5">
+                  <StemMixer stems={job.stems} format={job.output_format || 'wav'} />
+                </div>
+              </Card>
+            </>
+          ) : job.kind === 'reference' ? (
+            <Card>
+              <CardHeader title="Reference Analysis" />
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
+                <MetricBlock label="Integrated LUFS" value={analysis.lufs || analysis.integrated_lufs} unit="LUFS" />
+                <MetricBlock label="True Peak" value={analysis.true_peak} unit="dBTP" />
+                <MetricBlock label="Loudness Range" value={analysis.lra || analysis.loudness_range} unit="LU" />
+                <MetricBlock label="Crest Factor" value={analysis.crest_factor} unit="dB" />
+                <MetricBlock label="Stereo Corr." value={analysis.stereo_correlation} />
+                <MetricBlock label="Sample Rate" value={job.sample_rate ? `${job.sample_rate/1000}k` : null} unit="Hz" />
+              </div>
+              {(!analysis.lufs && !analysis.integrated_lufs) && (
+                <div className="text-center py-6 rounded-lg" style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44' }}>
+                  <BarChart2 className="w-6 h-6 mx-auto mb-2 opacity-20" style={{ color: '#9CB2D6' }} />
+                  <p className="text-xs" style={{ color: '#9CB2D6' }}>Analysis metrics will appear here once backend is connected.</p>
+                </div>
+              )}
+            </Card>
+          ) : null}
+        </div>
+      )}
+
+      {/* ── Technical tab ── */}
+      {tab === 'technical' && (
+        <Card>
+          <CardHeader title="Technical metadata" />
+          <div className="space-y-2">
+            {[
+              ['Job ID', job.id],
+              ['Kind', job.kind],
+              ['Status', job.status],
+              ['Duration', job.duration_seconds ? `${job.duration_seconds.toFixed(1)}s` : '—'],
+              ['Sample rate', job.sample_rate ? `${job.sample_rate} Hz` : '—'],
+              ['Channels', job.channels],
+              ['File name', job.input_file_name || job.input_filename],
+              ['File size', job.input_file_size_bytes ? `${(job.input_file_size_bytes/1024/1024).toFixed(2)} MB` : '—'],
+              ['Provider job ID', job.provider_job_id || '—'],
+              ['Created', job.created_date ? format(new Date(job.created_date), 'MMM d, yyyy h:mm:ss a') : '—'],
+            ].map(([label, value]) => (
+              <div key={label} className="flex justify-between py-1.5 border-b text-xs"
+                style={{ borderColor: '#1C2A44' }}>
+                <span style={{ color: '#9CB2D6' }}>{label}</span>
+                <span className="font-mono" style={{ color: '#EAF2FF' }}>{value || '—'}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {/* ── Files tab ── */}
+      {tab === 'files' && (
+        <Card>
+          <CardHeader title="Job files" />
+          {job.stems && Object.keys(job.stems).length > 0 ? (
+            <div className="space-y-2">
+              {job.output_zip_file && (
+                <div className="flex items-center justify-between px-3 py-2.5 rounded-lg"
+                  style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44' }}>
+                  <div className="flex items-center gap-2.5">
+                    <FileAudio className="w-4 h-4" style={{ color: '#FFB020' }} />
+                    <div>
+                      <p className="text-xs font-medium" style={{ color: '#EAF2FF' }}>All stems (ZIP)</p>
+                      <p className="text-[11px]" style={{ color: '#9CB2D6' }}>zip archive</p>
+                    </div>
+                  </div>
+                  <a href={job.output_zip_file} download
+                    className="h-7 px-3 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors"
+                    style={{ backgroundColor: '#1EA0FF18', color: '#1EA0FF' }}>
+                    <Download className="w-3 h-3" /> Download
+                  </a>
+                </div>
+              )}
+              {Object.entries(job.stems).map(([name, url]) => (
+                <div key={name} className="flex items-center justify-between px-3 py-2.5 rounded-lg"
+                  style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44' }}>
+                  <div className="flex items-center gap-2.5">
+                    <FileAudio className="w-4 h-4" style={{ color: '#1EA0FF' }} />
+                    <div>
+                      <p className="text-xs font-medium capitalize" style={{ color: '#EAF2FF' }}>{name}</p>
+                      <p className="text-[11px]" style={{ color: '#9CB2D6' }}>{job.output_format?.toUpperCase() || 'WAV'}</p>
+                    </div>
+                  </div>
+                  <a href={url} download={`${name}.${job.output_format||'wav'}`}
+                    className="h-7 px-3 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors"
+                    style={{ backgroundColor: '#1C2A44', color: '#9CB2D6' }}
+                    onMouseEnter={e => { e.currentTarget.style.backgroundColor='#1EA0FF18'; e.currentTarget.style.color='#1EA0FF'; }}
+                    onMouseLeave={e => { e.currentTarget.style.backgroundColor='#1C2A44'; e.currentTarget.style.color='#9CB2D6'; }}>
+                    <Download className="w-3 h-3" /> Download
+                  </a>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-center py-6" style={{ color: '#9CB2D6' }}>No files available yet.</p>
+          )}
+        </Card>
+      )}
     </div>
   );
 }
