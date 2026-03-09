@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Layers, Activity, GitCompare, ArrowRight, Mic2, Users, Music2, Zap, ChevronRight } from 'lucide-react';
+import { Layers, Activity, GitCompare, ArrowRight, Mic2, Users, Music2, Zap, ChevronRight, Download, Zap as ZapIcon, Share2, Shield } from 'lucide-react';
 
 const FEATURES = [
   {
