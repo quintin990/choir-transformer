@@ -1,28 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
-import { Plus, Search, Loader2, Music2 } from 'lucide-react';
+import { Search, List, Layers, Activity, ChevronRight, Tag } from 'lucide-react';
 import { format } from 'date-fns';
-import JobStatusBadge from '../components/jobs/JobStatusBadge';
 import { Progress } from '@/components/ui/progress';
+import Card from '../components/auralyn/Card';
+import StatusBadge from '../components/auralyn/StatusBadge';
+import TagEditor from '../components/auralyn/TagEditor';
 
-const STATUSES = ['all', 'queued', 'running', 'done', 'failed', 'cancelled'];
-const MODES = ['all', 'two_stems', 'four_stems'];
+const KIND_ICONS = { stems: Layers, reference: Activity };
+const KIND_COLORS = { stems: '#1EA0FF', reference: '#19D3A2', match: '#9B74FF' };
+const ALL_STATUSES = ['queued', 'uploading', 'processing', 'packaging', 'done', 'failed', 'cancelled'];
+const ALL_KINDS = ['stems', 'reference', 'match'];
 
 export default function Jobs() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [modeFilter, setModeFilter] = useState('all');
+  const [kindFilter, setKindFilter] = useState('all');
+  const [tagFilter, setTagFilter] = useState('');
+  const [editTagsId, setEditTagsId] = useState(null);
 
   useEffect(() => {
     const init = async () => {
       try {
         await base44.auth.me();
-        const all = await base44.entities.Job.list('-created_date', 200);
-        setJobs(all);
+        const data = await base44.entities.Job.list('-created_date', 50);
+        setJobs(data);
       } catch {
         base44.auth.redirectToLogin('/Jobs');
       } finally {
@@ -32,146 +38,199 @@ export default function Jobs() {
     init();
   }, []);
 
+  const handleTagChange = async (jobId, tags) => {
+    setJobs(j => j.map(job => job.id === jobId ? { ...job, tags } : job));
+    await base44.functions.invoke('updateJobTags', { job_id: jobId, tags });
+  };
+
+  const allTags = [...new Set(jobs.flatMap(j => j.tags || []))];
+
   const filtered = jobs.filter(j => {
-    const matchSearch = !search || (j.input_filename || j.title || '').toLowerCase().includes(search.toLowerCase());
+    const q = search.toLowerCase();
+    const matchSearch = !q || j.title?.toLowerCase().includes(q) || j.input_file_name?.toLowerCase().includes(q) || j.input_filename?.toLowerCase().includes(q);
     const matchStatus = statusFilter === 'all' || j.status === statusFilter;
-    const matchMode = modeFilter === 'all' || j.separation_mode === modeFilter;
-    return matchSearch && matchStatus && matchMode;
+    const matchKind = kindFilter === 'all' || j.kind === kindFilter;
+    const matchTag = !tagFilter || (j.tags || []).includes(tagFilter);
+    return matchSearch && matchStatus && matchKind && matchTag;
   });
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-5">
+    <div className="max-w-5xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">My Jobs</h1>
-          <p className="text-white/40 text-sm mt-0.5">{jobs.length} total</p>
+          <h1 className="text-xl font-bold" style={{ color: '#EAF2FF', letterSpacing: '-0.02em' }}>Jobs</h1>
+          <p className="text-sm mt-0.5" style={{ color: '#9CB2D6' }}>Your splits and analyses · {jobs.length} total</p>
         </div>
-        <Link
-          to={createPageUrl('NewJob')}
-          className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white rounded-xl h-9 px-4 text-sm font-medium transition-colors shrink-0"
-        >
-          <Plus className="w-4 h-4" />
-          New job
-        </Link>
+        <div className="flex gap-2">
+          <Link to={createPageUrl('StemsNew')}
+            className="inline-flex items-center gap-1.5 h-9 px-4 rounded-lg text-xs font-semibold transition-all"
+            style={{ backgroundColor: '#1EA0FF', color: '#fff' }}>
+            <Layers className="w-3.5 h-3.5" /> New Stems
+          </Link>
+          <Link to={createPageUrl('ReferenceNew')}
+            className="inline-flex items-center gap-1.5 h-9 px-4 rounded-lg text-xs font-semibold transition-all border"
+            style={{ backgroundColor: 'transparent', color: '#EAF2FF', borderColor: '#1C2A44' }}>
+            <Activity className="w-3.5 h-3.5" /> New Reference
+          </Link>
+        </div>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-3 items-center">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30" />
-          <input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Search by filename…"
-            className="bg-white/[0.04] border border-white/10 rounded-xl pl-8 pr-3 py-2 text-sm text-white placeholder-white/25 focus:outline-none focus:border-sky-400/50 w-52"
-          />
+      <Card padding="p-4" className="mb-5">
+        <div className="flex flex-col sm:flex-row gap-3">
+          {/* Search */}
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: '#9CB2D6' }} />
+            <input value={search} onChange={e => setSearch(e.target.value)}
+              placeholder="Search by title or filename…"
+              className="w-full pl-9 pr-3 h-9 rounded-lg text-sm outline-none"
+              style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44', color: '#EAF2FF' }}
+              onFocus={e => e.target.style.borderColor='#1EA0FF'}
+              onBlur={e => e.target.style.borderColor='#1C2A44'} />
+          </div>
+
+          {/* Status */}
+          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
+            className="h-9 px-3 rounded-lg text-xs outline-none cursor-pointer"
+            style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44', color: '#EAF2FF' }}>
+            <option value="all">All statuses</option>
+            {ALL_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+          </select>
+
+          {/* Kind */}
+          <select value={kindFilter} onChange={e => setKindFilter(e.target.value)}
+            className="h-9 px-3 rounded-lg text-xs outline-none cursor-pointer"
+            style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44', color: '#EAF2FF' }}>
+            <option value="all">All types</option>
+            {ALL_KINDS.map(k => <option key={k} value={k}>{k}</option>)}
+          </select>
         </div>
 
-        <div className="flex gap-1.5">
-          {STATUSES.map(s => (
+        {/* Tag filters */}
+        {allTags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t" style={{ borderColor: '#1C2A44' }}>
             <button
-              key={s}
-              onClick={() => setStatusFilter(s)}
-              className={`h-8 px-3 rounded-lg text-xs font-medium transition-all capitalize ${
-                statusFilter === s
-                  ? 'bg-sky-500 text-white'
-                  : 'text-white/40 hover:text-white/70 hover:bg-white/5'
-              }`}
-            >
-              {s}
+              onClick={() => setTagFilter('')}
+              className="text-[11px] px-2 py-0.5 rounded-md font-medium transition-all"
+              style={{
+                backgroundColor: !tagFilter ? '#1EA0FF' : '#1C2A44',
+                color: !tagFilter ? '#fff' : '#9CB2D6',
+              }}>
+              All
             </button>
-          ))}
-        </div>
-
-        <div className="flex gap-1.5">
-          {MODES.map(m => (
-            <button
-              key={m}
-              onClick={() => setModeFilter(m)}
-              className={`h-8 px-3 rounded-lg text-xs font-medium transition-all ${
-                modeFilter === m
-                  ? 'bg-sky-500 text-white'
-                  : 'text-white/40 hover:text-white/70 hover:bg-white/5'
-              }`}
-            >
-              {m === 'all' ? 'All modes' : m === 'two_stems' ? '2 Stems' : '4 Stems'}
-            </button>
-          ))}
-        </div>
-      </div>
+            {allTags.map(t => (
+              <button key={t} onClick={() => setTagFilter(tagFilter === t ? '' : t)}
+                className="text-[11px] px-2 py-0.5 rounded-md font-medium transition-all"
+                style={{
+                  backgroundColor: tagFilter === t ? '#1EA0FF18' : '#1C2A44',
+                  color: tagFilter === t ? '#1EA0FF' : '#9CB2D6',
+                  border: tagFilter === t ? '1px solid #1EA0FF40' : '1px solid transparent',
+                }}>
+                {t}
+              </button>
+            ))}
+          </div>
+        )}
+      </Card>
 
       {/* Table */}
-      {filtered.length === 0 ? (
-        <div className="text-center py-20">
-          <Music2 className="w-10 h-10 text-white/10 mx-auto mb-3" />
-          {jobs.length === 0 ? (
-            <>
-              <p className="text-white/30 text-sm mb-4">No jobs yet.</p>
-              <Link to={createPageUrl('NewJob')} className="inline-flex items-center gap-1.5 text-sm text-sky-400 hover:text-sky-300 transition-colors">
-                <Plus className="w-4 h-4" /> Start your first job
-              </Link>
-            </>
-          ) : (
-            <p className="text-white/30 text-sm">No jobs match your filters.</p>
-          )}
+      {loading ? (
+        <div className="text-center py-16" style={{ color: '#9CB2D6' }}>Loading…</div>
+      ) : filtered.length === 0 ? (
+        <div className="text-center py-16">
+          <List className="w-8 h-8 mx-auto mb-3 opacity-20" style={{ color: '#9CB2D6' }} />
+          <p className="text-sm" style={{ color: '#9CB2D6' }}>No jobs found.</p>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-white/5">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-white/5">
-                {['File Name', 'Mode', 'Quality', 'Status', 'Progress', 'Created', 'Actions'].map(h => (
-                  <th key={h} className="text-left text-xs font-medium text-white/30 px-4 py-3 whitespace-nowrap">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map(job => (
-                <tr key={job.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors last:border-0">
-                  <td className="px-4 py-3.5 max-w-[200px]">
-                    <Link to={`${createPageUrl('JobDetail')}?id=${job.id}`} className="text-white hover:text-sky-300 transition-colors font-medium truncate block">
-                      {job.input_filename || job.title || 'Untitled'}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3.5 text-white/50 whitespace-nowrap">
-                    {job.separation_mode === 'two_stems' ? '2 Stems' : '4 Stems'}
-                  </td>
-                  <td className="px-4 py-3.5 text-white/50 capitalize whitespace-nowrap">
-                    {job.separation_model || 'balanced'}
-                  </td>
-                  <td className="px-4 py-3.5">
-                    <JobStatusBadge status={job.status} />
-                  </td>
-                  <td className="px-4 py-3.5 min-w-[100px]">
-                    <div className="space-y-1">
-                      <Progress value={job.progress || 0} className="h-1 bg-white/10" />
-                      <span className="text-xs text-white/30">{job.progress || 0}%</span>
+        <div className="space-y-2">
+          {filtered.map(job => {
+            const KindIcon = KIND_ICONS[job.kind] || List;
+            const kindColor = KIND_COLORS[job.kind] || '#9CB2D6';
+            const isActive = ['queued', 'uploading', 'processing', 'packaging'].includes(job.status);
+            const showTagEditor = editTagsId === job.id;
+
+            return (
+              <Card key={job.id} padding="p-4" className="hover:border-[#1EA0FF30] transition-all">
+                <div className="flex items-start gap-4">
+                  {/* Kind icon */}
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
+                    style={{ backgroundColor: `${kindColor}18` }}>
+                    <KindIcon className="w-3.5 h-3.5" style={{ color: kindColor }} />
+                  </div>
+
+                  {/* Main info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-sm font-semibold truncate" style={{ color: '#EAF2FF' }}>
+                        {job.title || job.input_file_name || job.input_filename || 'Untitled'}
+                      </p>
+                      <span className="text-[10px] capitalize px-1.5 py-0.5 rounded font-medium"
+                        style={{ backgroundColor: `${kindColor}15`, color: kindColor }}>
+                        {job.kind}
+                      </span>
+                      {job.mode && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded"
+                          style={{ backgroundColor: '#1C2A44', color: '#9CB2D6' }}>
+                          {job.mode === 'four_stems' ? '4 stems' : '2 stems'}
+                        </span>
+                      )}
                     </div>
-                  </td>
-                  <td className="px-4 py-3.5 text-white/40 whitespace-nowrap text-xs">
-                    {format(new Date(job.created_date), 'MMM d, yyyy')}
-                  </td>
-                  <td className="px-4 py-3.5 whitespace-nowrap">
-                    <Link
-                      to={`${createPageUrl('JobDetail')}?id=${job.id}`}
-                      className="text-xs text-sky-400 hover:text-sky-300 transition-colors"
-                    >
-                      View →
+
+                    {/* Progress */}
+                    {isActive && (
+                      <div className="mt-2 space-y-1">
+                        <div className="flex justify-between text-[11px]" style={{ color: '#9CB2D6' }}>
+                          <span>{job.stage || 'Processing…'}</span>
+                          <span className="tabular-nums">{job.progress || 0}%</span>
+                        </div>
+                        <Progress value={job.progress || 0} className="h-1" style={{ backgroundColor: '#1C2A44' }} />
+                      </div>
+                    )}
+
+                    {/* Tags row */}
+                    <div className="mt-2 flex items-center gap-2 flex-wrap">
+                      {(job.tags || []).length > 0 && (
+                        <TagEditor tags={job.tags || []} onChange={tags => handleTagChange(job.id, tags)} readonly={!showTagEditor} />
+                      )}
+                      {!showTagEditor && (
+                        <button
+                          onClick={() => setEditTagsId(showTagEditor ? null : job.id)}
+                          className="text-[11px] flex items-center gap-1 transition-colors"
+                          style={{ color: '#9CB2D6' }}
+                          onMouseEnter={e => e.currentTarget.style.color='#1EA0FF'}
+                          onMouseLeave={e => e.currentTarget.style.color='#9CB2D6'}>
+                          <Tag className="w-3 h-3" /> {(job.tags || []).length === 0 ? 'Add tags' : 'Edit'}
+                        </button>
+                      )}
+                      {showTagEditor && (
+                        <>
+                          <TagEditor tags={job.tags || []} onChange={tags => handleTagChange(job.id, tags)} />
+                          <button onClick={() => setEditTagsId(null)} className="text-[11px]" style={{ color: '#9CB2D6' }}>Done</button>
+                        </>
+                      )}
+                    </div>
+
+                    <p className="text-[11px] mt-1.5" style={{ color: '#9CB2D6' }}>
+                      {format(new Date(job.created_date), 'MMM d, yyyy · h:mm a')}
+                    </p>
+                  </div>
+
+                  {/* Right: status + action */}
+                  <div className="flex items-center gap-3 shrink-0">
+                    <StatusBadge status={job.status} />
+                    <Link to={`${createPageUrl('JobDetail')}?id=${job.id}`}
+                      className="flex items-center gap-1 text-xs font-medium transition-colors"
+                      style={{ color: '#9CB2D6' }}
+                      onMouseEnter={e => e.currentTarget.style.color='#1EA0FF'}
+                      onMouseLeave={e => e.currentTarget.style.color='#9CB2D6'}>
+                      View <ChevronRight className="w-3.5 h-3.5" />
                     </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
         </div>
       )}
     </div>
