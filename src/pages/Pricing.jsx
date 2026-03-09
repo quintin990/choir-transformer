@@ -50,6 +50,10 @@ const PLANS = [
 
 export default function Pricing() {
   const handleProCheckout = async () => {
+    if (window.self !== window.top) {
+      alert('Checkout is only available from the published app. Visit auralyn.io to upgrade.');
+      return;
+    }
     try {
       const response = await base44.functions.invoke('createCheckoutSession', { plan: 'pro' });
       window.location.href = response.data.url;
@@ -62,78 +66,89 @@ export default function Pricing() {
   return (
     <div className="max-w-5xl mx-auto px-5 py-12">
       <div className="text-center mb-16">
-        <h1 className="text-4xl font-bold mb-4" style={{ color: '#EAF2FF', letterSpacing: '-0.03em' }}>Simple, Transparent Pricing</h1>
-        <p className="text-lg" style={{ color: '#6A8AAD' }}>Pay for what you use. No hidden fees. Cancel anytime.</p>
+        <h1 className="text-4xl font-bold mb-4" style={{ color: 'hsl(var(--color-text))', letterSpacing: '-0.03em' }}>Simple, Transparent Pricing</h1>
+        <p className="text-lg" style={{ color: 'hsl(var(--color-muted))' }}>Pay for what you use. No hidden fees. Cancel anytime.</p>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-6 mb-12">
-        {PLANS.map(plan => (
-          <div
-            key={plan.name}
-            className="rounded-2xl border p-8 relative"
-            style={{
-              backgroundColor: '#0F1A2E',
-              borderColor: plan.featured ? '#1EA0FF' : '#1C2A44',
-              borderWidth: plan.featured ? '2px' : '1px',
-            }}
-          >
-            {plan.featured && (
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold"
-                style={{ backgroundColor: '#1EA0FF', color: '#fff' }}>
-                MOST POPULAR
-              </div>
-            )}
-
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold mb-2" style={{ color: '#EAF2FF' }}>{plan.name}</h2>
-              <p style={{ color: '#6A8AAD' }}>{plan.description}</p>
-              <div className="mt-4 flex items-baseline">
-                <span className="text-4xl font-bold" style={{ color: '#EAF2FF' }}>{plan.price}</span>
-                <span style={{ color: '#6A8AAD' }}>{plan.period}</span>
-              </div>
-            </div>
-
-            <button
-              onClick={plan.name === 'Pro' ? handleProCheckout : null}
-              as={plan.name === 'Free' ? Link : undefined}
-              to={plan.name === 'Free' ? createPageUrl(plan.ctaUrl) : undefined}
-              className="w-full h-11 rounded-lg text-sm font-semibold transition-all mb-6"
+        {PLANS.map(plan => {
+          const isFree = plan.name === 'Free';
+          return (
+            <div
+              key={plan.name}
+              className="rounded-2xl border p-8 relative"
               style={{
-                backgroundColor: plan.featured ? '#1EA0FF' : '#1C2A44',
-                color: plan.featured ? '#fff' : '#9CB2D6',
-              }}
-              onMouseEnter={e => {
-                if (plan.featured) e.currentTarget.style.backgroundColor = '#3BAEFF';
-              }}
-              onMouseLeave={e => {
-                if (plan.featured) e.currentTarget.style.backgroundColor = '#1EA0FF';
+                backgroundColor: 'hsl(var(--color-card))',
+                borderColor: plan.featured ? 'hsl(var(--color-primary))' : 'hsl(var(--color-border))',
+                borderWidth: plan.featured ? '2px' : '1px',
               }}
             >
-              {plan.cta}
-            </button>
-
-            <div className="space-y-3">
-              {plan.features.map((feature, idx) => (
-                <div key={idx} className="flex items-start gap-3">
-                  {feature.included ? (
-                    <Check className="w-5 h-5 shrink-0 mt-0.5" style={{ color: '#19D3A2' }} />
-                  ) : (
-                    <div className="w-5 h-5 rounded border shrink-0 mt-0.5" style={{ borderColor: '#1C2A44' }} />
-                  )}
-                  <span className="text-sm" style={{ color: feature.included ? '#9CB2D6' : '#4A6080' }}>
-                    {feature.text}
-                  </span>
+              {plan.featured && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold"
+                  style={{ backgroundColor: 'hsl(var(--color-primary))', color: 'hsl(var(--color-primary-foreground))' }}>
+                  MOST POPULAR
                 </div>
-              ))}
+              )}
+
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold mb-2" style={{ color: 'hsl(var(--color-text))' }}>{plan.name}</h2>
+                <p style={{ color: 'hsl(var(--color-muted))' }}>{plan.description}</p>
+                <div className="mt-4 flex items-baseline">
+                  <span className="text-4xl font-bold" style={{ color: 'hsl(var(--color-text))' }}>{plan.price}</span>
+                  <span style={{ color: 'hsl(var(--color-muted))' }}>{plan.period}</span>
+                </div>
+              </div>
+
+              {isFree ? (
+                <Link
+                  to={createPageUrl(plan.ctaUrl)}
+                  className="w-full h-11 rounded-lg text-sm font-semibold transition-all mb-6 flex items-center justify-center"
+                  style={{
+                    backgroundColor: 'hsl(var(--color-input))',
+                    color: 'hsl(var(--color-text))',
+                    border: `1px solid hsl(var(--color-border))`,
+                  }}
+                >
+                  {plan.cta}
+                </Link>
+              ) : (
+                <button
+                  onClick={handleProCheckout}
+                  className="w-full h-11 rounded-lg text-sm font-semibold transition-all mb-6"
+                  style={{
+                    backgroundColor: 'hsl(var(--color-primary))',
+                    color: 'hsl(var(--color-primary-foreground))',
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.opacity = '0.9'}
+                  onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+                >
+                  {plan.cta}
+                </button>
+              )}
+
+              <div className="space-y-3">
+                {plan.features.map((feature, idx) => (
+                  <div key={idx} className="flex items-start gap-3">
+                    {feature.included ? (
+                      <Check className="w-5 h-5 shrink-0 mt-0.5" style={{ color: 'hsl(var(--color-accent))' }} />
+                    ) : (
+                      <div className="w-5 h-5 rounded border shrink-0 mt-0.5" style={{ borderColor: 'hsl(var(--color-border))' }} />
+                    )}
+                    <span className="text-sm" style={{ color: feature.included ? 'hsl(var(--color-text))' : 'hsl(var(--color-muted))' }}>
+                      {feature.text}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      <div className="rounded-xl border p-6 text-center" style={{ backgroundColor: '#0F1A2E', borderColor: '#1C2A44' }}>
-        <p style={{ color: '#9CB2D6' }}>
+      <div className="rounded-xl border p-6 text-center" style={{ backgroundColor: 'hsl(var(--color-card))', borderColor: 'hsl(var(--color-border))' }}>
+        <p style={{ color: 'hsl(var(--color-muted))' }}>
           Need a custom plan or team license?{' '}
-          <a href="mailto:hello@auralyn.io" style={{ color: '#1EA0FF', fontWeight: 'bold' }}>Contact us</a>
+          <a href="mailto:hello@auralyn.io" style={{ color: 'hsl(var(--color-primary))', fontWeight: 'bold' }}>Contact us</a>
         </p>
       </div>
     </div>
