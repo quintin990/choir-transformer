@@ -69,13 +69,13 @@ export default function Landing() {
         {/* Headline */}
         <h1 className="text-6xl sm:text-8xl font-bold mb-8 leading-[1.0]"
           style={{ letterSpacing: '-0.04em' }}>
-          Stop struggling.{' '}
+          Hear it.{' '}
           <span style={{
             background: 'linear-gradient(135deg, #1EA0FF 0%, #19D3A2 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
           }}>
-            Start transforming.
+            Separate it. Master it.
           </span>
         </h1>
 
