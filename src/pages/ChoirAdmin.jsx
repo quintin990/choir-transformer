@@ -135,33 +135,18 @@ export default function ChoirAdmin() {
         </div>
       </Card>
 
-      {/* Pending members */}
+      {/* Pending members link to dedicated page */}
       {pendingMembers.length > 0 && (
         <Card>
           <CardHeader title={`Pending Requests (${pendingMembers.length})`} />
-          <div className="space-y-2">
-            {pendingMembers.map(m => (
-              <div key={m.id} className="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg"
-                style={{ backgroundColor: '#0B1220', border: '1px solid #FFB02020' }}>
-                <div>
-                  <p className="text-xs font-medium" style={{ color: '#EAF2FF' }}>{m.user_name || m.user_email}</p>
-                  <p className="text-[10px]" style={{ color: '#9CB2D6' }}>{m.user_email}</p>
-                </div>
-                <div className="flex gap-2 shrink-0">
-                  <button onClick={() => handleMemberAction(m, 'rejected')}
-                    className="h-7 px-3 rounded text-xs font-medium"
-                    style={{ backgroundColor: '#FF4D6D18', color: '#FF4D6D' }}>
-                    Reject
-                  </button>
-                  <button onClick={() => handleMemberAction(m, 'approved')}
-                    className="h-7 px-3 rounded text-xs font-medium"
-                    style={{ backgroundColor: '#19D3A220', color: '#19D3A2' }}>
-                    Approve
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+          <Link to={`${createPageUrl('ChoirAdminMembers')}?choirId=${choir?.id}`}
+            className="inline-flex items-center gap-2 h-9 px-4 rounded-lg text-xs font-semibold transition-all"
+            style={{ backgroundColor: '#FFB02020', color: '#FFB020', border: '1px solid #FFB02030' }}
+            onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#FFB02030'; }}
+            onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#FFB02020'; }}>
+            Manage Requests
+            <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
         </Card>
       )}
 
