@@ -1,49 +1,69 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
-import Stripe from 'npm:stripe@14';
+import Stripe from 'npm:stripe@16.7.0';
+
+const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
-    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { priceId } = await req.json();
-    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
-    const appUrl = Deno.env.get('APP_URL') || 'https://localhost:3000';
+    if (!user) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-    // Get or create profile
-    const profiles = await base44.entities.Profile.filter({ user_id: user.id });
-    let profile = profiles[0];
+    // Create or get Stripe customer
+    let customerId = null;
+    const profiles = await base44.asServiceRole.entities.Profile.filter({
+      user_id: user.id,
+    });
 
-    let customerId = profile?.stripe_customer_id;
-
-    if (!customerId) {
+    if (profiles.length > 0 && profiles[0].stripe_customer_id) {
+      customerId = profiles[0].stripe_customer_id;
+    } else {
       const customer = await stripe.customers.create({
         email: user.email,
-        name: user.full_name || undefined,
-        metadata: { base44_user_id: user.id },
+        metadata: { user_id: user.id },
       });
       customerId = customer.id;
-      if (profile) {
-        await base44.entities.Profile.update(profile.id, { stripe_customer_id: customerId });
+      if (profiles.length > 0) {
+        await base44.asServiceRole.entities.Profile.update(profiles[0].id, {
+          stripe_customer_id: customerId,
+        });
       } else {
-        profile = await base44.entities.Profile.create({ user_id: user.id, stripe_customer_id: customerId, plan: 'free', subscription_status: 'none' });
+        await base44.asServiceRole.entities.Profile.create({
+          user_id: user.id,
+          stripe_customer_id: customerId,
+        });
       }
     }
 
+    // Create checkout session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: { name: 'Auralyn Pro' },
+            unit_amount: 999, // $9.99
+            recurring: { interval: 'month' },
+          },
+          quantity: 1,
+        },
+      ],
       mode: 'subscription',
-      line_items: [{ price: priceId || Deno.env.get('STRIPE_PRICE_PRO_MONTHLY'), quantity: 1 }],
-      success_url: `${appUrl}/billing/success`,
-      cancel_url: `${appUrl}/billing/cancel`,
-      metadata: { base44_app_id: Deno.env.get('BASE44_APP_ID'), base44_user_id: user.id },
+      success_url: `${Deno.env.get('APP_URL')}/billing-success`,
+      cancel_url: `${Deno.env.get('APP_URL')}/billing-cancel`,
+      metadata: {
+        base44_app_id: Deno.env.get('BASE44_APP_ID'),
+      },
     });
 
-    console.log('Checkout session created:', session.id);
-    return Response.json({ checkoutUrl: session.url });
-  } catch (err) {
-    console.error('createCheckoutSession error:', err);
-    return Response.json({ error: err.message }, { status: 500 });
+    return Response.json({ url: session.url });
+  } catch (error) {
+    console.error('Checkout error:', error);
+    return Response.json({ error: error.message }, { status: 500 });
   }
 });
