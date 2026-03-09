@@ -6,36 +6,50 @@
 
 @layer base {
   :root {
-    --background: 218 39% 8%;
-    --foreground: 210 20% 95%;
-    --card: 218 35% 11%;
-    --card-foreground: 210 20% 95%;
-    --popover: 218 35% 11%;
-    --popover-foreground: 210 20% 95%;
-    --primary: 202 83% 53%;
+    --background: 216 57% 9%;
+    --foreground: 215 100% 95%;
+    --card: 217 51% 12%;
+    --card-foreground: 215 100% 95%;
+    --popover: 217 51% 12%;
+    --popover-foreground: 215 100% 95%;
+    --primary: 211 100% 56%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 35% 18%;
-    --secondary-foreground: 210 25% 85%;
-    --muted: 210 35% 14%;
-    --muted-foreground: 210 15% 50%;
-    --accent: 192 80% 42%;
+    --secondary: 217 43% 18%;
+    --secondary-foreground: 214 37% 72%;
+    --muted: 217 45% 14%;
+    --muted-foreground: 214 37% 65%;
+    --accent: 163 76% 47%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 72% 51%;
+    --destructive: 349 100% 65%;
     --destructive-foreground: 0 0% 98%;
-    --border: 213 28% 16%;
-    --input: 213 28% 16%;
-    --ring: 202 83% 53%;
-    --radius: 0.75rem;
+    --border: 217 43% 18%;
+    --input: 217 43% 18%;
+    --ring: 211 100% 56%;
+    --radius: 0.5rem;
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+  * { @apply border-border; }
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
+    background-color: #0B1220;
+    color: #EAF2FF;
   }
 }
+
+/* Vertical range input for faders */
+input[type="range"][orient="vertical"] {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  appearance: slider-vertical;
+  -webkit-appearance: slider-vertical;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: #0B1220; }
+::-webkit-scrollbar-thumb { background: #1C2A44; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #1EA0FF33; }
