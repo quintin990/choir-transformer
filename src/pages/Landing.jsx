@@ -74,12 +74,12 @@ export default function Landing() {
         <h2 className="text-3xl font-bold text-center mb-12" style={{ letterSpacing: '-0.03em' }}>How it Works</h2>
         <div className="grid sm:grid-cols-3 gap-8">
           {[
-            { num: '1', title: 'Upload your song', desc: 'Drag and drop any audio file — MP3, WAV, FLAC, M4A.' },
-            { num: '2', title: 'Auralyn separates', desc: 'AI extracts vocals, instruments, SATB parts and analyzes metadata.' },
-            { num: '3', title: 'Practice & manage', desc: 'Use smart tools to learn your part, or share with your choir.' },
-          ].map(({ num, title, desc }) => (
+            { num: '1', title: 'Upload your song', desc: 'Drag and drop any audio file — MP3, WAV, FLAC, M4A.', color: '#1EA0FF' },
+            { num: '2', title: 'Auralyn separates', desc: 'AI extracts vocals, instruments, SATB parts and analyzes metadata.', color: '#A78BFA' },
+            { num: '3', title: 'Practice & manage', desc: 'Use smart tools to learn your part, or share with your choir.', color: '#19D3A2' },
+          ].map(({ num, title, desc, color }) => (
             <div key={num} className="text-center">
-              <p className="text-5xl font-bold mb-4 opacity-20" style={{ color: '#1EA0FF' }}>{num}</p>
+              <p className="text-5xl font-bold mb-4 opacity-30" style={{ color }}>{num}</p>
               <h3 className="text-lg font-bold mb-2" style={{ color: '#EAF2FF' }}>{title}</h3>
               <p className="text-sm" style={{ color: '#6A8AAD' }}>{desc}</p>
             </div>
