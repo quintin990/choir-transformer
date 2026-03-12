@@ -36,6 +36,11 @@ export default function StemMixer({ stems }) {
   const [duration, setDuration] = useState(0);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
+  const [loopEnabled, setLoopEnabled] = useState(false);
+  const [loopStart, setLoopStart] = useState(0);
+  const [loopEnd, setLoopEnd] = useState(0);
+  const seekbarRef = useRef(null);
+  const loopDragRef = useRef(null); // 'start' | 'end' | 'region' | null
 
   // Load buffers
   useEffect(() => {
