@@ -67,6 +67,7 @@ export default function StemMixer({ stems }) {
 
         const maxDur = Math.max(...Object.values(buffersRef.current).map(b => b.duration));
         setDuration(maxDur);
+        setLoopEnd(maxDur);
         setLoading(false);
       } catch (e) {
         console.error('StemMixer load error:', e);
