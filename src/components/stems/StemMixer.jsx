@@ -171,38 +171,41 @@ export default function StemMixer({ stems }) {
   if (loadError) return null;
 
   return (
-    <div className="bg-[#0d0d1a] border border-white/8 rounded-2xl overflow-hidden select-none">
+    <div className="rounded-2xl overflow-hidden select-none"
+      style={{ backgroundColor: 'hsl(var(--color-card))', border: '1px solid hsl(var(--color-border))' }}>
       {/* Header */}
-      <div className="px-5 py-3.5 border-b border-white/5 flex items-center justify-between">
+      <div className="px-5 py-3.5 flex items-center justify-between"
+        style={{ borderBottom: '1px solid hsl(var(--color-border))' }}>
         <div className="flex items-center gap-2">
           <div className="flex gap-0.5">
             {[0,1,2,3,4].map(i => (
-              <div key={i} className={`w-0.5 rounded-full bg-violet-500 transition-all duration-150 ${isPlaying ? 'animate-pulse' : ''}`}
-                style={{ height: isPlaying ? `${8 + Math.sin(i * 1.3) * 5}px` : '4px', animationDelay: `${i * 80}ms` }} />
+              <div key={i} className={`w-0.5 rounded-full transition-all duration-150 ${isPlaying ? 'animate-pulse' : ''}`}
+                style={{ height: isPlaying ? `${8 + Math.sin(i * 1.3) * 5}px` : '4px', animationDelay: `${i * 80}ms`, backgroundColor: 'hsl(var(--color-primary))' }} />
             ))}
           </div>
-          <span className="text-xs font-semibold text-white/80 tracking-wider uppercase ml-1">Stem Mixer</span>
+          <span className="text-xs font-semibold tracking-wider uppercase ml-1" style={{ color: 'hsl(var(--color-text))' }}>Stem Mixer</span>
         </div>
         {loading ? (
-          <div className="flex items-center gap-1.5 text-xs text-white/30">
+          <div className="flex items-center gap-1.5 text-xs" style={{ color: 'hsl(var(--color-muted))' }}>
             <Loader2 className="w-3 h-3 animate-spin" />
             Loading…
           </div>
         ) : (
-          <span className="text-xs text-white/25">{stemNames.length} stems · {fmt(duration)}</span>
+          <span className="text-xs" style={{ color: 'hsl(var(--color-muted))' }}>{stemNames.length} stems · {fmt(duration)}</span>
         )}
       </div>
 
       {/* Column headers */}
-      <div className="px-4 py-2 flex items-center gap-4 border-b border-white/[0.03]">
-        <span className="w-20 text-[10px] uppercase tracking-wider text-white/20">Stem</span>
-        <span className="flex-1 text-[10px] uppercase tracking-wider text-white/20">Waveform</span>
-        <span className="w-20 text-[10px] uppercase tracking-wider text-white/20 text-center">Volume</span>
-        <span className="w-24 text-[10px] uppercase tracking-wider text-white/20 text-center">Play · Mute · Solo</span>
+      <div className="px-4 py-2 flex items-center gap-4"
+        style={{ borderBottom: '1px solid hsl(var(--color-border))' }}>
+        <span className="w-20 text-[10px] uppercase tracking-wider" style={{ color: 'hsl(var(--color-muted))' }}>Stem</span>
+        <span className="flex-1 text-[10px] uppercase tracking-wider" style={{ color: 'hsl(var(--color-muted))' }}>Waveform</span>
+        <span className="w-20 text-[10px] uppercase tracking-wider text-center" style={{ color: 'hsl(var(--color-muted))' }}>Volume</span>
+        <span className="w-24 text-[10px] uppercase tracking-wider text-center" style={{ color: 'hsl(var(--color-muted))' }}>Play · Mute · Solo</span>
       </div>
 
       {/* Stem rows */}
-      <div className="divide-y divide-white/[0.03]">
+      <div>
         {stemNames.map((name, idx) => {
           const color = STEM_COLORS[name.toLowerCase()] || FALLBACK_COLORS[idx % FALLBACK_COLORS.length];
           const st = stemStates[name] || { muted: false, soloed: false, volume: 1 };
@@ -211,17 +214,19 @@ export default function StemMixer({ stems }) {
           return (
             <div
               key={name}
-              className={`px-4 py-3 flex items-center gap-4 transition-opacity duration-200 ${!isActive ? 'opacity-25' : ''}`}
+              className={`px-4 py-3 flex items-center gap-4 transition-opacity duration-200 ${!isActive ? 'opacity-40' : ''}`}
+              style={{ borderBottom: '1px solid hsl(var(--color-border))' }}
             >
               {/* Name */}
               <div className="w-20 shrink-0 flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full shrink-0 ring-1 ring-white/10"
-                  style={{ backgroundColor: color }} />
-                <span className="text-xs font-medium text-white/80 capitalize truncate">{name}</span>
+                <div className="w-2.5 h-2.5 rounded-full shrink-0"
+                  style={{ backgroundColor: color, boxShadow: '0 0 0 1px hsl(var(--color-border))' }} />
+                <span className="text-xs font-medium capitalize truncate" style={{ color: 'hsl(var(--color-text))' }}>{name}</span>
               </div>
 
               {/* Waveform */}
-              <div className="flex-1 h-10 min-w-0 bg-white/[0.02] rounded-lg overflow-hidden cursor-pointer"
+              <div className="flex-1 h-10 min-w-0 rounded-lg overflow-hidden cursor-pointer"
+                style={{ backgroundColor: 'hsl(var(--color-background))' }}
                 onClick={(e) => {
                   const rect = e.currentTarget.getBoundingClientRect();
                   seek(((e.clientX - rect.left) / rect.width) * duration);
@@ -238,7 +243,7 @@ export default function StemMixer({ stems }) {
 
               {/* Volume */}
               <div className="w-20 shrink-0 flex items-center gap-1.5">
-                <Volume2 className="w-3 h-3 text-white/20 shrink-0" />
+                <Volume2 className="w-3 h-3 shrink-0" style={{ color: 'hsl(var(--color-muted))' }} />
                 <Slider
                   value={[st.volume]}
                   onValueChange={([v]) => setVolume(name, v)}
@@ -250,10 +255,8 @@ export default function StemMixer({ stems }) {
 
               {/* Mute / Solo / Play */}
               <div className="w-24 shrink-0 flex items-center justify-center gap-1">
-                {/* Solo play button */}
                 <button
                   onClick={() => {
-                    // Solo this stem and play
                     setStemStates(p => {
                       const next = {};
                       Object.keys(p).forEach(k => { next[k] = { ...p[k], soloed: k === name, muted: false }; });
@@ -262,31 +265,34 @@ export default function StemMixer({ stems }) {
                     if (!isPlaying) startPlayback(offsetRef.current);
                   }}
                   title="Preview this stem"
-                  className={`w-7 h-7 rounded-md flex items-center justify-center transition-all ${
-                    st.soloed
-                      ? 'bg-violet-500/30 text-violet-300 ring-1 ring-violet-500/50'
-                      : 'bg-white/5 text-white/30 hover:text-white/60 hover:bg-white/8'
-                  }`}
+                  className="w-7 h-7 rounded-md flex items-center justify-center transition-all"
+                  style={{
+                    backgroundColor: st.soloed ? 'hsl(var(--color-primary) / 0.15)' : 'hsl(var(--color-border))',
+                    color: st.soloed ? 'hsl(var(--color-primary))' : 'hsl(var(--color-muted))',
+                    border: st.soloed ? '1px solid hsl(var(--color-primary) / 0.4)' : '1px solid transparent',
+                  }}
                 >
                   <Play className="w-3 h-3 ml-0.5" />
                 </button>
                 <button
                   onClick={() => toggleMute(name)}
                   title="Mute"
-                  className={`w-7 h-7 rounded-md text-[10px] font-bold tracking-wide transition-all ${
-                    st.muted
-                      ? 'bg-red-500/25 text-red-400 ring-1 ring-red-500/40'
-                      : 'bg-white/5 text-white/30 hover:text-white/60 hover:bg-white/8'
-                  }`}
+                  className="w-7 h-7 rounded-md text-[10px] font-bold tracking-wide transition-all"
+                  style={{
+                    backgroundColor: st.muted ? 'hsl(var(--color-destructive) / 0.15)' : 'hsl(var(--color-border))',
+                    color: st.muted ? 'hsl(var(--color-destructive))' : 'hsl(var(--color-muted))',
+                    border: st.muted ? '1px solid hsl(var(--color-destructive) / 0.4)' : '1px solid transparent',
+                  }}
                 >M</button>
                 <button
                   onClick={() => toggleSolo(name)}
                   title="Solo"
-                  className={`w-7 h-7 rounded-md text-[10px] font-bold tracking-wide transition-all ${
-                    st.soloed
-                      ? 'bg-amber-500/25 text-amber-400 ring-1 ring-amber-500/40'
-                      : 'bg-white/5 text-white/30 hover:text-white/60 hover:bg-white/8'
-                  }`}
+                  className="w-7 h-7 rounded-md text-[10px] font-bold tracking-wide transition-all"
+                  style={{
+                    backgroundColor: st.soloed ? 'hsl(var(--color-amber) / 0.15)' : 'hsl(var(--color-border))',
+                    color: st.soloed ? 'hsl(var(--color-amber))' : 'hsl(var(--color-muted))',
+                    border: st.soloed ? '1px solid hsl(var(--color-amber) / 0.4)' : '1px solid transparent',
+                  }}
                 >S</button>
               </div>
             </div>
@@ -295,14 +301,14 @@ export default function StemMixer({ stems }) {
       </div>
 
       {/* Transport */}
-      <div className="px-5 py-4 border-t border-white/5 space-y-3 bg-white/[0.01]">
+      <div className="px-5 py-4 space-y-3" style={{ borderTop: '1px solid hsl(var(--color-border))' }}>
         {/* Seekbar with loop region */}
         <div className="flex items-center gap-3">
-          <span className="text-[11px] tabular-nums text-white/30 w-8 text-right shrink-0">{fmt(currentTime)}</span>
+          <span className="text-[11px] tabular-nums w-8 text-right shrink-0" style={{ color: 'hsl(var(--color-muted))' }}>{fmt(currentTime)}</span>
           <div
             ref={seekbarRef}
             className="flex-1 relative h-3 rounded-full cursor-pointer group select-none"
-            style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}
+            style={{ backgroundColor: 'hsl(var(--color-border))' }}
             onClick={(e) => {
               if (loopDragRef.current) return;
               const rect = e.currentTarget.getBoundingClientRect();
@@ -310,8 +316,8 @@ export default function StemMixer({ stems }) {
             }}
           >
             {/* Track fill */}
-            <div className="absolute inset-y-0 left-0 bg-violet-600/60 rounded-full"
-              style={{ width: `${pct}%` }} />
+            <div className="absolute inset-y-0 left-0 rounded-full"
+              style={{ width: `${pct}%`, backgroundColor: 'hsl(var(--color-primary) / 0.7)' }} />
 
             {/* Loop region highlight */}
             {loopEnabled && duration > 0 && (
@@ -320,13 +326,13 @@ export default function StemMixer({ stems }) {
                   style={{
                     left: `${(loopStart / duration) * 100}%`,
                     width: `${((loopEnd - loopStart) / duration) * 100}%`,
-                    backgroundColor: '#F59E0B30',
-                    border: '1px solid #F59E0B60',
+                    backgroundColor: 'hsl(var(--color-amber) / 0.2)',
+                    border: '1px solid hsl(var(--color-amber) / 0.5)',
                   }} />
                 {/* Loop start handle */}
                 <div
                   className="absolute top-1/2 -translate-y-1/2 w-2.5 h-5 rounded-sm cursor-ew-resize z-10"
-                  style={{ left: `${(loopStart / duration) * 100}%`, backgroundColor: '#F59E0B', marginLeft: '-5px' }}
+                  style={{ left: `${(loopStart / duration) * 100}%`, backgroundColor: 'hsl(var(--color-amber))', marginLeft: '-5px' }}
                   onMouseDown={(e) => {
                     e.stopPropagation();
                     loopDragRef.current = 'start';
@@ -344,7 +350,7 @@ export default function StemMixer({ stems }) {
                 {/* Loop end handle */}
                 <div
                   className="absolute top-1/2 -translate-y-1/2 w-2.5 h-5 rounded-sm cursor-ew-resize z-10"
-                  style={{ left: `${(loopEnd / duration) * 100}%`, backgroundColor: '#F59E0B', marginLeft: '-5px' }}
+                  style={{ left: `${(loopEnd / duration) * 100}%`, backgroundColor: 'hsl(var(--color-amber))', marginLeft: '-5px' }}
                   onMouseDown={(e) => {
                     e.stopPropagation();
                     loopDragRef.current = 'end';
@@ -363,15 +369,15 @@ export default function StemMixer({ stems }) {
             )}
 
             {/* Playhead */}
-            <div className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-lg -ml-1.5 opacity-0 group-hover:opacity-100 transition-opacity"
-              style={{ left: `${pct}%` }} />
+            <div className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full shadow-lg -ml-1.5 opacity-0 group-hover:opacity-100 transition-opacity"
+              style={{ left: `${pct}%`, backgroundColor: 'hsl(var(--color-text))' }} />
           </div>
-          <span className="text-[11px] tabular-nums text-white/30 w-8 shrink-0">{fmt(duration)}</span>
+          <span className="text-[11px] tabular-nums w-8 shrink-0" style={{ color: 'hsl(var(--color-muted))' }}>{fmt(duration)}</span>
         </div>
 
         {/* Loop time display when active */}
         {loopEnabled && (
-          <div className="flex items-center justify-center gap-3 text-[10px]" style={{ color: '#F59E0B99' }}>
+          <div className="flex items-center justify-center gap-3 text-[10px]" style={{ color: 'hsl(var(--color-amber) / 0.8)' }}>
             <span>Loop: {fmt(loopStart)} → {fmt(loopEnd)}</span>
             <button
               onClick={() => { setLoopStart(0); setLoopEnd(duration); }}
@@ -383,14 +389,16 @@ export default function StemMixer({ stems }) {
         <div className="flex items-center justify-center gap-4">
           <button
             onClick={() => { offsetRef.current = 0; setCurrentTime(0); if (isPlaying) startPlayback(0); }}
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-white/25 hover:text-white/60 hover:bg-white/5 transition-all"
+            className="w-7 h-7 rounded-lg flex items-center justify-center transition-all"
+            style={{ color: 'hsl(var(--color-muted))' }}
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={togglePlay}
             disabled={loading}
-            className="w-11 h-11 rounded-full bg-violet-600 hover:bg-violet-500 disabled:opacity-30 flex items-center justify-center text-white transition-all shadow-lg shadow-violet-600/20 active:scale-95"
+            className="w-11 h-11 rounded-full disabled:opacity-30 flex items-center justify-center text-white transition-all active:scale-95"
+            style={{ backgroundColor: 'hsl(var(--color-primary))', boxShadow: '0 4px 14px hsl(var(--color-primary) / 0.3)' }}
           >
             {isPlaying
               ? <Pause className="w-4 h-4" />
@@ -403,9 +411,9 @@ export default function StemMixer({ stems }) {
             title="Toggle loop selection"
             className="w-7 h-7 rounded-lg flex items-center justify-center transition-all"
             style={{
-              backgroundColor: loopEnabled ? '#F59E0B22' : 'rgba(255,255,255,0.05)',
-              color: loopEnabled ? '#F59E0B' : 'rgba(255,255,255,0.25)',
-              border: loopEnabled ? '1px solid #F59E0B50' : '1px solid transparent',
+              backgroundColor: loopEnabled ? 'hsl(var(--color-amber) / 0.15)' : 'hsl(var(--color-border))',
+              color: loopEnabled ? 'hsl(var(--color-amber))' : 'hsl(var(--color-muted))',
+              border: loopEnabled ? '1px solid hsl(var(--color-amber) / 0.4)' : '1px solid transparent',
             }}
           >
             <Repeat className="w-3.5 h-3.5" />
