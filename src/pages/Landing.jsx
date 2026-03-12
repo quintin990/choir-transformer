@@ -49,15 +49,17 @@ export default function Landing() {
       <section className="max-w-5xl mx-auto px-5 py-20">
         <div className="grid sm:grid-cols-2 gap-6">
           {[
-            { icon: Mic, title: 'Studio‑Quality Separation', desc: 'Isolate vocals, drums, bass and more. Get SATB parts automatically.', tooltip: 'AI isolates individual instruments and voice parts for perfect practice.' },
-            { icon: Zap, title: 'Smart Practice', desc: 'Solo and mute parts, adjust tempo, loop sections and practise with context mixes.', tooltip: 'Loop tricky sections, slow down tempos, and focus on your part.' },
-            { icon: Calendar, title: 'Song Planner & Choir Management', desc: 'Track song progress, performance dates, lyrics, sheet music and readiness. Assign parts and manage members.', tooltip: 'Organize your repertoire, track readiness, and manage rehearsals.' },
-            { icon: BarChart3, title: 'Reference Mix & Match', desc: 'Analyze any song for LUFS, EQ curves and stereo width. Compare your mix to your favourite reference.', tooltip: 'Get detailed audio analysis to perfect your mix.' },
-          ].map(({ icon: Icon, title, desc, tooltip }, idx) => (
-            <div key={idx} className="rounded-xl border p-6 transition-all transform hover:scale-105 hover:border-[#1EA0FF30]" style={{ backgroundColor: '#0F1A2E', borderColor: '#1C2A44' }}>
+            { icon: Mic, title: 'Studio‑Quality Separation', desc: 'Isolate vocals, drums, bass and more. Get SATB parts automatically.', tooltip: 'AI isolates individual instruments and voice parts for perfect practice.', color: '#1EA0FF', bg: '#1EA0FF15' },
+            { icon: Zap, title: 'Smart Practice', desc: 'Solo and mute parts, adjust tempo, loop sections and practise with context mixes.', tooltip: 'Loop tricky sections, slow down tempos, and focus on your part.', color: '#A78BFA', bg: '#A78BFA15' },
+            { icon: Calendar, title: 'Song Planner & Choir Management', desc: 'Track song progress, performance dates, lyrics, sheet music and readiness. Assign parts and manage members.', tooltip: 'Organize your repertoire, track readiness, and manage rehearsals.', color: '#F59E0B', bg: '#F59E0B15' },
+            { icon: BarChart3, title: 'Reference Mix & Match', desc: 'Analyze any song for LUFS, EQ curves and stereo width. Compare your mix to your favourite reference.', tooltip: 'Get detailed audio analysis to perfect your mix.', color: '#19D3A2', bg: '#19D3A215' },
+          ].map(({ icon: Icon, title, desc, tooltip, color, bg }, idx) => (
+            <div key={idx} className="rounded-xl border p-6 transition-all transform hover:scale-105" style={{ backgroundColor: '#0F1A2E', borderColor: '#1C2A44' }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = color + '50'}
+              onMouseLeave={e => e.currentTarget.style.borderColor = '#1C2A44'}>
               <Tooltip text={tooltip} position="top">
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-4 cursor-help" style={{ backgroundColor: '#1EA0FF15' }}>
-                  <Icon className="w-5 h-5" style={{ color: '#1EA0FF' }} />
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-4 cursor-help" style={{ backgroundColor: bg }}>
+                  <Icon className="w-5 h-5" style={{ color }} />
                 </div>
               </Tooltip>
               <h3 className="text-lg font-bold mb-2" style={{ color: '#EAF2FF' }}>{title}</h3>
