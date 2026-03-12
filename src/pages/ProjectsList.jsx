@@ -127,7 +127,7 @@ export default function ProjectsList() {
 
       {/* Delete Confirmation */}
       {deleteId && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-5">
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-5" style={{ backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
           <div className="rounded-lg p-6 max-w-sm" style={{ backgroundColor: 'hsl(var(--color-card))', border: `1px solid hsl(var(--color-border))` }}>
             <h3 className="text-lg font-bold mb-4" style={{ color: 'hsl(var(--color-text))' }}>Delete project?</h3>
             <p className="mb-6" style={{ color: 'hsl(var(--color-muted))' }}>

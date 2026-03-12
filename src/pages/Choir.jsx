@@ -115,23 +115,23 @@ export default function Choir() {
     return (
       <div className="max-w-xl mx-auto mt-16 text-center space-y-8">
         <div>
-          <div className="w-14 h-14 rounded-2xl mx-auto mb-5 flex items-center justify-center" style={{ backgroundColor: '#1C2A44' }}>
-            <Users className="w-7 h-7" style={{ color: '#9CB2D6' }} />
+          <div className="w-14 h-14 rounded-2xl mx-auto mb-5 flex items-center justify-center" style={{ backgroundColor: 'hsl(var(--color-border))' }}>
+            <Users className="w-7 h-7" style={{ color: 'hsl(var(--color-muted))' }} />
           </div>
-          <h1 className="text-2xl font-bold mb-2" style={{ color: '#EAF2FF' }}>No Active Choir</h1>
-          <p className="text-sm" style={{ color: '#9CB2D6' }}>
+          <h1 className="text-2xl font-bold mb-2" style={{ color: 'hsl(var(--color-text))' }}>No Active Choir</h1>
+          <p className="text-sm" style={{ color: 'hsl(var(--color-muted))' }}>
             Join an existing choir with an invite code, or create your own.
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link to={createPageUrl('ChoirJoin')}
             className="flex items-center justify-center gap-2 h-10 px-5 rounded-lg text-sm font-semibold"
-            style={{ backgroundColor: '#1C2A44', color: '#EAF2FF', border: '1px solid #2A3A54' }}>
+            style={{ backgroundColor: 'hsl(var(--color-card))', color: 'hsl(var(--color-text))', border: '1px solid hsl(var(--color-border))' }}>
             <LogIn className="w-4 h-4" /> Join a Choir
           </Link>
           <Link to={createPageUrl('ChoirCreate')}
             className="flex items-center justify-center gap-2 h-10 px-5 rounded-lg text-sm font-semibold"
-            style={{ backgroundColor: '#1EA0FF', color: '#fff' }}>
+            style={{ backgroundColor: 'hsl(var(--color-primary))', color: 'hsl(var(--color-primary-foreground))' }}>
             <Plus className="w-4 h-4" /> Create a Choir
           </Link>
         </div>
@@ -145,25 +145,25 @@ export default function Choir() {
       <div className="max-w-xl mx-auto mt-10 space-y-5">
         {leaveConfirmOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
-            <div className="rounded-2xl p-6 w-full max-w-sm space-y-4" style={{ backgroundColor: '#0F1A2E', border: '1px solid #1C2A44' }}>
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center mx-auto" style={{ backgroundColor: '#FF4D6D15' }}>
-                <LogOut className="w-5 h-5" style={{ color: '#FF4D6D' }} />
+            <div className="rounded-2xl p-6 w-full max-w-sm space-y-4" style={{ backgroundColor: 'hsl(var(--color-card))', border: '1px solid hsl(var(--color-border))' }}>
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center mx-auto" style={{ backgroundColor: 'hsl(var(--color-destructive) / 0.1)' }}>
+                <LogOut className="w-5 h-5" style={{ color: 'hsl(var(--color-destructive))' }} />
               </div>
               <div className="text-center">
-                <p className="text-sm font-semibold mb-1" style={{ color: '#EAF2FF' }}>Cancel request to "{choir?.name}"?</p>
-                <p className="text-xs leading-relaxed" style={{ color: '#9CB2D6' }}>
+                <p className="text-sm font-semibold mb-1" style={{ color: 'hsl(var(--color-text))' }}>Cancel request to "{choir?.name}"?</p>
+                <p className="text-xs leading-relaxed" style={{ color: 'hsl(var(--color-muted))' }}>
                   Your join request will be withdrawn. You can rejoin with the invite code.
                 </p>
               </div>
               <div className="flex gap-2">
                 <button onClick={() => setLeaveConfirmOpen(false)}
                   className="flex-1 h-9 rounded-lg text-xs font-medium border"
-                  style={{ borderColor: '#1C2A44', color: '#9CB2D6' }}>
+                  style={{ borderColor: 'hsl(var(--color-border))', color: 'hsl(var(--color-muted))' }}>
                   Keep waiting
                 </button>
                 <button onClick={() => { setLeaveConfirmOpen(false); handleLeave(); }} disabled={leaving}
                   className="flex-1 h-9 rounded-lg text-xs font-semibold disabled:opacity-40"
-                  style={{ backgroundColor: '#FF4D6D', color: '#fff' }}>
+                  style={{ backgroundColor: 'hsl(var(--color-destructive))', color: '#fff' }}>
                   {leaving ? 'Cancelling…' : 'Cancel request'}
                 </button>
               </div>
@@ -176,15 +176,15 @@ export default function Choir() {
             <Clock className="w-7 h-7" style={{ color: '#FFB020' }} />
           </div>
           <div>
-            <h1 className="text-xl font-bold mb-2" style={{ color: '#EAF2FF' }}>Request Pending Approval</h1>
-            {choir && <p className="text-sm font-medium mb-2" style={{ color: '#1EA0FF' }}>{choir.name}{choir.church_name ? ` · ${choir.church_name}` : ''}</p>}
-            <p className="text-sm" style={{ color: '#9CB2D6' }}>
+            <h1 className="text-xl font-bold mb-2" style={{ color: 'hsl(var(--color-text))' }}>Request Pending Approval</h1>
+            {choir && <p className="text-sm font-medium mb-2" style={{ color: 'hsl(var(--color-primary))' }}>{choir.name}{choir.church_name ? ` · ${choir.church_name}` : ''}</p>}
+            <p className="text-sm" style={{ color: 'hsl(var(--color-muted))' }}>
               Your request has been sent. You'll be notified once your director approves it.
             </p>
           </div>
           <button onClick={() => setLeaveConfirmOpen(true)}
             className="h-9 px-4 rounded-lg text-xs font-medium flex items-center gap-1.5 mx-auto"
-            style={{ border: '1px solid #FF4D6D30', color: '#FF4D6D' }}>
+            style={{ border: '1px solid hsl(var(--color-destructive) / 0.3)', color: 'hsl(var(--color-destructive))' }}>
             <LogOut className="w-3.5 h-3.5" /> Cancel request
           </button>
         </div>
@@ -199,25 +199,25 @@ export default function Choir() {
       {/* Leave Confirm Modal */}
       {leaveConfirmOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
-          <div className="rounded-2xl p-6 w-full max-w-sm space-y-4" style={{ backgroundColor: '#0F1A2E', border: '1px solid #1C2A44' }}>
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center mx-auto" style={{ backgroundColor: '#FF4D6D15' }}>
-              <LogOut className="w-5 h-5" style={{ color: '#FF4D6D' }} />
+          <div className="rounded-2xl p-6 w-full max-w-sm space-y-4" style={{ backgroundColor: 'hsl(var(--color-card))', border: '1px solid hsl(var(--color-border))' }}>
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center mx-auto" style={{ backgroundColor: 'hsl(var(--color-destructive) / 0.1)' }}>
+              <LogOut className="w-5 h-5" style={{ color: 'hsl(var(--color-destructive))' }} />
             </div>
             <div className="text-center">
-              <p className="text-sm font-semibold mb-1" style={{ color: '#EAF2FF' }}>Leave "{choir?.name}"?</p>
-              <p className="text-xs leading-relaxed" style={{ color: '#9CB2D6' }}>
+              <p className="text-sm font-semibold mb-1" style={{ color: 'hsl(var(--color-text))' }}>Leave "{choir?.name}"?</p>
+              <p className="text-xs leading-relaxed" style={{ color: 'hsl(var(--color-muted))' }}>
                 You'll lose access to this choir's songs and announcements. You can rejoin with an invite code.
               </p>
             </div>
             <div className="flex gap-2">
               <button onClick={() => setLeaveConfirmOpen(false)}
                 className="flex-1 h-9 rounded-lg text-xs font-medium border"
-                style={{ borderColor: '#1C2A44', color: '#9CB2D6' }}>
+                style={{ borderColor: 'hsl(var(--color-border))', color: 'hsl(var(--color-muted))' }}>
                 Cancel
               </button>
               <button onClick={() => { setLeaveConfirmOpen(false); handleLeave(); }} disabled={leaving}
                 className="flex-1 h-9 rounded-lg text-xs font-semibold disabled:opacity-40"
-                style={{ backgroundColor: '#FF4D6D', color: '#fff' }}>
+                style={{ backgroundColor: 'hsl(var(--color-destructive))', color: '#fff' }}>
                 {leaving ? 'Leaving…' : 'Yes, leave'}
               </button>
             </div>
@@ -231,8 +231,8 @@ export default function Choir() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold" style={{ color: '#EAF2FF' }}>{choir?.name || '—'}</h1>
-          {choir?.church_name && <p className="text-sm mt-0.5" style={{ color: '#9CB2D6' }}>{choir.church_name}{choir.location ? ` · ${choir.location}` : ''}</p>}
+          <h1 className="text-2xl font-bold" style={{ color: 'hsl(var(--color-text))' }}>{choir?.name || '—'}</h1>
+          {choir?.church_name && <p className="text-sm mt-0.5" style={{ color: 'hsl(var(--color-muted))' }}>{choir.church_name}{choir.location ? ` · ${choir.location}` : ''}</p>}
         </div>
         <div className="flex items-center gap-2 mt-1 shrink-0">
           <PartBadge part={membership?.part} />
@@ -249,12 +249,12 @@ export default function Choir() {
       <div className="flex flex-wrap gap-2">
         <Link to={createPageUrl('ChoirJoin')}
           className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-medium border transition-colors"
-          style={{ borderColor: '#1C2A44', color: '#9CB2D6' }}>
+          style={{ borderColor: 'hsl(var(--color-border))', color: 'hsl(var(--color-muted))' }}>
           <Plus className="w-3.5 h-3.5" /> Join Another
         </Link>
         <Link to={createPageUrl('ChoirPart')}
           className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-medium border transition-colors"
-          style={{ borderColor: '#1C2A44', color: '#9CB2D6' }}>
+          style={{ borderColor: 'hsl(var(--color-border))', color: 'hsl(var(--color-muted))' }}>
           <Mic2 className="w-3.5 h-3.5" /> Set your part
         </Link>
         {isDirector && (
@@ -266,7 +266,7 @@ export default function Choir() {
         )}
         <button onClick={() => setLeaveConfirmOpen(true)}
           className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-medium border transition-colors ml-auto"
-          style={{ borderColor: '#FF4D6D30', color: '#FF4D6D' }}>
+          style={{ borderColor: 'hsl(var(--color-destructive) / 0.3)', color: 'hsl(var(--color-destructive))' }}>
           <LogOut className="w-3.5 h-3.5" /> Leave Choir
         </button>
       </div>
@@ -275,19 +275,19 @@ export default function Choir() {
       <Card>
         <CardHeader title="Announcements" />
         {announcements.length === 0 ? (
-          <p className="text-sm text-center py-5" style={{ color: '#9CB2D6' }}>No announcements yet.</p>
+          <p className="text-sm text-center py-5" style={{ color: 'hsl(var(--color-muted))' }}>No announcements yet.</p>
         ) : (
           <div className="space-y-3">
             {announcements.map(a => (
-              <div key={a.id} className="rounded-lg p-3" style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44' }}>
+              <div key={a.id} className="rounded-lg p-3" style={{ backgroundColor: 'hsl(var(--color-background))', border: '1px solid hsl(var(--color-border))' }}>
                 <div className="flex items-start justify-between gap-2 mb-1">
-                  <p className="text-xs font-semibold" style={{ color: '#EAF2FF' }}>{a.title}</p>
-                  <span className="text-[10px] shrink-0" style={{ color: '#9CB2D6' }}>
+                  <p className="text-xs font-semibold" style={{ color: 'hsl(var(--color-text))' }}>{a.title}</p>
+                  <span className="text-[10px] shrink-0" style={{ color: 'hsl(var(--color-muted))' }}>
                     {a.created_date ? format(new Date(a.created_date), 'MMM d') : ''}
                   </span>
                 </div>
-                <p className="text-xs leading-relaxed" style={{ color: '#9CB2D6' }}>{a.message}</p>
-                {a.created_by_name && <p className="text-[10px] mt-1.5" style={{ color: '#9CB2D6' }}>— {a.created_by_name}</p>}
+                <p className="text-xs leading-relaxed" style={{ color: 'hsl(var(--color-muted))' }}>{a.message}</p>
+                {a.created_by_name && <p className="text-[10px] mt-1.5" style={{ color: 'hsl(var(--color-muted))' }}>— {a.created_by_name}</p>}
               </div>
             ))}
           </div>
@@ -299,31 +299,31 @@ export default function Choir() {
         <CardHeader
           title="Songs"
           action={
-            <Link to={createPageUrl('ChoirSongs')} className="text-xs flex items-center gap-1" style={{ color: '#1EA0FF' }}>
+            <Link to={createPageUrl('ChoirSongs')} className="text-xs flex items-center gap-1" style={{ color: 'hsl(var(--color-primary))' }}>
               View all <ChevronRight className="w-3 h-3" />
             </Link>
           }
         />
         {songs.length === 0 ? (
-          <p className="text-sm text-center py-5" style={{ color: '#9CB2D6' }}>No songs added yet.</p>
+          <p className="text-sm text-center py-5" style={{ color: 'hsl(var(--color-muted))' }}>No songs added yet.</p>
         ) : (
           <div className="space-y-1.5">
             {songs.map(s => (
               <Link key={s.id} to={`${createPageUrl('ChoirSongDetail')}?id=${s.id}`}
                 className="flex items-center justify-between px-3 py-2.5 rounded-lg group transition-colors"
-                style={{ backgroundColor: '#0B1220', border: '1px solid #1C2A44' }}
-                onMouseEnter={e => e.currentTarget.style.borderColor='#2A3A54'}
-                onMouseLeave={e => e.currentTarget.style.borderColor='#1C2A44'}>
+                style={{ backgroundColor: 'hsl(var(--color-background))', border: '1px solid hsl(var(--color-border))' }}
+                onMouseEnter={e => e.currentTarget.style.borderColor='hsl(var(--color-primary) / 0.3)'}
+                onMouseLeave={e => e.currentTarget.style.borderColor='hsl(var(--color-border))'}>
                 <div className="flex items-center gap-2.5">
-                  <Music className="w-3.5 h-3.5 shrink-0" style={{ color: '#1EA0FF' }} />
+                  <Music className="w-3.5 h-3.5 shrink-0" style={{ color: 'hsl(var(--color-primary))' }} />
                   <div>
-                    <p className="text-xs font-medium" style={{ color: '#EAF2FF' }}>{s.title}</p>
-                    <p className="text-[10px]" style={{ color: '#9CB2D6' }}>
+                    <p className="text-xs font-medium" style={{ color: 'hsl(var(--color-text))' }}>{s.title}</p>
+                    <p className="text-[10px]" style={{ color: 'hsl(var(--color-muted))' }}>
                       {[s.key, s.bpm && `${s.bpm} BPM`, s.time_signature].filter(Boolean).join(' · ') || 'No metadata'}
                     </p>
                   </div>
                 </div>
-                <ChevronRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: '#9CB2D6' }} />
+                <ChevronRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'hsl(var(--color-muted))' }} />
               </Link>
             ))}
           </div>
@@ -342,10 +342,10 @@ function ChoirSwitcher({ allMemberships, allChoirs, membership, onSwitch, open, 
     <div className="relative">
       <button onClick={() => setOpen(v => !v)}
         className="flex items-center gap-2 h-8 px-3 rounded-lg text-xs font-medium border transition-colors"
-        style={{ borderColor: '#1C2A44', color: '#9CB2D6', backgroundColor: '#0F1A2E' }}>
+        style={{ borderColor: 'hsl(var(--color-border))', color: 'hsl(var(--color-muted))', backgroundColor: 'hsl(var(--color-card))' }}>
         <Users className="w-3.5 h-3.5" />
-        <span style={{ color: '#EAF2FF' }}>{currentChoir?.name || '—'}</span>
-        <span className="text-[10px] px-1.5 py-px rounded-full" style={{ backgroundColor: '#1C2A44', color: '#9CB2D6' }}>
+        <span style={{ color: 'hsl(var(--color-text))' }}>{currentChoir?.name || '—'}</span>
+        <span className="text-[10px] px-1.5 py-px rounded-full" style={{ backgroundColor: 'hsl(var(--color-border))', color: 'hsl(var(--color-muted))' }}>
           {allMemberships.length} choirs
         </span>
         <ChevronDown className="w-3.5 h-3.5 ml-auto" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
@@ -353,23 +353,23 @@ function ChoirSwitcher({ allMemberships, allChoirs, membership, onSwitch, open, 
 
       {open && (
         <div className="absolute top-10 left-0 z-50 rounded-xl border py-1 min-w-[220px] shadow-xl"
-          style={{ backgroundColor: '#0F1A2E', borderColor: '#1C2A44' }}>
+          style={{ backgroundColor: 'hsl(var(--color-card))', borderColor: 'hsl(var(--color-border))' }}>
           {allMemberships.map(mem => {
             const ch = allChoirs[mem.choir_id];
             const isActive = mem.id === membership?.id;
             return (
               <button key={mem.id} onClick={() => onSwitch(mem)}
                 className="w-full flex items-center gap-2.5 px-3 py-2.5 text-left transition-colors"
-                style={{ backgroundColor: isActive ? '#1EA0FF10' : 'transparent' }}
-                onMouseEnter={e => { if (!isActive) e.currentTarget.style.backgroundColor = '#1C2A44'; }}
+                style={{ backgroundColor: isActive ? 'hsl(var(--color-primary) / 0.08)' : 'transparent' }}
+                onMouseEnter={e => { if (!isActive) e.currentTarget.style.backgroundColor = 'hsl(var(--color-border))'; }}
                 onMouseLeave={e => { if (!isActive) e.currentTarget.style.backgroundColor = 'transparent'; }}>
                 <div className="w-6 h-6 rounded-md flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: '#1C2A44' }}>
-                  <Users className="w-3 h-3" style={{ color: isActive ? '#1EA0FF' : '#9CB2D6' }} />
+                  style={{ backgroundColor: 'hsl(var(--color-border))' }}>
+                  <Users className="w-3 h-3" style={{ color: isActive ? 'hsl(var(--color-primary))' : 'hsl(var(--color-muted))' }} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium truncate" style={{ color: '#EAF2FF' }}>{ch?.name || mem.choir_id}</p>
-                  <p className="text-[10px] capitalize" style={{ color: '#9CB2D6' }}>
+                  <p className="text-xs font-medium truncate" style={{ color: 'hsl(var(--color-text))' }}>{ch?.name || mem.choir_id}</p>
+                  <p className="text-[10px] capitalize" style={{ color: 'hsl(var(--color-muted))' }}>
                     {mem.status === 'pending' ? '⏳ Pending' : mem.role}
                   </p>
                 </div>
@@ -377,12 +377,12 @@ function ChoirSwitcher({ allMemberships, allChoirs, membership, onSwitch, open, 
               </button>
             );
           })}
-          <div className="border-t mx-2 mt-1 pt-1" style={{ borderColor: '#1C2A44' }}>
+          <div className="border-t mx-2 mt-1 pt-1" style={{ borderColor: 'hsl(var(--color-border))' }}>
             <Link to={createPageUrl('ChoirJoin')} onClick={() => setOpen(false)}
               className="flex items-center gap-2 px-3 py-2 text-xs rounded-lg transition-colors w-full"
-              style={{ color: '#9CB2D6' }}
-              onMouseEnter={e => e.currentTarget.style.color = '#EAF2FF'}
-              onMouseLeave={e => e.currentTarget.style.color = '#9CB2D6'}>
+              style={{ color: 'hsl(var(--color-muted))' }}
+              onMouseEnter={e => e.currentTarget.style.color = 'hsl(var(--color-text))'}
+              onMouseLeave={e => e.currentTarget.style.color = 'hsl(var(--color-muted))'}>
               <Plus className="w-3.5 h-3.5" /> Join another choir
             </Link>
           </div>
