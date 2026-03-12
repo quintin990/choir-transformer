@@ -10,9 +10,16 @@
     --color-background: 242 70% 97%;
     --color-card: 227 40% 96%;
     --color-border: 227 24% 88%;
-    --color-primary: 220 100% 60%;
+    --color-primary: 220 100% 58%;
     --color-primary-foreground: 0 0% 100%;
-    --color-accent: 174 70% 44%;
+    --color-accent: 174 72% 40%;
+    --color-accent-foreground: 0 0% 100%;
+    --color-purple: 270 85% 62%;
+    --color-purple-foreground: 0 0% 100%;
+    --color-amber: 38 95% 52%;
+    --color-amber-foreground: 0 0% 100%;
+    --color-rose: 350 89% 60%;
+    --color-rose-foreground: 0 0% 100%;
     --color-text: 220 15% 20%;
     --color-muted: 220 15% 40%;
     
@@ -28,14 +35,21 @@
 
   .dark {
     /* Dark theme */
-    --color-background: 220 29% 12%;
-    --color-card: 220 25% 18%;
-    --color-border: 220 20% 28%;
-    --color-primary: 220 100% 60%;
+    --color-background: 220 29% 10%;
+    --color-card: 220 25% 16%;
+    --color-border: 220 20% 26%;
+    --color-primary: 220 100% 62%;
     --color-primary-foreground: 0 0% 100%;
-    --color-accent: 174 70% 44%;
-    --color-text: 210 20% 88%;
-    --color-muted: 210 20% 60%;
+    --color-accent: 174 72% 42%;
+    --color-accent-foreground: 0 0% 100%;
+    --color-purple: 270 85% 65%;
+    --color-purple-foreground: 0 0% 100%;
+    --color-amber: 38 95% 55%;
+    --color-amber-foreground: 0 0% 100%;
+    --color-rose: 350 89% 63%;
+    --color-rose-foreground: 0 0% 100%;
+    --color-text: 210 20% 90%;
+    --color-muted: 210 20% 58%;
     
     /* Semantic colors (dark) */
     --color-foreground: var(--color-text);
