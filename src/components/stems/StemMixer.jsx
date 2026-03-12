@@ -112,6 +112,11 @@ export default function StemMixer({ stems }) {
       const elapsed = audioCtxRef.current.currentTime - startTimeRef.current;
       const cur = Math.min(offsetRef.current + elapsed, duration);
       setCurrentTime(cur);
+      // Loop jump
+      if (loopEnabled && loopEnd > loopStart && cur >= loopEnd) {
+        startPlayback(loopStart);
+        return;
+      }
       if (cur < duration) {
         animRef.current = requestAnimationFrame(tick);
       } else {
@@ -121,7 +126,7 @@ export default function StemMixer({ stems }) {
       }
     };
     animRef.current = requestAnimationFrame(tick);
-  }, [stemNames, duration, stopAll]);
+  }, [stemNames, duration, stopAll, loopEnabled, loopStart, loopEnd]);
 
   const pause = useCallback(() => {
     const elapsed = audioCtxRef.current.currentTime - startTimeRef.current;
