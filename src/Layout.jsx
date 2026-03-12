@@ -85,7 +85,7 @@ export default function Layout({ children, currentPageName }) {
                   <button
                     onClick={() => setProfileOpen(!profileOpen)}
                     className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors"
-                    style={{ borderColor: 'hsl(var(--color-border))', color: 'hsl(var(--color-muted))' }}
+                    style={{ borderColor: 'hsl(var(--color-primary) / 0.4)', color: 'hsl(var(--color-muted))' }}
                   >
                     <div className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
                       style={{ backgroundColor: 'hsl(var(--color-primary) / 0.2)', color: 'hsl(var(--color-primary))' }}>
