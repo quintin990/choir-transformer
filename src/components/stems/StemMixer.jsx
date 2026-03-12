@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Slider } from '@/components/ui/slider';
-import { Play, Pause, RotateCcw, Volume2, VolumeX, Loader2 } from 'lucide-react';
+import { Play, Pause, RotateCcw, Volume2, Repeat, Loader2 } from 'lucide-react';
 import WaveformCanvas from './WaveformCanvas';
 
 const STEM_COLORS = {
