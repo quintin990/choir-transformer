@@ -48,7 +48,6 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import About from './pages/About';
-import AdminAnalytics from './pages/AdminAnalytics';
 import ApiDocs from './pages/ApiDocs';
 import AudioEnhancement from './pages/AudioEnhancement';
 import BatchDetail from './pages/BatchDetail';
@@ -92,7 +91,6 @@ import __Layout from './Layout.jsx';
 
 export const PAGES = {
     "About": About,
-    "AdminAnalytics": AdminAnalytics,
     "ApiDocs": ApiDocs,
     "AudioEnhancement": AudioEnhancement,
     "BatchDetail": BatchDetail,
@@ -134,7 +132,7 @@ export const PAGES = {
 }
 
 export const pagesConfig = {
-    mainPage: "AdminAnalytics",
+    mainPage: "About",
     Pages: PAGES,
     Layout: __Layout,
 };
