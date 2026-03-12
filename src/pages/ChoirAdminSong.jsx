@@ -172,6 +172,17 @@ export default function ChoirAdminSong() {
         </p>
       </div>
 
+      {/* Workflow panel */}
+      <SongWorkflowPanel
+        song={song}
+        job={job}
+        assets={assets}
+        memberCount={memberCount}
+        readinessStats={readinessStats}
+        choirId={song.choir_id}
+        onNotifySent={() => {}}
+      />
+
       {/* Published assets */}
       <Card>
         <CardHeader title="Published Assets" subtitle={`${assets.length} file${assets.length !== 1 ? 's' : ''} published`} />
