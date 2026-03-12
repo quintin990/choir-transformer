@@ -55,6 +55,27 @@
   }
 
   .dark {
+    /* ── Shadcn variable overrides (dark navy) ── */
+    --background: 220 49% 8%;
+    --foreground: 220 100% 96%;
+    --card: 220 50% 12%;
+    --card-foreground: 220 100% 96%;
+    --popover: 220 50% 12%;
+    --popover-foreground: 220 100% 96%;
+    --primary: 205 100% 56%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 42% 19%;
+    --secondary-foreground: 220 100% 96%;
+    --muted: 220 42% 19%;
+    --muted-foreground: 220 41% 73%;
+    --accent: 164 79% 46%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 42% 19%;
+    --input: 220 50% 12%;
+    --ring: 205 100% 56%;
+
     /* Same dark navy (dark mode = same as default) */
     --color-background: 220 49% 8%;
     --color-card: 220 50% 12%;
