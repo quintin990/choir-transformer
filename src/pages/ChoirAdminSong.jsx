@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Plus, Trash2, Loader2, Check, Download } from 'lucide-react';
 import Card, { CardHeader } from '../components/auralyn/Card';
+import SongWorkflowPanel from '../components/choir/SongWorkflowPanel';
 
 const PART_SCOPES = ['all', 'soprano', 'alto', 'tenor', 'bass'];
 const ASSET_TYPES = ['stem', 'guide', 'satb', 'notes', 'pdf', 'link'];
