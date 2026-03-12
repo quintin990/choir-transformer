@@ -127,12 +127,20 @@ export default function ChoirAdminSong() {
         const s = songs[0];
         setSong(s);
 
-        const [ca, ja] = await Promise.all([
+        const [ca, ja, jobData, members, readinessData] = await Promise.all([
           base44.entities.ChoirAsset.filter({ choir_song_id: songId }),
           s.job_id ? base44.entities.JobAsset.filter({ job_id: s.job_id }) : Promise.resolve([]),
+          s.job_id ? base44.entities.Job.filter({ id: s.job_id }) : Promise.resolve([]),
+          base44.entities.ChoirMembership.filter({ choir_id: s.choir_id, status: 'approved' }),
+          base44.entities.SongReadiness.filter({ choir_song_id: songId }),
         ]);
         setAssets(ca);
         setJobAssets(ja);
+        if (jobData.length) setJob(jobData[0]);
+        setMemberCount(members.length);
+        const stats = { mastered: 0, learning: 0, need_help: 0, total: readinessData.length };
+        readinessData.forEach(r => { if (stats[r.status] !== undefined) stats[r.status]++; });
+        setReadinessStats(stats);
       } catch {
         base44.auth.redirectToLogin('/ChoirAdminSong?id=' + songId);
       } finally {
