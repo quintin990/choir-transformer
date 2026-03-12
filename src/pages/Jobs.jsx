@@ -197,19 +197,19 @@ export default function Jobs() {
             <input value={search} onChange={e => setSearch(e.target.value)}
               placeholder="Search by title, filename, project…"
               className="w-full pl-9 pr-3 h-9 rounded-lg text-sm outline-none"
-              style={{ backgroundColor: 'hsl(var(--color-background))', border: '1px solid #1C2A44', color: 'hsl(var(--color-text))' }}
+              style={{ backgroundColor: 'hsl(var(--color-background))', border: '1px solid hsl(var(--color-border))', color: 'hsl(var(--color-text))' }}
               onFocus={e => e.target.style.borderColor = 'hsl(var(--color-primary))'}
               onBlur={e => e.target.style.borderColor = 'hsl(var(--color-border))'} />
           </div>
           <select value={kindFilter} onChange={e => setKindFilter(e.target.value)}
             className="h-9 px-3 rounded-lg text-xs outline-none cursor-pointer"
-            style={{ backgroundColor: 'hsl(var(--color-background))', border: '1px solid #1C2A44', color: 'hsl(var(--color-text))' }}>
+            style={{ backgroundColor: 'hsl(var(--color-background))', border: '1px solid hsl(var(--color-border))', color: 'hsl(var(--color-text))' }}>
             <option value="all">All types</option>
             {ALL_KINDS.map(k => <option key={k} value={k}>{k}</option>)}
           </select>
           <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
             className="h-9 px-3 rounded-lg text-xs outline-none cursor-pointer"
-            style={{ backgroundColor: 'hsl(var(--color-background))', border: '1px solid #1C2A44', color: 'hsl(var(--color-text))' }}>
+            style={{ backgroundColor: 'hsl(var(--color-background))', border: '1px solid hsl(var(--color-border))', color: 'hsl(var(--color-text))' }}>
             <option value="all">All statuses</option>
             {ALL_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
           </select>
@@ -247,7 +247,7 @@ export default function Jobs() {
                   style={{
                     backgroundColor: tagFilter === t ? 'hsl(var(--color-primary) / 0.09)' : 'hsl(var(--color-border))',
                     color: tagFilter === t ? 'hsl(var(--color-primary))' : 'hsl(var(--color-muted))',
-                    border: tagFilter === t ? '1px solid #1EA0FF40' : '1px solid transparent',
+                    border: tagFilter === t ? '1px solid hsl(var(--color-primary) / 0.25)' : '1px solid transparent',
                   }}>
                   {t}
                 </button>
@@ -280,7 +280,9 @@ export default function Jobs() {
                 <Link to={`${createPageUrl('ProjectDetail')}?id=${pid}`}
                   className="flex items-center gap-2 mb-2.5 group">
                   <FolderOpen className="w-4 h-4" style={{ color: 'hsl(var(--color-primary))' }} />
-                  <span className="text-sm font-semibold transition-colors group-hover:text-[#1EA0FF]"
+                  <span className="text-sm font-semibold transition-colors"
+                    onMouseEnter={e => e.currentTarget.style.color = 'hsl(var(--color-primary))'}
+                    onMouseLeave={e => e.currentTarget.style.color = 'hsl(var(--color-text))'}
                     style={{ color: 'hsl(var(--color-text))' }}>
                     {proj?.name || 'Project'}
                   </span>
