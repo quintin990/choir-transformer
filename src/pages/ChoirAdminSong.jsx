@@ -113,6 +113,9 @@ export default function ChoirAdminSong() {
   const [song, setSong] = useState(null);
   const [assets, setAssets] = useState([]);
   const [jobAssets, setJobAssets] = useState([]);
+  const [job, setJob] = useState(null);
+  const [memberCount, setMemberCount] = useState(0);
+  const [readinessStats, setReadinessStats] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
