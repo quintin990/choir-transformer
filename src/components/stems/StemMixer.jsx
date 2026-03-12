@@ -296,25 +296,88 @@ export default function StemMixer({ stems }) {
 
       {/* Transport */}
       <div className="px-5 py-4 border-t border-white/5 space-y-3 bg-white/[0.01]">
-        {/* Seekbar */}
+        {/* Seekbar with loop region */}
         <div className="flex items-center gap-3">
           <span className="text-[11px] tabular-nums text-white/30 w-8 text-right shrink-0">{fmt(currentTime)}</span>
           <div
-            className="flex-1 relative h-1 bg-white/8 rounded-full cursor-pointer group"
+            ref={seekbarRef}
+            className="flex-1 relative h-3 rounded-full cursor-pointer group select-none"
+            style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}
             onClick={(e) => {
+              if (loopDragRef.current) return;
               const rect = e.currentTarget.getBoundingClientRect();
               seek(((e.clientX - rect.left) / rect.width) * duration);
             }}
           >
             {/* Track fill */}
-            <div className="absolute inset-y-0 left-0 bg-violet-600 rounded-full transition-all"
+            <div className="absolute inset-y-0 left-0 bg-violet-600/60 rounded-full"
               style={{ width: `${pct}%` }} />
-            {/* Thumb */}
+
+            {/* Loop region highlight */}
+            {loopEnabled && duration > 0 && (
+              <>
+                <div className="absolute inset-y-0 rounded-full pointer-events-none"
+                  style={{
+                    left: `${(loopStart / duration) * 100}%`,
+                    width: `${((loopEnd - loopStart) / duration) * 100}%`,
+                    backgroundColor: '#F59E0B30',
+                    border: '1px solid #F59E0B60',
+                  }} />
+                {/* Loop start handle */}
+                <div
+                  className="absolute top-1/2 -translate-y-1/2 w-2.5 h-5 rounded-sm cursor-ew-resize z-10"
+                  style={{ left: `${(loopStart / duration) * 100}%`, backgroundColor: '#F59E0B', marginLeft: '-5px' }}
+                  onMouseDown={(e) => {
+                    e.stopPropagation();
+                    loopDragRef.current = 'start';
+                    const onMove = (me) => {
+                      const rect = seekbarRef.current?.getBoundingClientRect();
+                      if (!rect) return;
+                      const t = Math.max(0, Math.min(loopEnd - 0.5, ((me.clientX - rect.left) / rect.width) * duration));
+                      setLoopStart(t);
+                    };
+                    const onUp = () => { loopDragRef.current = null; window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+                    window.addEventListener('mousemove', onMove);
+                    window.addEventListener('mouseup', onUp);
+                  }}
+                />
+                {/* Loop end handle */}
+                <div
+                  className="absolute top-1/2 -translate-y-1/2 w-2.5 h-5 rounded-sm cursor-ew-resize z-10"
+                  style={{ left: `${(loopEnd / duration) * 100}%`, backgroundColor: '#F59E0B', marginLeft: '-5px' }}
+                  onMouseDown={(e) => {
+                    e.stopPropagation();
+                    loopDragRef.current = 'end';
+                    const onMove = (me) => {
+                      const rect = seekbarRef.current?.getBoundingClientRect();
+                      if (!rect) return;
+                      const t = Math.min(duration, Math.max(loopStart + 0.5, ((me.clientX - rect.left) / rect.width) * duration));
+                      setLoopEnd(t);
+                    };
+                    const onUp = () => { loopDragRef.current = null; window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+                    window.addEventListener('mousemove', onMove);
+                    window.addEventListener('mouseup', onUp);
+                  }}
+                />
+              </>
+            )}
+
+            {/* Playhead */}
             <div className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-lg -ml-1.5 opacity-0 group-hover:opacity-100 transition-opacity"
               style={{ left: `${pct}%` }} />
           </div>
           <span className="text-[11px] tabular-nums text-white/30 w-8 shrink-0">{fmt(duration)}</span>
         </div>
+
+        {/* Loop time display when active */}
+        {loopEnabled && (
+          <div className="flex items-center justify-center gap-3 text-[10px]" style={{ color: '#F59E0B99' }}>
+            <span>Loop: {fmt(loopStart)} → {fmt(loopEnd)}</span>
+            <button
+              onClick={() => { setLoopStart(0); setLoopEnd(duration); }}
+              className="underline opacity-60 hover:opacity-100">reset</button>
+          </div>
+        )}
 
         {/* Play controls */}
         <div className="flex items-center justify-center gap-4">
@@ -334,7 +397,19 @@ export default function StemMixer({ stems }) {
               : <Play className="w-4 h-4 ml-0.5" />
             }
           </button>
-          <div className="w-7" /> {/* spacer */}
+          {/* Loop toggle */}
+          <button
+            onClick={() => setLoopEnabled(v => !v)}
+            title="Toggle loop selection"
+            className="w-7 h-7 rounded-lg flex items-center justify-center transition-all"
+            style={{
+              backgroundColor: loopEnabled ? '#F59E0B22' : 'rgba(255,255,255,0.05)',
+              color: loopEnabled ? '#F59E0B' : 'rgba(255,255,255,0.25)',
+              border: loopEnabled ? '1px solid #F59E0B50' : '1px solid transparent',
+            }}
+          >
+            <Repeat className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
     </div>
